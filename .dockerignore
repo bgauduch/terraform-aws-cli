@@ -1,5 +1,5 @@
 # explicitely exclude all files from the build context
-# (each file needed in the Dockefile need to be included manually)
+# (each file needed in the Dockefile needs to be included manually)
 *
 
 # Specific to Terraform installation
