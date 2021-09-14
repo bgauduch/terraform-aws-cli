@@ -1,17 +1,17 @@
 # Setup build arguments with default versions
 ARG AWS_CLI_VERSION
 ARG TERRAFORM_VERSION
-ARG PYTHON_MAJOR_VERSION=3.7
-ARG DEBIAN_VERSION=buster-20210511-slim
+ARG PYTHON_MAJOR_VERSION=3.9
+ARG DEBIAN_VERSION=bullseye-20210902-slim
 
 # Download Terraform binary
 FROM debian:${DEBIAN_VERSION} as terraform
 ARG TERRAFORM_VERSION
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y curl=7.64.0-4+deb10u2
-RUN apt-get install --no-install-recommends -y ca-certificates=20200601~deb10u2
-RUN apt-get install --no-install-recommends -y unzip=6.0-23+deb10u2
-RUN apt-get install --no-install-recommends -y gnupg=2.2.12-1+deb10u1
+RUN apt-get install --no-install-recommends -y curl=7.74.0-1.3+b1
+RUN apt-get install --no-install-recommends -y ca-certificates=20210119
+RUN apt-get install --no-install-recommends -y unzip=6.0-26
+RUN apt-get install --no-install-recommends -y gnupg=2.2.27-2
 WORKDIR /workspace
 RUN curl -Os https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_SHA256SUMS
 RUN curl -Os https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -28,9 +28,9 @@ FROM debian:${DEBIAN_VERSION} as aws-cli
 ARG AWS_CLI_VERSION
 ARG PYTHON_MAJOR_VERSION
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends python3=${PYTHON_MAJOR_VERSION}.3-1
-RUN apt-get install -y --no-install-recommends python3-pip=18.1-5
-RUN pip3 install --no-cache-dir setuptools==57.0.0
+RUN apt-get install -y --no-install-recommends python3=${PYTHON_MAJOR_VERSION}.2-3
+RUN apt-get install -y --no-install-recommends python3-pip=20.3.4-4
+RUN pip3 install --no-cache-dir setuptools==58.0.4
 RUN pip3 install --no-cache-dir awscli==${AWS_CLI_VERSION}
 
 # Build final image
@@ -39,10 +39,10 @@ LABEL maintainer="bgauduch@github"
 ARG PYTHON_MAJOR_VERSION
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    ca-certificates=20200601~deb10u2 \
-    git=1:2.20.1-2+deb10u3 \
-    jq=1.5+dfsg-2+b1 \
-    python3=${PYTHON_MAJOR_VERSION}.3-1 \
+    ca-certificates=20210119\
+    git=1:2.30.2-1 \
+    jq=1.6-2.1 \
+    python3=${PYTHON_MAJOR_VERSION}.2-3 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_MAJOR_VERSION} 1
