@@ -2,8 +2,8 @@
 [![build-test](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/build-test.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/build-test.yml)
 [![push-latest](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/push-latest.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/push-latest.yml)
 [![release](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/release.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/release.yml)
-[![dockerhub-description-update](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml)
 
+[![dockerhub-description-update](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Docker Pulls](https://img.shields.io/docker/pulls/zenika/terraform-aws-cli.svg)](https://hub.docker.com/r/zenika/terraform-aws-cli/)
 
@@ -16,11 +16,11 @@ Supported versions are listed in the [`supported_versions.json`](https://github.
 
 The following image tag strategy is applied:
 * `zenika/terraform-aws-cli:latest` - build from master
-  * Included CLI versions are the newest in the [`supported_versions.json` ](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.<>
+  * Included CLI versions are the newest in the [`supported_versions.json` ](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
 * `zenika/terraform-aws-cli:release-S.T_terraform-UU.VV.WW_awscli-XX.YY.ZZ` - build from releases
   * `release-S.T` is the release tag
-  * `terraform-UU.VV.WWW` is the Terraform version included in the image
-  * `awscli-XX.YY.ZZ` is the AWS CLI version included in the image
+  * `terraform-UU.VV.WWW` is the **Terraform** version included in the image
+  * `awscli-XX.YY.ZZ` is the **AWS CLI** version included in the image
 
 Please report to the [releases page](https://github.com/Zenika/terraform-aws-cli/releases) for the changelogs.
 
@@ -34,14 +34,11 @@ This image gives you the flexibility to be used for development or as a base ima
 ## 🔧 What's inside ?
 Tools included:
 
-* [AWS CLI](https://aws.amazon.com/fr/cli/)
-  * Included version indicated in the image tag: `awscli-XX.YY.ZZ`
 * [Terraform CLI](https://www.terraform.io/docs/commands/index.html)
-  * Included version indicated in the image tag: `terraform-XX.YY.ZZ`
-  * See available versions on the [project release page](https://github.com/hashicorp/terraform/releases)
-* [Git](https://git-scm.com/) for Terraform remote module usage, see available versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=git)
+* [AWS CLI](https://aws.amazon.com/fr/cli/)
+* [Git](https://git-scm.com/) for Terraform remote module usage
 * [Python 3](https://www.python.org/)
-* [jq](https://stedolan.github.io/jq/) to process JSON returned by AWS, see available versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=jq)
+* [jq](https://stedolan.github.io/jq/) to process JSON returned by AWS
 * This image uses a non-root user with a UID and GID of 1001 to conform with docker security best practices.
 
 ## 🚀 Usage
@@ -69,7 +66,7 @@ It will :
 
 ```bash
 # launch build script
-./build.sh
+./dev.sh
 ```
 
 Optionally, it is possible to choose the tools desired versions :
@@ -80,7 +77,7 @@ AWS_CLI_VERSION=1.18.189
 TERRAFORM_VERSION=0.14.0
 
 # launch the build script with parameters
-./build.sh $AWS_CLI_VERSION $TERRAFORM_VERSION
+./dev.sh $AWS_CLI_VERSION $TERRAFORM_VERSION
 ```
 
 ## 🙏 Contributions
@@ -89,20 +86,21 @@ Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/te
 ## ⬆️ Dependencies upgrades checklist
 
 * Supported versions:
-  * check AWS CLI version, available on the [project release page](https://github.com/aws/aws-cli/releases)
-  * check Terraform CLI version (keep all minor versions from 0.11), available on the [project release page](https://github.com/hashicorp/terraform/releases)
+  * check available **AWS CLI** version on the [project release page](https://github.com/aws/aws-cli/releases)
+  * check available **Terraform CLI** version (keep all minor versions from 0.11) available on the [project release page](https://github.com/hashicorp/terraform/releases)
 * Dockerfile:
-  * check base image version on DockerHub
+  * check **base image** version on DockerHub
   * check OS package versions on Debian package repository
-    * Available Git versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=git)
-    * Available Python versions on the [Debian packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=python3)
+    * Available **Git** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=git)
+    * Available **Python** versions on the [Debian packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=python3)
+    * Available **JQ** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=jq)
     * same process for all other packages
-  * check Pip package versions on [pypi](https://pypi.org/)
+  * check **Pip** package versions on [pypi](https://pypi.org/)
 * Github actions:
   * check [runner version](https://github.com/actions/virtual-environments#available-environments)
-  * check each action release versions
+  * check **each action release** versions
 * Build scripts:
-  * check container tags:
+  * check **container tags**:
     * [Hadolint releases](https://github.com/hadolint/hadolint/releases)
     * [Container-structure-test](https://github.com/GoogleContainerTools/container-structure-test/releases)
 * Readme:
