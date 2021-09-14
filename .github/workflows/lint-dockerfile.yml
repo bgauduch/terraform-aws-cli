@@ -2,7 +2,7 @@ name: lint-dockerfile
 
 # trigger on any push
 # but not on master or tags
-# and only for dockerfile modifications
+# and only for dockerfile related modifications
 on:
   push:
     tags-ignore:

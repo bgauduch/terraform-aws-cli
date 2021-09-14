@@ -1,7 +1,7 @@
 name: push-latest
 
 # trigger on push to master
-# only on image-related modifications
+# only on Dockerfile related modifications
 on:
   push:
     branches:
@@ -12,6 +12,7 @@ on:
       - "hashicorp.asc"
       - "tests/**"
       - ".dockerignore"
+      - "hadolint.yaml"
       - ".github/workflows/push-latest.yml"
 
 env:

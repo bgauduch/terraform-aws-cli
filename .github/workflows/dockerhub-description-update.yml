@@ -1,4 +1,7 @@
 name: dockerhub-description-update
+
+# trigger on any push on master
+# only for readme related modifications
 on:
   push:
     branches:

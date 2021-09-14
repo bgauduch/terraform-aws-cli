@@ -16,6 +16,7 @@ on:
       - "hashicorp.asc"
       - "tests/*"
       - ".dockerignore"
+      - "hadolint.yaml"
       - ".github/workflows/build-test.yml"
 
 env:
