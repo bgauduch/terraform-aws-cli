@@ -8,7 +8,7 @@ ARG DEBIAN_VERSION=bullseye-20210902-slim
 FROM debian:${DEBIAN_VERSION} as terraform
 ARG TERRAFORM_VERSION
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y curl=7.74.0-1.3+b1
+RUN apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u1
 RUN apt-get install --no-install-recommends -y ca-certificates=20210119
 RUN apt-get install --no-install-recommends -y unzip=6.0-26
 RUN apt-get install --no-install-recommends -y gnupg=2.2.27-2
@@ -30,7 +30,7 @@ ARG PYTHON_MAJOR_VERSION
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends python3=${PYTHON_MAJOR_VERSION}.2-3
 RUN apt-get install -y --no-install-recommends python3-pip=20.3.4-4
-RUN pip3 install --no-cache-dir setuptools==58.0.4
+RUN pip3 install --no-cache-dir setuptools==60.8.2
 RUN pip3 install --no-cache-dir awscli==${AWS_CLI_VERSION}
 
 # Build final image
