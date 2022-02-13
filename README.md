@@ -91,9 +91,9 @@ Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/te
 * Dockerfile:
   * check **base image** version on DockerHub
   * check OS package versions on Debian package repository
-    * Available **Git** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=git)
-    * Available **Python** versions on the [Debian packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=python3)
-    * Available **JQ** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=buster&arch=any&searchon=names&keywords=jq)
+    * Available **Git** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=git)
+    * Available **Python** versions on the [Debian packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=python3)
+    * Available **JQ** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=jq)
     * same process for all other packages
   * check **Pip** package versions on [pypi](https://pypi.org/)
 * Github actions:
