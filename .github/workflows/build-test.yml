@@ -80,7 +80,7 @@ jobs:
 
       - name: Generate test config
         run: |
-          export tf_versions=${{ matrix.tf_versions }}
+          export TF_VERSION=${{ matrix.tf_versions }}
           export AWS_VERSION=${{ matrix.awscli_versions }}
           envsubst '${TF_VERSION},${AWS_VERSION}' < tests/container-structure-tests.yml.template > tests/container-structure-tests.yml
 
