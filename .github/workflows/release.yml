@@ -62,3 +62,5 @@ jobs:
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
           tags: zenika/terraform-aws-cli:release-${{ env.RELEASE_TAG }}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
