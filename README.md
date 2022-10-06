@@ -12,7 +12,7 @@
 ## 📦 Supported tags and respective Dockerfile links
 Available image tags can be found on the Docker Hub registry: [zenika/terraform-aws-cli](https://hub.docker.com/r/zenika/terraform-aws-cli/tags)
 
-Supported versions are listed in the [`supported_versions.json`](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file in project root folder.
+Supported versions are listed in the [`supported_versions.json`](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
 
 The following image tag strategy is applied:
 * `zenika/terraform-aws-cli:latest` - build from master
