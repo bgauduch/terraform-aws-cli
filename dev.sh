@@ -13,9 +13,12 @@ set -eo pipefail
 IMAGE_NAME="zenika/terraform-aws-cli"
 [[ -n $3 ]] && IMAGE_TAG=$3 || IMAGE_TAG="dev"
 
+# Set platform for Hadolint image
+[[ "$(uname -m)" == "arm64" ]] && PLATFORM="linux/arm64" || PLATFORM="linux/amd64"
+
 # Lint Dockerfile
 echo "Linting Dockerfile..."
-docker run --rm --interactive --volume "${PWD}":/data --workdir /data hadolint/hadolint:2.5.0-alpine /bin/hadolint --config hadolint.yaml Dockerfile
+docker run --rm --interactive --volume "${PWD}":/data --workdir /data --platform "${PLATFORM}" hadolint/hadolint:2.12.0-alpine /bin/hadolint --config hadolint.yaml Dockerfile
 echo "Lint Successful!"
 
 # Build image
