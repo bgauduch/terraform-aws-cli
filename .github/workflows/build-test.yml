@@ -65,7 +65,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build and export container image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64
@@ -91,7 +91,7 @@ jobs:
           config: tests/container-structure-tests.yml
 
       - name: Build container image for all platforms
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
