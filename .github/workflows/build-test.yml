@@ -36,13 +36,10 @@ jobs:
       - name: Save supported versions as output
         id: set-matrix
         run: |
-          VERSIONS=$(cat ./supported_versions.json)
+          VERSIONS=$(cat ./supported_versions.json | jq -c)
           echo "debug_versions_raw=${VERSIONS}"
-          # VERSIONS="${VERSIONS//'%'/%25}"
-          # VERSIONS="${VERSIONS//$'\n'/%0A}"
-          # VERSIONS="${VERSIONS//$'\r'/%0D}"
           echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
-          # echo "debug_versions_clean=${GITHUB_OUTPUT}"
+          echo "debug_versions_out=${GITHUB_OUTPUT}"
 
   build-test:
     runs-on: ubuntu-22.04
