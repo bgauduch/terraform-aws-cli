@@ -36,11 +36,11 @@ jobs:
       - name: Save supported versions as output
         id: set-matrix
         run: |
-          SUPPORTED_VERSIONS=$(cat ./supported_versions.json)
-          SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS//'%'/%25}"
-          SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS//$'\n'/%0A}"
-          SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS//$'\r'/%0D}"
-          echo "::set-output name=matrix::${SUPPORTED_VERSIONS}"
+          VERSIONS=$(cat ./VERSIONS.json)
+          VERSIONS="${VERSIONS//'%'/%25}"
+          VERSIONS="${VERSIONS//$'\n'/%0A}"
+          VERSIONS="${VERSIONS//$'\r'/%0D}"
+          echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
 
   build-test:
     runs-on: ubuntu-22.04
