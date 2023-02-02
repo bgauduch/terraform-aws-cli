@@ -36,7 +36,7 @@ jobs:
       - name: Save supported versions as output
         id: set-matrix
         run: |
-          VERSIONS=$(cat ./VERSIONS.json)
+          VERSIONS=$(cat ./supported_versions.json)
           VERSIONS="${VERSIONS//'%'/%25}"
           VERSIONS="${VERSIONS//$'\n'/%0A}"
           VERSIONS="${VERSIONS//$'\r'/%0D}"
