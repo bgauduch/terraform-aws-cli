@@ -42,7 +42,7 @@ jobs:
           # VERSIONS="${VERSIONS//$'\n'/%0A}"
           # VERSIONS="${VERSIONS//$'\r'/%0D}"
           echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
-          echo "debug_versions_clean=${GITHUB_OUTPUT}"
+          # echo "debug_versions_clean=${GITHUB_OUTPUT}"
 
   build-test:
     runs-on: ubuntu-22.04
