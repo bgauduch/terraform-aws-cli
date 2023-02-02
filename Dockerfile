@@ -10,6 +10,7 @@ FROM debian:${DEBIAN_VERSION} as terraform
 ARG TARGETARCH
 ARG TERRAFORM_VERSION
 RUN apt-get update
+RUN apt-get install --no-install-recommends -y libcurl4=7.74.0-1.3+deb11u3
 RUN apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u3
 RUN apt-get install --no-install-recommends -y ca-certificates=20210119
 RUN apt-get install --no-install-recommends -y unzip=6.0-26+deb11u1
