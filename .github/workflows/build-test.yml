@@ -37,9 +37,11 @@ jobs:
         id: set-matrix
         run: |
           VERSIONS=$(cat ./supported_versions.json)
+          echo "debug_versions_raw=${VERSIONS}"
           VERSIONS="${VERSIONS//'%'/%25}"
           VERSIONS="${VERSIONS//$'\n'/%0A}"
           VERSIONS="${VERSIONS//$'\r'/%0D}"
+          echo "debug_versions_clean=${VERSIONS}"
           echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
 
   build-test:
