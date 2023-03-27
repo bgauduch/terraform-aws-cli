@@ -9,12 +9,14 @@ ARG DEBIAN_FRONTEND=noninteractive
 FROM debian:${DEBIAN_VERSION} as terraform
 ARG TARGETARCH
 ARG TERRAFORM_VERSION
-RUN apt-get update
-RUN apt-get install --no-install-recommends -y libcurl4=7.74.0-1.3+deb11u3
-RUN apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u3
-RUN apt-get install --no-install-recommends -y ca-certificates=20210119
-RUN apt-get install --no-install-recommends -y unzip=6.0-26+deb11u1
-RUN apt-get install --no-install-recommends -y gnupg=2.2.27-2+deb11u2
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+    libcurl4=7.74.0-1.3+deb11u3 \
+    curl=7.74.0-1.3+deb11u3 \
+    ca-certificates=20210119 \
+    unzip=6.0-26+deb11u1 \
+    gnupg=2.2.27-2+deb11u2
+
 WORKDIR /workspace
 RUN curl --silent --show-error --fail --remote-name https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 COPY security/hashicorp.asc ./
@@ -28,11 +30,11 @@ RUN unzip -j terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 FROM debian:${DEBIAN_VERSION} as aws-cli
 ARG AWS_CLI_VERSION
 ARG PYTHON_MAJOR_VERSION
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends python3=${PYTHON_MAJOR_VERSION}.2-3
-RUN apt-get install -y --no-install-recommends python3-pip=20.3.4-4+deb11u1
-RUN pip3 install --no-cache-dir setuptools==67.1.0
-RUN pip3 install --no-cache-dir awscli==${AWS_CLI_VERSION}
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python3=${PYTHON_MAJOR_VERSION}.2-3
+    python3-pip=20.3.4-4+deb11u1
+RUN pip3 install --no-cache-dir setuptools==67.1.0 awscli==${AWS_CLI_VERSION}
 
 # Build final image
 FROM debian:${DEBIAN_VERSION} as build
