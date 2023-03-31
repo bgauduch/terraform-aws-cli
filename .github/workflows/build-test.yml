@@ -82,7 +82,7 @@ jobs:
           envsubst '${TF_VERSION},${AWS_VERSION}' < tests/container-structure-tests.yml.template > tests/container-structure-tests.yml
 
       - name: run structure tests
-        uses: plexsystems/container-structure-test-action@v0.2.0
+        uses: plexsystems/container-structure-test-action@v0.3.0
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           config: tests/container-structure-tests.yml
