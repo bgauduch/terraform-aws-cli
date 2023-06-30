@@ -1,6 +1,6 @@
 # ⬆️ Dependencies upgrades checklist
 
- Supported versions:
+* Supported versions:
   * check available **AWS CLI** version on the [PyPip release page](https://pypi.org/project/awscli/)
   * check available **Terraform CLI** version (keep all minor versions from 0.11) available on the [project release page](https://github.com/hashicorp/terraform/releases)
     * [Report to the doc](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/terraform-binaries-verifications.md) to add required security files when adding a new supported Terraform version
