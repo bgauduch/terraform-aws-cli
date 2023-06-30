@@ -42,7 +42,7 @@ COPY security/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip.sig ./awscliv2.sig
 RUN gpg --import awscliv2.asc
 RUN gpg --verify awscliv2.sig awscliv2.zip
 RUN unzip -u awscliv2.zip
-RUN ./aws/install
+RUN ./aws/install --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin
 
 # Build final image
 FROM debian:${DEBIAN_VERSION} as build
