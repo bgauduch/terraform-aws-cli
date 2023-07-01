@@ -8,9 +8,9 @@
   * check **base image** version [on DockerHub](https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye)
   * check OS package versions on Debian package repository
     * Available **Git** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=git)
-    * Available **Python** versions on the [Debian packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=python3)
     * Available **JQ** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=jq)
     * same process for all other packages
+* Dockerfile tests : update version according to changes in Dockerfile in [tests/container-structure-tests.yml.template](tests/container-structure-tests.yml.template)
 * Github actions:
   * check [runner version](https://github.com/actions/virtual-environments#available-environments)
   * check **each action release** versions

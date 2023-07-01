@@ -41,8 +41,8 @@ Tools included:
 * [Terraform CLI](https://www.terraform.io/docs/commands/index.html)
 * [AWS CLI](https://aws.amazon.com/fr/cli/)
 * [Git](https://git-scm.com/) for Terraform remote module usage
-* [Python 3](https://www.python.org/)
 * [jq](https://stedolan.github.io/jq/) to process JSON returned by AWS
+* [OpenSSH Client](https://www.openssh.com/) to handle Terraform module clone over SSH
 * This image uses a non-root user with a UID and GID of 1001 to conform with docker security best practices.
 
 ## 🚀 Usage
