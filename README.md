@@ -10,13 +10,15 @@
 # Terraform and AWS CLI Docker image
 
 ## 📦 Supported tags and respective Dockerfile links
+
 Available image tags can be found on the Docker Hub registry: [zenika/terraform-aws-cli](https://hub.docker.com/r/zenika/terraform-aws-cli/tags)
 
 Supported versions are listed in the [`supported_versions.json`](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
 
 The following image tag strategy is applied:
+
 * `zenika/terraform-aws-cli:latest` - build from master
-  * Included CLI versions are the latest in [`supported_versions.json` ](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
+  * Included CLI versions are the latest in [`supported_versions.json`](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
 * `zenika/terraform-aws-cli:release-S.T_terraform-UU.VV.WW_awscli-XX.YY.ZZ` - build from releases
   * `release-S.T` is the release tag
   * `terraform-UU.VV.WWW` is the **Terraform** version included in the image
@@ -27,11 +29,13 @@ Please report to the [releases page](https://github.com/Zenika/terraform-aws-cli
 > Any other tags are not supported even if available.
 
 ## 💡 Motivation
+
 The goal is to create a **minimalist** and **lightweight** image with these tools in order to reduce network and storage impact.
 
 This image gives you the flexibility to be used for development or as a base image as you see fits.
 
 ## 🔧 What's inside ?
+
 Tools included:
 
 * [Terraform CLI](https://www.terraform.io/docs/commands/index.html)
@@ -44,6 +48,7 @@ Tools included:
 ## 🚀 Usage
 
 ### 🐚 Launch the CLI
+
 Set your AWS credentials (optional) and use the CLI as you would on any other platform, for instance using the latest image:
 
 ```bash
@@ -57,9 +62,11 @@ docker container run -it --rm -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" -e "AW
 > The `--rm` flag will completely destroy the container and its data on exit.
 
 ### ⚙️ Build the image
+
 The image can be built locally directly from the Dockerfiles, using the build script.
 
 It will :
+
 * Lint the Dockerfile with [Hadolint](https://github.com/hadolint/hadolint);
 * Build and tag the image `zenika/terraform-aws-cli:dev`;
 * Execute [container structure tests](https://github.com/GoogleContainerTools/container-structure-test) on the image.
@@ -73,8 +80,8 @@ Optionally, it is possible to choose the tools desired versions :
 
 ```bash
 # Set tools desired versions
-AWS_CLI_VERSION=1.18.189
-TERRAFORM_VERSION=0.14.0
+AWS_CLI_VERSION=2.12.6
+TERRAFORM_VERSION=1.5.2
 
 # launch the build script with parameters
 ./dev.sh $AWS_CLI_VERSION $TERRAFORM_VERSION
@@ -86,7 +93,7 @@ Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/te
 ## 📚 Documentations
 
 * [Dependencies upgrades checklist](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/dependencies-upgrades.md)
-* [Terraform binaries verifications](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/terraform-binaries-verifications.md)
+* [Binaries verifications](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md)
 
 ## 🚩 Similar repositories
 
