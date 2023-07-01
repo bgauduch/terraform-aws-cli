@@ -4,11 +4,11 @@ name: dockerhub-description-update
 # only for readme related modifications
 on:
   push:
-    branches:
-      - master
-    paths:
-      - README.md
-      - .github/workflows/dockerhub-description.yml
+    # branches:
+    #   - master
+    # paths:
+    #   - README.md
+    #   - .github/workflows/dockerhub-description.yml
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-22.04
@@ -19,5 +19,5 @@ jobs:
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PAT }}
+          password: ${{ secrets.DOCKERHUB_PAT_BGA }}
           repository: zenika/terraform-aws-cli
