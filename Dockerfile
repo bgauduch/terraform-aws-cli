@@ -1,8 +1,8 @@
 # Setup build arguments
 ARG AWS_CLI_VERSION
 ARG TERRAFORM_VERSION
-ARG PYTHON_MAJOR_VERSION=3.9
-ARG DEBIAN_VERSION=bullseye-20230109-slim
+ARG PYTHON_MAJOR_VERSION=3.11
+ARG DEBIAN_VERSION=bookworm-20230612-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Download Terraform binary
@@ -11,10 +11,10 @@ ARG TARGETARCH
 ARG TERRAFORM_VERSION
 RUN apt-get update
 # RUN apt-get install --no-install-recommends -y libcurl4=7.74.0-1.3+deb11u7
-RUN apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u7
-RUN apt-get install --no-install-recommends -y ca-certificates=20210119
-RUN apt-get install --no-install-recommends -y unzip=6.0-26+deb11u1
-RUN apt-get install --no-install-recommends -y gnupg=2.2.27-2+deb11u2
+RUN apt-get install --no-install-recommends -y ca-certificates=20230311
+RUN apt-get install --no-install-recommends -y curl=7.88.1-10
+RUN apt-get install --no-install-recommends -y gnupg=2.2.40-1.1
+RUN apt-get install --no-install-recommends -y unzip=6.0-28
 WORKDIR /workspace
 RUN curl --silent --show-error --fail --remote-name https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 COPY security/hashicorp.asc ./
@@ -28,12 +28,12 @@ RUN unzip -j terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 FROM debian:${DEBIAN_VERSION} as aws-cli
 ARG AWS_CLI_VERSION
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends curl=7.74.0-1.3+deb11u7
-RUN apt-get install -y --no-install-recommends ca-certificates=20210119
-RUN apt-get install -y --no-install-recommends unzip=6.0-26+deb11u1
-RUN apt-get install -y --no-install-recommends groff=1.22.4-6
-RUN apt-get install -y --no-install-recommends gnupg=2.2.27-2+deb11u2
-RUN apt-get install -y --no-install-recommends git=1:2.30.2-1+deb11u2
+RUN apt-get install -y --no-install-recommends ca-certificates=20230311
+RUN apt-get install -y --no-install-recommends curl=7.88.1-10
+RUN apt-get install -y --no-install-recommends gnupg=2.2.40-1.1
+RUN apt-get install -y --no-install-recommends unzip=6.0-28
+# RUN apt-get install -y --no-install-recommends groff=1.22.4-10
+RUN apt-get install -y --no-install-recommends git=1:2.39.2-1.1
 RUN apt-get install -y --no-install-recommends jq=1.6-2.1
 WORKDIR /workspace
 RUN curl --show-error --fail --output "awscliv2.zip" --remote-name "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip"
@@ -50,11 +50,11 @@ LABEL maintainer="bgauduch@github"
 ARG PYTHON_MAJOR_VERSION
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    ca-certificates=20210119\
-    git=1:2.30.2-1+deb11u2 \
+    ca-certificates=20230311\
+    git=1:2.39.2-1.1 \
     jq=1.6-2.1 \
-    python3=${PYTHON_MAJOR_VERSION}.2-3 \
-    openssh-client=1:8.4p1-5+deb11u1 \
+    python3=${PYTHON_MAJOR_VERSION}.2-1+b1 \
+    openssh-client=1:9.2p1-2 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_MAJOR_VERSION} 1

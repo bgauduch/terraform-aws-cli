@@ -34,14 +34,14 @@ commandTests:
     expectedOutput: ["aws-cli/${AWS_VERSION}"]
 
 fileExistenceTests:
-  - name: 'Check nonroot user home'
+  - name: 'Check non-root user home'
     path: '/home/nonroot'
     shouldExist: true
     permissions: 'drwxr-xr-x'
     uid: 1001
     gid: 1001
     isExecutableBy: 'group'
-  - name: 'Check nonroot user rights on /workspace folder'
+  - name: 'Check non-root user rights on /workspace folder'
     path: '/workspace'
     shouldExist: true
     permissions: 'drwxr-xr-x'
