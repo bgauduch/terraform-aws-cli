@@ -1,7 +1,6 @@
 # Setup build arguments
 ARG AWS_CLI_VERSION
 ARG TERRAFORM_VERSION
-ARG PYTHON_MAJOR_VERSION=3.11
 ARG DEBIAN_VERSION=bookworm-20230612-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -32,7 +31,6 @@ RUN apt-get install -y --no-install-recommends ca-certificates=20230311
 RUN apt-get install -y --no-install-recommends curl=7.88.1-10
 RUN apt-get install -y --no-install-recommends gnupg=2.2.40-1.1
 RUN apt-get install -y --no-install-recommends unzip=6.0-28
-# RUN apt-get install -y --no-install-recommends groff=1.22.4-10
 RUN apt-get install -y --no-install-recommends git=1:2.39.2-1.1
 RUN apt-get install -y --no-install-recommends jq=1.6-2.1
 WORKDIR /workspace
@@ -47,17 +45,14 @@ RUN ./aws/install --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin
 # Build final image
 FROM debian:${DEBIAN_VERSION} as build
 LABEL maintainer="bgauduch@github"
-ARG PYTHON_MAJOR_VERSION
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates=20230311\
     git=1:2.39.2-1.1 \
     jq=1.6-2.1 \
-    python3=${PYTHON_MAJOR_VERSION}.2-1+b1 \
     openssh-client=1:9.2p1-2 \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && update-alternatives --install /usr/bin/python python /usr/bin/python${PYTHON_MAJOR_VERSION} 1
+  && rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace
 COPY --from=terraform /workspace/terraform /usr/local/bin/terraform
 COPY --from=aws-cli /usr/local/bin/ /usr/local/bin/
