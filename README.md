@@ -42,6 +42,7 @@ Tools included:
 * [AWS CLI](https://aws.amazon.com/fr/cli/)
 * [Git](https://git-scm.com/) for Terraform remote module usage
 * [jq](https://stedolan.github.io/jq/) to process JSON returned by AWS
+* [Python 3](https://www.python.org/)
 * [OpenSSH Client](https://www.openssh.com/) to handle Terraform module clone over SSH
 * This image uses a non-root user with a UID and GID of 1001 to conform with docker security best practices.
 
@@ -88,6 +89,7 @@ TERRAFORM_VERSION=1.5.2
 ```
 
 ## 🙏 Contributions
+
 Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/terraform-aws-cli/issues) or [a PR](https://github.com/Zenika/terraform-aws-cli/pulls) !
 
 ## 📚 Documentations
@@ -100,6 +102,7 @@ Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/te
 * For Azure: [zenika-open-source/terraform-azure-cli](https://github.com/zenika-open-source/terraform-azure-cli)
 
 ## 📖 License
+
 This project is under the [Apache License 2.0](https://raw.githubusercontent.com/Zenika/terraform-aws-cli/master/LICENSE)
 
 [![with love by zenika](https://img.shields.io/badge/With%20%E2%9D%A4%EF%B8%8F%20by-Zenika-b51432.svg)](https://oss.zenika.com)
