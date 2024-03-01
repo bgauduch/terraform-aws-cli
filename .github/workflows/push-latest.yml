@@ -33,7 +33,7 @@ jobs:
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Buildx
         id: buildx
