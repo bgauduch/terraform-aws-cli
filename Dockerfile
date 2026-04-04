@@ -1,8 +1,8 @@
 # Setup build arguments
 ARG AWS_CLI_VERSION
 ARG TERRAFORM_VERSION
-ARG DEBIAN_VERSION=bookworm-20250610-slim
-# ARG DEBIAN_VERSION=bookworm-20260316-slim
+# ARG DEBIAN_VERSION=bookworm-20250610-slim
+ARG DEBIAN_VERSION=bookworm-20260316-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Download Terraform binary
