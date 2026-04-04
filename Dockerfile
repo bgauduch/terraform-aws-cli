@@ -10,7 +10,7 @@ FROM debian:${DEBIAN_VERSION} as terraform
 ARG TARGETARCH
 ARG TERRAFORM_VERSION
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y ca-certificates=20230311
+RUN apt-get install --no-install-recommends -y ca-certificates=20230311+deb12u1
 RUN apt-get install --no-install-recommends -y curl=7.88.1-10+deb12u12
 RUN apt-get install --no-install-recommends -y gnupg=2.2.40-1.1
 RUN apt-get install --no-install-recommends -y unzip=6.0-28
@@ -27,7 +27,7 @@ RUN unzip -j terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 FROM debian:${DEBIAN_VERSION} as aws-cli
 ARG AWS_CLI_VERSION
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends ca-certificates=20230311
+RUN apt-get install -y --no-install-recommends ca-certificates=20230311+deb12u1
 RUN apt-get install -y --no-install-recommends curl=7.88.1-10+deb12u12
 RUN apt-get install -y --no-install-recommends gnupg=2.2.40-1.1
 RUN apt-get install -y --no-install-recommends unzip=6.0-28
