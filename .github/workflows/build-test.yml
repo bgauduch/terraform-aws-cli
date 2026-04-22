@@ -18,6 +18,17 @@ on:
       - ".dockerignore"
       - "hadolint.yaml"
       - ".github/workflows/build-test.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "Dockerfile"
+      - "supported_versions.json"
+      - "tests/**"
+      - ".github/workflows/build-test.yml"
+
+permissions:
+  contents: read
 
 env:
   IMAGE_NAME: "terraform-aws-cli"
@@ -74,6 +85,16 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Scan image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL
 
       - name: Generate test config
         run: |

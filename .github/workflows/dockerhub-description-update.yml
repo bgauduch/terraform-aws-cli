@@ -9,6 +9,9 @@ on:
     paths:
       - README.md
       - .github/workflows/dockerhub-description.yml
+permissions:
+  contents: read
+
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-22.04
