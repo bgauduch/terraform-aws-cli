@@ -1,5 +1,80 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
+  ],
+  "schedule": ["every weekend"],
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "prCreation": "immediate",
+  "packageRules": [
+    {
+      "description": "Automerge patch updates for GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["patch", "digest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Group all GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "commitMessageTopic": "github actions"
+    },
+    {
+      "description": "Group Debian base image and APT packages",
+      "matchManagers": ["dockerfile"],
+      "matchDepTypes": ["stage", "arg"],
+      "groupName": "Debian base image",
+      "commitMessageTopic": "debian base image"
+    },
+    {
+      "description": "Group Terraform versions in supported_versions.json",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["hashicorp/terraform"],
+      "groupName": "Terraform versions matrix",
+      "commitMessageTopic": "terraform versions matrix"
+    },
+    {
+      "description": "Group AWS CLI versions in supported_versions.json",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["aws/aws-cli"],
+      "groupName": "AWS CLI versions matrix",
+      "commitMessageTopic": "aws cli versions matrix"
+    },
+    {
+      "description": "Remind to update security files when tool versions change",
+      "matchManagers": ["custom.regex"],
+      "prBodyNotes": [
+        "⚠️ **Action manuelle requise** : après merge, télécharger les fichiers de vérification GPG correspondants dans le répertoire `security/` selon la procédure dans `docs/binaries-verifications.md`."
+      ]
+    }
+  ],
+  "customManagers": [
+    {
+      "description": "Track latest Terraform version in supported_versions.json",
+      "customType": "regex",
+      "fileMatch": ["^supported_versions\\.json$"],
+      "matchStrings": [
+        "\"tf_versions\":\\s*\\[[^\\]]*\"(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)\"\\s*\\]"
+      ],
+      "depNameTemplate": "hashicorp/terraform",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Track latest AWS CLI version in supported_versions.json",
+      "customType": "regex",
+      "fileMatch": ["^supported_versions\\.json$"],
+      "matchStrings": [
+        "\"awscli_versions\":\\s*\\[[^\\]]*\"(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)\"\\s*\\]"
+      ],
+      "depNameTemplate": "aws/aws-cli",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
   ]
 }
