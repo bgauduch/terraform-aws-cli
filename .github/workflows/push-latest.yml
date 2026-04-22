@@ -16,6 +16,10 @@ on:
       - "supported_platforms.json"
       - "tests/**"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build_push_latest:
     runs-on: ubuntu-22.04
