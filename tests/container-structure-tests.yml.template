@@ -33,6 +33,31 @@ commandTests:
     args: ["--version"]
     expectedOutput: ["aws-cli/${AWS_VERSION}"]
 
+  - name: "Check terraform is in PATH"
+    command: "which"
+    args: ["terraform"]
+    expectedOutput: ["/usr/local/bin/terraform"]
+
+  - name: "Check aws is in PATH"
+    command: "which"
+    args: ["aws"]
+    expectedOutput: ["/usr/local/bin/aws"]
+
+  - name: "Check running as non-root user"
+    command: "id"
+    args: ["-u"]
+    expectedOutput: ["1001"]
+
+  - name: "Check running as nonroot user"
+    command: "id"
+    args: ["-un"]
+    expectedOutput: ["nonroot"]
+
+  - name: "Check HOME directory is set"
+    command: "sh"
+    args: ["-c", "echo $HOME"]
+    expectedOutput: ["/home/nonroot"]
+
 fileExistenceTests:
   - name: 'Check non-root user home'
     path: '/home/nonroot'
