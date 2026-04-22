@@ -1,0 +1,32 @@
+name: semantic-release
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - Dockerfile
+      - supported_versions.json
+      - "security/**"
+      - "tests/**"
+      - .dockerignore
+      - hadolint.yaml
+      - ".github/workflows/semantic-release.yml"
+      - ".github/workflows/release.yml"
+      - CHANGELOG.md
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
