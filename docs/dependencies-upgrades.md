@@ -1,5 +1,11 @@
 # ⬆️ Dependencies upgrades checklist
 
+> **Note:** Dependency management is now partially automated via [Renovate](https://docs.renovatebot.com/):
+> - **GitHub Actions** versions are updated automatically by Renovate.
+> - **Base Debian image** version is updated automatically by Renovate.
+>
+> **Tool versions (Terraform, AWS CLI) still require manual steps:** when adding a new supported version, the binary verification files must be downloaded manually to `security/` — see [`docs/binaries-verifications.md`](binaries-verifications.md).
+
 * Supported tools versions:
   * [Report to the doc](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files when adding a new supported versions
   * check available **AWS CLI** version on the [project release page](https://github.com/aws/aws-cli/tags)
