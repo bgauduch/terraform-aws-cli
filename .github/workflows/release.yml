@@ -1,23 +1,21 @@
 name: release
-
-# trigger on published release
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   load_supported_versions:
     runs-on: ubuntu-22.04
-
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-
-      - name: Save supported versions as output
-        id: set-matrix
+      - uses: actions/checkout@v4
+      - id: set-matrix
         run: |
           VERSIONS=$(cat ./supported_versions.json | jq -c)
           echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
@@ -25,39 +23,74 @@ jobs:
   build_push_release:
     runs-on: ubuntu-22.04
     needs: load_supported_versions
-
     strategy:
       matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
-
-    env:
-      ORGANIZATION: "zenika"
-      IMAGE_NAME: "terraform-aws-cli"
-
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Get and save the release tag
-        run: echo "RELEASE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - name: Compute tag variants
+        run: |
+          TF_MINOR=$(echo "${{ matrix.tf_versions }}" | cut -d. -f1-2)
+          AWS_MINOR=$(echo "${{ matrix.awscli_versions }}" | cut -d. -f1-2)
+          LATEST_TF=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)
+          LATEST_AWS=$(jq -r '.awscli_versions | sort | .[-1]' supported_versions.json)
+          IS_LATEST=$([[ "${{ matrix.tf_versions }}" == "$LATEST_TF" && "${{ matrix.awscli_versions }}" == "$LATEST_AWS" ]] && echo "true" || echo "false")
+          echo "TF_MINOR=${TF_MINOR}" >> $GITHUB_ENV
+          echo "AWS_MINOR=${AWS_MINOR}" >> $GITHUB_ENV
+          echo "IS_LATEST=${IS_LATEST}" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry
-        run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PAT }}
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Build and push container images
-        uses: docker/build-push-action@v4
+      - name: Build and push (non-latest)
+        if: env.IS_LATEST != 'true'
+        uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
           build-args: |
             TERRAFORM_VERSION=${{ matrix.tf_versions }}
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
-          tags: zenika/terraform-aws-cli:release-${{ env.RELEASE_TAG }}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}
+          tags: |
+            bgauduch/terraform-aws-cli:${{ github.ref_name }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
+            bgauduch/terraform-aws-cli:tf-${{ env.TF_MINOR }}_aws-${{ env.AWS_MINOR }}
+            ghcr.io/bgauduch/terraform-aws-cli:${{ github.ref_name }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
+            ghcr.io/bgauduch/terraform-aws-cli:tf-${{ env.TF_MINOR }}_aws-${{ env.AWS_MINOR }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push (latest)
+        if: env.IS_LATEST == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
+          build-args: |
+            TERRAFORM_VERSION=${{ matrix.tf_versions }}
+            AWS_CLI_VERSION=${{ matrix.awscli_versions }}
+          tags: |
+            bgauduch/terraform-aws-cli:${{ github.ref_name }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
+            bgauduch/terraform-aws-cli:tf-${{ env.TF_MINOR }}_aws-${{ env.AWS_MINOR }}
+            bgauduch/terraform-aws-cli:latest
+            bgauduch/terraform-aws-cli:${{ github.ref_name }}
+            ghcr.io/bgauduch/terraform-aws-cli:${{ github.ref_name }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
+            ghcr.io/bgauduch/terraform-aws-cli:tf-${{ env.TF_MINOR }}_aws-${{ env.AWS_MINOR }}
+            ghcr.io/bgauduch/terraform-aws-cli:latest
+            ghcr.io/bgauduch/terraform-aws-cli:${{ github.ref_name }}
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
