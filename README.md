@@ -9,6 +9,10 @@
 
 # Terraform and AWS CLI Docker image
 
+[![CI](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml)
+[![Latest Release](https://img.shields.io/github/v/release/bgauduch/terraform-aws-cli)](https://github.com/bgauduch/terraform-aws-cli/releases/latest)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bgauduch/terraform-aws-cli/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bgauduch/terraform-aws-cli)
+
 ## 📦 Supported tags and respective Dockerfile links
 
 Available image tags can be found on the Docker Hub registry: [zenika/terraform-aws-cli](https://hub.docker.com/r/zenika/terraform-aws-cli/tags)
@@ -89,6 +93,14 @@ TERRAFORM_VERSION=1.5.2
 
 ## 🙏 Contributions
 Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/terraform-aws-cli/issues) or [a PR](https://github.com/Zenika/terraform-aws-cli/pulls) !
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for the security policy and how to report vulnerabilities.
 
 ## 📚 Documentations
 

@@ -1,0 +1,8 @@
+# Global owner
+* @bgauduch
+
+# Critical files require explicit review
+Dockerfile @bgauduch
+.github/workflows/ @bgauduch
+security/ @bgauduch
+supported_versions.json @bgauduch

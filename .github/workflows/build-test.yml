@@ -18,6 +18,21 @@ on:
       - ".dockerignore"
       - "hadolint.yaml"
       - ".github/workflows/build-test.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "Dockerfile"
+      - "supported_versions.json"
+      - "tests/**"
+      - ".github/workflows/build-test.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   IMAGE_NAME: "terraform-aws-cli"
@@ -97,5 +112,6 @@ jobs:
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           push: false
+          load: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
