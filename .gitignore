@@ -1,2 +1,5 @@
 # ignore generated container structure test config
 tests/container-structure-tests.yml
+
+# Claude Code internal directory
+.claude/
