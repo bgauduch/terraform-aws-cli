@@ -1,30 +1,35 @@
-[![lint-dockerfile](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/lint-dockerfile.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/lint-dockerfile.yml)
-[![build-test](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/build-test.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/build-test.yml)
-[![push-latest](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/push-latest.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/push-latest.yml)
-[![release](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/release.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/release.yml)
+[![lint-dockerfile](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/lint-dockerfile.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/lint-dockerfile.yml)
+[![build-test](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml)
+[![push-latest](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-latest.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-latest.yml)
+[![release](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/release.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/release.yml)
 
-[![dockerhub-description-update](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml/badge.svg)](https://github.com/zenika-open-source/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml)
+[![dockerhub-description-update](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Docker Pulls](https://img.shields.io/docker/pulls/zenika/terraform-aws-cli.svg)](https://hub.docker.com/r/zenika/terraform-aws-cli/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/bgauduch/terraform-aws-cli.svg)](https://hub.docker.com/r/bgauduch/terraform-aws-cli/)
 
 # Terraform and AWS CLI Docker image
 
 ## 📦 Supported tags and respective Dockerfile links
 
-Available image tags can be found on the Docker Hub registry: [zenika/terraform-aws-cli](https://hub.docker.com/r/zenika/terraform-aws-cli/tags)
+The image is available on two registries:
 
-Supported versions are listed in the [`supported_versions.json`](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
+- **Docker Hub**: [bgauduch/terraform-aws-cli](https://hub.docker.com/r/bgauduch/terraform-aws-cli/tags)
+- **GitHub Container Registry**: [ghcr.io/bgauduch/terraform-aws-cli](https://github.com/bgauduch/terraform-aws-cli/pkgs/container/terraform-aws-cli)
+
+Supported versions are listed in the [`supported_versions.json`](https://github.com/bgauduch/terraform-aws-cli/blob/master/supported_versions.json) file.
 
 The following image tag strategy is applied:
 
-* `zenika/terraform-aws-cli:latest` - build from master
-  * Included CLI versions are the latest in [`supported_versions.json`](https://github.com/Zenika/terraform-aws-cli/blob/master/supported_versions.json) file.
-* `zenika/terraform-aws-cli:release-S.T_terraform-UU.VV.WW_awscli-XX.YY.ZZ` - build from releases
-  * `release-S.T` is the release tag
-  * `terraform-UU.VV.WWW` is the **Terraform** version included in the image
-  * `awscli-XX.YY.ZZ` is the **AWS CLI** version included in the image
+* `bgauduch/terraform-aws-cli:latest` / `ghcr.io/bgauduch/terraform-aws-cli:latest` - build from master
+  * Included CLI versions are the latest in [`supported_versions.json`](https://github.com/bgauduch/terraform-aws-cli/blob/master/supported_versions.json) file.
+* `bgauduch/terraform-aws-cli:vX.Y.Z_tf-A.B.C_aws-D.E.F` / `ghcr.io/bgauduch/terraform-aws-cli:vX.Y.Z_tf-A.B.C_aws-D.E.F` - build from releases (full pinned tag)
+  * `vX.Y.Z` is the release version tag
+  * `tf-A.B.C` is the **Terraform** version included in the image
+  * `aws-D.E.F` is the **AWS CLI** version included in the image
+* `bgauduch/terraform-aws-cli:tf-A.B_aws-D.E` / `ghcr.io/bgauduch/terraform-aws-cli:tf-A.B_aws-D.E` - floating minor version tags
+  * Always point to the latest release for the given minor versions of Terraform and AWS CLI
 
-Please report to the [releases page](https://github.com/Zenika/terraform-aws-cli/releases) for the changelogs.
+Please report to the [releases page](https://github.com/bgauduch/terraform-aws-cli/releases) for the changelogs.
 
 > Any other tags are not supported even if available.
 
@@ -49,14 +54,20 @@ Tools included:
 
 ### 🐚 Launch the CLI
 
-Set your AWS credentials (optional) and use the CLI as you would on any other platform, for instance using the latest image:
+Set your AWS credentials (optional) and use the CLI as you would on any other platform, for instance using the latest image from Docker Hub:
 
 ```bash
 echo AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
 echo AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
 echo AWS_DEFAULT_REGION=YOUR_DEFAULT_REGION
 
-docker container run -it --rm -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" -e "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" -v ${PWD}:/workspace zenika/terraform-aws-cli:latest
+docker container run -it --rm -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" -e "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" -v ${PWD}:/workspace bgauduch/terraform-aws-cli:latest
+```
+
+Or pull from the GitHub Container Registry:
+
+```bash
+docker container run -it --rm -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" -e "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}" -v ${PWD}:/workspace ghcr.io/bgauduch/terraform-aws-cli:latest
 ```
 
 > The `--rm` flag will completely destroy the container and its data on exit.
@@ -68,7 +79,7 @@ The image can be built locally directly from the Dockerfiles, using the build sc
 It will :
 
 * Lint the Dockerfile with [Hadolint](https://github.com/hadolint/hadolint);
-* Build and tag the image `zenika/terraform-aws-cli:dev`;
+* Build and tag the image `bgauduch/terraform-aws-cli:dev`;
 * Execute [container structure tests](https://github.com/GoogleContainerTools/container-structure-test) on the image.
 
 ```bash
@@ -88,18 +99,16 @@ TERRAFORM_VERSION=1.5.2
 ```
 
 ## 🙏 Contributions
-Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/terraform-aws-cli/issues) or [a PR](https://github.com/Zenika/terraform-aws-cli/pulls) !
+Do not hesitate to contribute by [filling an issue](https://github.com/bgauduch/terraform-aws-cli/issues) or [a PR](https://github.com/bgauduch/terraform-aws-cli/pulls) !
 
 ## 📚 Documentations
 
-* [Dependencies upgrades checklist](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/dependencies-upgrades.md)
-* [Binaries verifications](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md)
+* [Dependencies upgrades checklist](https://github.com/bgauduch/terraform-aws-cli/tree/master/docs/dependencies-upgrades.md)
+* [Binaries verifications](https://github.com/bgauduch/terraform-aws-cli/tree/master/docs/binaries-verifications.md)
 
 ## 🚩 Similar repositories
 
 * For Azure: [zenika-open-source/terraform-azure-cli](https://github.com/zenika-open-source/terraform-azure-cli)
 
 ## 📖 License
-This project is under the [Apache License 2.0](https://raw.githubusercontent.com/Zenika/terraform-aws-cli/master/LICENSE)
-
-[![with love by zenika](https://img.shields.io/badge/With%20%E2%9D%A4%EF%B8%8F%20by-Zenika-b51432.svg)](https://oss.zenika.com)
+This project is under the [Apache License 2.0](https://raw.githubusercontent.com/bgauduch/terraform-aws-cli/master/LICENSE)
