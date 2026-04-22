@@ -3,6 +3,7 @@ name: push-latest
 # trigger on push to master
 # only on Dockerfile related modifications
 on:
+  workflow_dispatch:
   push:
     branches:
       - "master"
@@ -15,6 +16,10 @@ on:
       - "supported_versions.json"
       - "supported_platforms.json"
       - "tests/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build_push_latest:

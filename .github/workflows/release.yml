@@ -5,6 +5,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   load_supported_versions:
     runs-on: ubuntu-22.04
