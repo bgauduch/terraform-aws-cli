@@ -101,5 +101,6 @@ jobs:
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           push: false
+          load: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
