@@ -22,7 +22,7 @@ docker container run --rm --interactive \
   --volume "${PWD}":/data \
   --workdir /data \
   --platform "${PLATEFORM}" \
-  hadolint/hadolint:2.12.0-alpine /bin/hadolint \
+  hadolint/hadolint:2.14.0-alpine /bin/hadolint \
   --config hadolint.yaml Dockerfile
 echo "Lint Successful!"
 
