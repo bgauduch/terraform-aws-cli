@@ -5,6 +5,11 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write  # required for cosign keyless OIDC signing
+
 jobs:
   load_supported_versions:
     runs-on: ubuntu-22.04
@@ -61,3 +66,26 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0.24.0
+        with:
+          image: zenika/terraform-aws-cli:release-${{ env.RELEASE_TAG }}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}
+          format: spdx-json
+          output-file: sbom-tf${{ matrix.tf_versions }}-aws${{ matrix.awscli_versions }}.spdx.json
+
+      - name: Upload SBOM to release
+        uses: anchore/sbom-action/publish-sbom@v0.24.0
+        with:
+          sbom-artifact-match: ".*\\.spdx\\.json$"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v4.1.1
+
+      - name: Sign published image
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' \
+            zenika/terraform-aws-cli:release-${{ env.RELEASE_TAG }}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }})
+          cosign sign --yes "${IMAGE_DIGEST}"
