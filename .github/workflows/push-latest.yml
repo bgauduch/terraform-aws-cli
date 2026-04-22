@@ -3,6 +3,7 @@ name: push-latest
 # trigger on push to master
 # only on Dockerfile related modifications
 on:
+  workflow_dispatch:
   push:
     branches:
       - "master"
