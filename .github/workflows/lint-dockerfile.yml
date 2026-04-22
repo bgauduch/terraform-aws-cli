@@ -12,6 +12,14 @@ on:
       - "!master"
     paths:
       - "Dockerfile"
+      - "hadolint.yaml"
+      - ".github/workflows/lint-dockerfile.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "Dockerfile"
+      - "hadolint.yaml"
       - ".github/workflows/lint-dockerfile.yml"
 
 concurrency:
