@@ -9,6 +9,14 @@ on:
     paths:
       - README.md
       - .github/workflows/dockerhub-description.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-22.04
