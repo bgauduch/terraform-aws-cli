@@ -11,9 +11,8 @@ on:
       - ".github/workflows/push-latest.yml"
       - "Dockerfile"
       - "hadolint.yaml"
-      - "hashicorp.asc"
+      - "security/**"
       - "supported_versions.json"
-      - "supported_platforms.json"
       - "tests/**"
 
 jobs:
