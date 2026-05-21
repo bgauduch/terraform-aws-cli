@@ -21,6 +21,56 @@ Dockerfile.
 Reference repository: `bgauduch/terraform-aws-cli` (the `zenika-open-source`
 upstream is no longer maintained).
 
+## Development conventions (hard rules)
+
+These rules bind any Claude session, sub-agent, or human contributor working
+under this framework. They apply **now**, even before Phase 1 / Phase 2 land.
+They will be extracted to `docs/claude-framework-conventions.md` (Phase 1) and
+reflected in `CLAUDE.md` (Phase 2), but this section is the source of truth
+until then.
+
+### Authorization (irreversible / shared-state actions)
+1. **NEVER merge a pull request without explicit human approval.** Even when
+   CI is green and reviews are positive, the human user is the only authority
+   that triggers a merge. Claude does not call `merge_pull_request` (or any
+   equivalent) on its own initiative.
+2. **NEVER push to `master` directly.** All changes flow through a
+   phase-specific branch and a pull request.
+3. **NEVER create a pull request without an explicit request from the user.**
+   Claude commits, pushes, then reports — the user decides when to open the PR.
+4. **NEVER force-push, amend pushed commits, or rewrite shared history.**
+   Always create a new commit on top.
+5. **NEVER bypass hooks** (no `--no-verify`, no `--no-gpg-sign`). A failing
+   hook is a signal — fix the cause.
+6. **NEVER delete a branch, tag, or remote ref without explicit approval.**
+
+### Branching
+7. One branch per phase, named `claude/phase-N-<topic>`, off `master`.
+8. One pull request per phase. Phases don't pile up on the same branch.
+
+### Commits
+9. Conventional Commits format (`type(scope): subject`). Strict from day one
+   (enforced by `.github/workflows/commitlint.yml` once Phase 1 lands).
+10. One commit per logical change for reviewability. Avoid mega-commits.
+11. Every commit message body ends with the session trailer when produced
+    in a Claude session.
+
+### Model and delegation
+12. Opus is the orchestrator: planning, briefs, diff review before push,
+    structural decisions, ADR drafting.
+13. Sonnet executes scoped briefs (implementation, refactors, docs).
+14. Every Sonnet delegation **must** be reviewed by Opus (`git diff master..HEAD`)
+    before push.
+15. Phase briefs are ephemeral (conversation only). They are reconstructable
+    from this roadmap + the relevant ADRs, so they don't need to be committed.
+
+### Scope discipline
+16. A phase touches only files within its declared scope. Drift discovered
+    mid-phase is captured as a follow-up (a TODO in the PR description or a
+    new ADR) — not silently included.
+17. Out-of-scope items listed in this document are not added back without a
+    decision update (and a new entry in the Decisions table).
+
 ## Decisions
 
 | Topic | Decision | ADR |
