@@ -49,8 +49,10 @@ until then.
 8. One pull request per phase. Phases don't pile up on the same branch.
 
 ### Commits
-9. Conventional Commits format (`type(scope): subject`). Strict from day one
-   (enforced by `.github/workflows/commitlint.yml` once Phase 1 lands).
+9. Conventional Commits format (`type(scope): subject`) for **both** individual
+   commit messages **and** pull request titles. Strict from day one (enforced
+   by `.github/workflows/commitlint.yml` once Phase 1 lands). The PR title
+   matters because the squash-merge subject feeds the release-please changelog.
 10. One commit per logical change for reviewability. Avoid mega-commits.
 11. Every commit message body ends with the session trailer when produced
     in a Claude session.
@@ -77,7 +79,8 @@ until then.
 |---|---|---|
 | Image versioning | Repo semver `vX.Y.Z`; image tags derived | ADR-0003 |
 | Tag strategy (P0 subset) | `latest`, `edge`, `vX.Y.Z`, `vX.Y`, fully-pinned immutable | ADR-0003 |
-| Commit convention | Conventional Commits, **strict** from day one | ADR-0002 |
+| Commit convention | Conventional Commits, **strict** from day one (enforced on commit history **and** PR titles) | ADR-0002 |
+| Merge strategy | **Squash-merge** (one PR = one commit on `master`); PR title becomes the squash commit subject and feeds the changelog | ADR-0002 |
 | Release automation | release-please (Google), Release PR workflow | ADR-0002 |
 | Local commit-msg hook | Standalone `.githooks/commit-msg` running commitlint in Docker, opt-in | ADR-0002 |
 | Dependency bot | Renovate only (Dependabot retired) | ADR-0002 |
@@ -107,8 +110,10 @@ Pure hygiene, no new tooling.
 - `CONTRIBUTING.md`, `SECURITY.md`, `CODEOWNERS`
 - `.github/PULL_REQUEST_TEMPLATE.md` (ADR checkbox)
 - `.github/ISSUE_TEMPLATE/` : `bug.yml`, `bump-version.yml`, `feature.yml`
-- `.commitlintrc.json` + `.github/workflows/commitlint.yml` (**strict**)
+- `.commitlintrc.json` + `.github/workflows/commitlint.yml` validating **both** each commit message in the PR **and** the PR title (the squash-merge subject); **strict** failure mode from day one
+- `.githooks/commit-msg` (Docker-based, opt-in; documented in `CONTRIBUTING.md`)
 - release-please config + workflow; migrate `release.yml` to trigger on Release PR merge
+- Repository merge button configured to squash-only (documented in `docs/branch-protection.md`, applied via GitHub UI)
 - New tag strategy applied (P0 subset)
 - Retire `.github/dependabot.yml`, extend `renovate.json`
 - Clean `supported_versions.json` (drop TF < 1.0)
