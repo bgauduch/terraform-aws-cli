@@ -1,0 +1,17 @@
+# Code owners — required reviewers on structural and decision paths.
+# See docs/roadmap.md and docs/adr/README.md.
+
+# Default owner
+*                       @bgauduch
+
+# Architecture decisions and the roadmap (the source of truth)
+/docs/adr/              @bgauduch
+/docs/roadmap.md        @bgauduch
+
+# Structural paths (changes here normally require an ADR)
+/Dockerfile             @bgauduch
+/.github/workflows/     @bgauduch
+/supported_versions.json @bgauduch
+/security/              @bgauduch
+/renovate.json          @bgauduch
+/.claude/               @bgauduch
