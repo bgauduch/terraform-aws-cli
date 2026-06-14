@@ -1,15 +1,21 @@
 # ⬆️ Dependencies upgrades checklist
 
 * Supported tools versions:
-  * [Report to the doc](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files when adding a new supported versions
+  * [Report to the doc](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files (stored under `security/`, e.g. `security/hashicorp.asc`) when adding a new supported versions
   * check available **AWS CLI** version on the [project release page](https://github.com/aws/aws-cli/tags)
   * check available **Terraform CLI** version (keep all minor versions from 0.11) on the [project release page](https://github.com/hashicorp/terraform/releases)
 * Dockerfile:
-  * check **base image** version [on DockerHub](https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye)
+  * check **base image** version [on DockerHub](https://hub.docker.com/_/debian?tab=tags&page=1&name=bookworm)
   * check OS package versions on Debian package repository
-    * Available **Git** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=git)
-    * Available **JQ** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bullseye&arch=any&searchon=names&keywords=jq)
-    * same process for all other packages
+    * Final image stage packages: **ca-certificates**, **git**, **jq**, **openssh-client**
+    * Build stage additional packages: **curl**, **gnupg**, **unzip**
+    * Available **ca-certificates** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=ca-certificates)
+    * Available **Git** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=git)
+    * Available **JQ** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=jq)
+    * Available **openssh-client** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=openssh-client)
+    * Available **curl** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=curl)
+    * Available **gnupg** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=gnupg)
+    * Available **unzip** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=unzip)
 * Dockerfile tests : update version according to changes in Dockerfile in [tests/container-structure-tests.yml.template](tests/container-structure-tests.yml.template)
 * Github actions:
   * check [runner version](https://github.com/actions/virtual-environments#available-environments)
