@@ -1,6 +1,6 @@
 # Roadmap — terraform-aws-cli
 
-> **Single source of truth** for the modernization and the Claude Code framework
+> **Single source of truth** for the modernization and the agent development framework
 > of this repository. This document reconciles and supersedes the two former
 > plans:
 >
@@ -38,10 +38,11 @@ upstream is no longer maintained).
 
 ## Orchestration & development conventions (hard rules)
 
-These rules bind any Claude session, sub-agent, or human contributor. They apply
+These rules bind any agent session, sub-agent, or human contributor. They apply
 **now**, even before the framework phases land. They are the source of truth
-until extracted to `docs/claude-framework-conventions.md` (Phase 2) and reflected
-in `CLAUDE.md` (Phase 2).
+until extracted to `docs/agent-conventions.md` (Phase 2) and reflected in the
+agent instructions file (`AGENTS.md`, with a thin `CLAUDE.md` adapter for Claude
+Code) (Phase 2).
 
 ### Authorization (irreversible / shared-state actions)
 1. **NEVER merge a pull request without explicit human approval.** Even with
@@ -49,7 +50,7 @@ in `CLAUDE.md` (Phase 2).
 2. **NEVER push to `master` directly.** All changes flow through a phase branch
    and a pull request.
 3. **NEVER create a pull request without an explicit request from the user.**
-   Claude commits, pushes, then reports — the user decides when to open the PR.
+   The agent commits, pushes, then reports — the user decides when to open the PR.
 4. **NEVER force-push, amend pushed commits, or rewrite shared history.** Always
    add a new commit on top.
 5. **NEVER bypass hooks** (no `--no-verify`, no `--no-gpg-sign`). A failing hook
@@ -70,17 +71,21 @@ in `CLAUDE.md` (Phase 2).
    Phase 1 lands). The PR title matters because the squash-merge subject feeds
    the release-please changelog.
 10. One commit per logical change for reviewability. Avoid mega-commits.
-11. Every commit body ends with the session trailer when produced in a Claude
+11. Every commit body ends with the session trailer when produced in an agent
     session.
 
-### Model and delegation (orchestration)
-12. **Opus is the orchestrator:** planning, briefs, diff review before push,
+### Roles and delegation (orchestration)
+12. **The `orchestrator` role** owns planning, briefs, diff review before push,
     structural decisions, ADR drafting.
-13. **Sonnet executes scoped briefs:** implementation, refactors, docs.
-14. Every Sonnet delegation **must** be reviewed by Opus
+13. **The `executor` role** runs scoped briefs: implementation, refactors, docs.
+14. Every `executor` delegation **must** be reviewed by the `orchestrator`
     (`git diff master..HEAD`) before push.
 15. Phase briefs are ephemeral (conversation only). They are reconstructable
     from this roadmap + the relevant ADRs, so they are not committed.
+
+> Roles map to concrete models in one place (`.claude/settings.json` for Claude
+> Code) per ADR-0006 — never hard-coded in prose. See ADR-0009 for the
+> agent-agnostic / tool-adapter split.
 
 ### Scope discipline
 16. A phase touches only files within its declared scope. Drift discovered
@@ -108,13 +113,14 @@ in `CLAUDE.md` (Phase 2).
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types), `type/phase-N-topic` for phases; no tool names | ADR-0008 |
+| Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
 | Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
 | End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |
 | Supply chain | Trivy scan, SBOM (SPDX), SLSA provenance, cosign signing | — |
-| PostToolUse ADR nudge hook | Deferred (rely on skill description + CLAUDE.md rule + PR checkbox) | — |
-| `audit-claude-framework` skill | Replaced by a monthly CI health-check workflow | — |
+| PostToolUse ADR nudge hook | Deferred (rely on skill description + agent-instructions rule + PR checkbox) | — |
+| `audit-agent-framework` skill | Replaced by a monthly CI health-check workflow | — |
 | MCP custom servers | Out of scope | — |
 
 Superseded plans: issue #106 and PRs #115 (close) / #116 (its Phase 0 work is
@@ -156,13 +162,14 @@ The contribution + release machinery. May split into 1a (governance docs) and
 - `README.md` governance refresh + badges (CI, latest release, GHCR, cosign) *(#105)*
 - ADR-0001 … ADR-0005, `docs/rollback.md`
 
-### Phase 2 — Claude foundations *(P0)* — Track B
-- `CLAUDE.md` at repo root (sources of truth, ADR rule, no hard-coded values)
-- `.claude/README.md` (framework map) + `docs/claude-framework.md` (architecture, walkthrough, token-cost notes)
-- `docs/claude-framework-conventions.md` (extract of the hard rules above)
+### Phase 2 — Agent foundations *(P0)* — Track B
+Agnostic core + a thin Claude Code adapter (ADR-0009).
+- `AGENTS.md` at repo root — agnostic SSOT (sources of truth, ADR rule, no hard-coded values); thin `CLAUDE.md` adapter pointing to it (Claude Code reads `CLAUDE.md`)
+- `docs/agent-framework.md` (architecture, walkthrough, token-cost notes) + `docs/agent-conventions.md` (extract of the hard rules above)
+- `.claude/README.md` (Claude adapter map)
 - `.claude/settings.json` — permissions allowlist **+ the role→model mapping** (`orchestrator`/`executor`/`reviewer`) per ADR-0006; no PostToolUse hook yet
 - `.gitignore`: `.claude/settings.local.json` *(done early)*
-- `scripts/claude-session-start.sh` (SessionStart hook)
+- `scripts/agent-session-start.sh` (SessionStart hook)
 - Reconcile with Entire-generated `.claude/settings.json` if Entire is activated (ADR-0007 / `docs/entire-setup.md`)
 
 ### Phase 3 — Versions & distribution *(P0)* — folds in #98, #100
@@ -194,7 +201,7 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Explicit least-privilege `permissions:` on every job *(#99)*
 - `validate-supported-versions.yml` (matrix check `supported_versions.json` ↔ `security/`)
 
-### Phase 6 — Claude skills & subagents *(P1)* — Track B
+### Phase 6 — Agent skills & subagents *(P1)* — Track B
 Skills (auto-discovered via `SKILL.md` descriptions):
 - `bump-terraform-version`, `bump-awscli-version`, `bump-debian-base`
 - `propose-adr`, `validate-supported-versions`
@@ -205,10 +212,10 @@ Subagents & slash commands:
 - Upstream `/plan`: single `tech-architect` agent (poses structural questions, flags `adr_required`); `end-user-sre-ci` and `end-user-dev-local` as on-demand consultative agents
 
 ### Phase 7 — Durability & bonuses *(P2)*
-- Monthly `health-check-claude-framework.yml`
+- Monthly `health-check-agent-framework.yml`
 - `ossf/scorecard-action` (OpenSSF score) *(#105)*
 - `actions/stale` for PRs/issues
-- "Last reviewed" section in `CLAUDE.md`
+- "Last reviewed" section in `AGENTS.md`
 - Multi-arch container-structure-tests (at least `linux/arm64`)
 - Image-size regression guard
 - Integration smoke test (`terraform init`)
@@ -245,10 +252,10 @@ How the existing work is preserved or retired under the reconciled plan.
 ## Explicitly out of scope
 
 - Custom MCP servers
-- `audit-claude-framework` as a Claude skill (replaced by CI)
+- `audit-agent-framework` as an agent skill (replaced by CI)
 - Generic pre-commit framework (Python dependency)
 - Pre-push git hooks (covered by `/preflight` + CI)
-- PostToolUse hook for ADR nudge (unless Claude is observed forgetting in practice)
+- PostToolUse hook for ADR nudge (unless the agent is observed forgetting in practice)
 - Retroactive backfill of ADRs
 - Image variants (alpine, slim)
 - Bundling python3 in the image (revisit #80/#88/#92 only if demand is strong; document the workaround instead)
@@ -261,5 +268,5 @@ How the existing work is preserved or retired under the reconciled plan.
   (Phase 6).
 - Every phase delivery is a single PR; the PR description references the phase
   block above.
-- `CLAUDE.md` and skill files reference sources of truth (JSON files, ADRs)
-  rather than embedding values that drift.
+- Agent instructions (`AGENTS.md`/`CLAUDE.md`) and skill files reference sources
+  of truth (JSON files, ADRs) rather than embedding values that drift.
