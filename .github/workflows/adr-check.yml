@@ -1,0 +1,63 @@
+name: adr-check
+
+# Enforce that structural changes ship with an ADR.
+# A PR that modifies structural paths (or carries the `needs-adr` label) must add
+# a new docs/adr/NNNN-*.md. Apply the `adr-not-needed` label to bypass.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  adr-check:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require an ADR for structural changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -euo pipefail
+
+          if printf '%s' "$LABELS" | grep -qw 'adr-not-needed'; then
+            echo "::notice::'adr-not-needed' label present — skipping ADR check."
+            exit 0
+          fi
+
+          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          echo "Changed files:"; echo "$changed"
+
+          # Paths considered structural.
+          structural_re='^(Dockerfile|\.github/workflows/|supported_versions\.json|renovate\.json|\.releaserc|release-please|\.commitlintrc|\.claude/|\.github/dependabot\.yml)'
+
+          needs_adr=false
+          if printf '%s' "$LABELS" | grep -qw 'needs-adr'; then
+            needs_adr=true
+          fi
+          if echo "$changed" | grep -Eq "$structural_re"; then
+            needs_adr=true
+          fi
+
+          if [ "$needs_adr" = false ]; then
+            echo "::notice::No structural paths touched — ADR not required."
+            exit 0
+          fi
+
+          if echo "$changed" | grep -Eq '^docs/adr/[0-9]{4}-.+\.md$'; then
+            echo "::notice::Structural change includes an ADR. ✅"
+            exit 0
+          fi
+
+          echo "::error::Structural change detected but no docs/adr/NNNN-*.md added."
+          echo "Add an ADR (see docs/adr/README.md) or apply the 'adr-not-needed' label."
+          exit 1
