@@ -1,4 +1,4 @@
-# 0001 — Adopt a single reconciled roadmap and the Claude Code framework as SSOT
+# 0001 — Adopt a single reconciled roadmap and the agent development framework as SSOT
 
 - Status: Accepted
 - Date: 2026-06-14
@@ -35,7 +35,7 @@ truth.
 ### Consequences
 
 - Good: one roadmap; phased single-PR delivery; ADR-driven decisions; the
-  Claude orchestration model is part of the framework.
+  agent orchestration model is part of the framework.
 - Good: every epic task is traced to a phase in the roadmap's disposition table.
 - Cost: existing epic PRs (#107–#114) must be re-aligned to the phase model.
 - Follow-ups: #115 closed as duplicate; #116 retains its Phase 0 work; #106

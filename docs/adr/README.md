@@ -15,7 +15,7 @@ change is structural if it touches one of these and alters behaviour or policy:
 - `.github/workflows/**` (CI/CD topology, release flow, security gates)
 - `supported_versions.json` (version-support policy)
 - release / commit / dependency-bot configuration
-- the Claude framework (`.claude/**`, orchestration strategy, skills/agents)
+- the agent framework (`.claude/**` adapter, orchestration strategy, skills/agents)
 
 A pure version bump, a typo fix, or a docs tweak does **not** need an ADR.
 
@@ -49,7 +49,7 @@ Phase 6) will scaffold this automatically.
 
 | ADR | Title | Status |
 |---|---|---|
-| [0001](0001-adopt-unified-roadmap-and-claude-framework.md) | Adopt a single reconciled roadmap and the Claude Code framework as SSOT | Accepted |
+| [0001](0001-adopt-unified-roadmap-and-agent-framework.md) | Adopt a single reconciled roadmap and the agent development framework as SSOT | Accepted |
 | [0002](0002-contribution-and-release-workflow.md) | Contribution & release workflow (Conventional Commits, squash, release-please, Renovate) | Accepted |
 | [0003](0003-image-versioning-and-tag-strategy.md) | Image versioning and Docker tag strategy | Accepted |
 | [0004](0004-deprecate-terraform-below-1.0.md) | Deprecate Terraform versions below 1.0 | Accepted |
@@ -57,3 +57,4 @@ Phase 6) will scaffold this automatically.
 | [0006](0006-agent-orchestration-strategy.md) | Generic, config-driven agent orchestration strategy | Accepted |
 | [0007](0007-adopt-entire-checkpoints.md) | Adopt Entire / Checkpoints for agent-session capture | Proposed |
 | [0008](0008-conventional-branch-naming.md) | Conventional branch naming | Accepted |
+| [0009](0009-agent-agnostic-framework.md) | Agent-agnostic framework with a tool-specific adapter layer | Accepted |

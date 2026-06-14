@@ -61,5 +61,5 @@ Session transcripts live on a separate `entire/checkpoints/v1` branch, not on
 ## More information
 
 - https://entire.io · https://github.com/entireio/cli
-- Sequence with roadmap Phase 2 (Claude foundations) so `.claude/settings.json`
+- Sequence with roadmap Phase 2 (Agent foundations) so `.claude/settings.json`
   is authored once, consistently with ADR-0006.

@@ -6,8 +6,8 @@
 
 ## Context and problem statement
 
-The roadmap described the Claude orchestration as prose ("Opus orchestrates,
-Sonnet executes") with model names hard-coded into the narrative. Model names
+The roadmap described the agent orchestration as prose (naming specific models
+as orchestrator/executor) with model names hard-coded into the narrative. Model names
 drift, and a per-repo prose strategy is not portable to other repositories. We
 want the strategy to be generic, configurable, and a single source of truth.
 
@@ -55,7 +55,7 @@ Chosen option: **role/tier abstraction, config-driven**.
 - Good: portable, drift-free, one-edit model swaps; consistent with SSOT rule.
 - Cost: one indirection (role → model) to learn.
 - Follow-ups: implemented in roadmap Phase 2 (`.claude/settings.json`,
-  `docs/claude-framework.md`) and Phase 6 (subagents reference roles).
+  `docs/agent-framework.md`) and Phase 6 (subagents reference roles).
 
 ## More information
 
