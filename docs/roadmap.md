@@ -223,6 +223,15 @@ Subagents & slash commands:
 - Additional tag aliases if demand emerges (`terraform-A.B.C`, `terraform-A.B`)
 - Re-evaluate the multi-agent panel after 3 months of usage
 
+### Phase 8 — Default branch rename `master` → `main` *(P2, not top priority)*
+Low-priority hygiene; cross-cutting, so delivered as its own phase.
+- Rename the default branch `master` → `main` (GitHub UI)
+- Update workflow refs across `.github/workflows/**` (`branches: [master]`, `!master`, base-branch assumptions)
+- Re-point branch protection + squash/auto-delete settings to `main`
+- Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs, `dev.sh` if needed)
+- Update external links pointing at `master` (Docker Hub description, badges)
+- Record the rename in an ADR when executed
+
 ---
 
 ## Open PR & issue disposition
@@ -231,7 +240,7 @@ How the existing work is preserved or retired under the reconciled plan.
 
 | Item | Disposition |
 |---|---|
-| PR #116 *(Phase 0)* | Keep — replace its `claude-framework-roadmap.md` with this `docs/roadmap.md`; retain the workflow path fixes |
+| PR #116 *(Phase 0)* | **Closed** — superseded by #119, which carries the workflow path fixes + deps-doc refresh without the obsolete roadmap doc |
 | PR #115 *(roadmap doc only)* | **Close** — duplicate, superseded by this document |
 | PR #107 *(semantic-release)* | Rework into Phase 1 with **release-please**; salvage the commitlint parts |
 | PR #109 *(renovate)* | Fold into Phase 1; ensure Dependabot retirement |
