@@ -104,6 +104,9 @@ in `CLAUDE.md` (Phase 2).
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` | ADR-0004 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
+| ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
+| Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
+| Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
 | End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |
 | Supply chain | Trivy scan, SBOM (SPDX), SLSA provenance, cosign signing | — |
@@ -113,6 +116,12 @@ in `CLAUDE.md` (Phase 2).
 
 Superseded plans: issue #106 and PRs #115 (close) / #116 (its Phase 0 work is
 retained, its roadmap doc is replaced by this file).
+
+> **Brought forward (delivered ahead of Phase 1):** the ADR system now exists at
+> `docs/adr/` (ADR-0001…0007) capturing every decision above, together with its
+> enforcement (`.github/PULL_REQUEST_TEMPLATE.md`, `.github/workflows/adr-check.yml`,
+> `.github/CODEOWNERS`). The Entire scaffold (`docs/entire-setup.md`, `.gitignore`)
+> is also in place; activation is a local maintainer step (ADR-0007).
 
 ---
 
@@ -148,9 +157,10 @@ The contribution + release machinery. May split into 1a (governance docs) and
 - `CLAUDE.md` at repo root (sources of truth, ADR rule, no hard-coded values)
 - `.claude/README.md` (framework map) + `docs/claude-framework.md` (architecture, walkthrough, token-cost notes)
 - `docs/claude-framework-conventions.md` (extract of the hard rules above)
-- `.claude/settings.json` (permissions allowlist; no PostToolUse hook yet)
-- `.gitignore`: `.claude/settings.local.json`
+- `.claude/settings.json` — permissions allowlist **+ the role→model mapping** (`orchestrator`/`executor`/`reviewer`) per ADR-0006; no PostToolUse hook yet
+- `.gitignore`: `.claude/settings.local.json` *(done early)*
 - `scripts/claude-session-start.sh` (SessionStart hook)
+- Reconcile with Entire-generated `.claude/settings.json` if Entire is activated (ADR-0007 / `docs/entire-setup.md`)
 
 ### Phase 3 — Versions & distribution *(P0)* — folds in #98, #100
 Urgent: current versions are frozen at end-2023 and accrue CVEs.
