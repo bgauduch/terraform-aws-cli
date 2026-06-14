@@ -1,2 +1,6 @@
 # ignore generated container structure test config
 tests/container-structure-tests.yml
+
+# Claude / Entire local (personal) overrides — never committed
+.claude/settings.local.json
+.entire/settings.local.json
