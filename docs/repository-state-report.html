@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>terraform-aws-cli — Repository State Report</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#30363d;
+    --txt:#e6edf3; --mut:#9da7b3; --accent:#58a6ff;
+    --green:#3fb950; --amber:#d29922; --red:#f85149; --purple:#bc8cff;
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 8px 24px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0d1117,#0b0e13);color:var(--txt);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  header.top{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:26px}
+  h1{font-size:26px;margin:0 0 4px}
+  h2{font-size:19px;margin:38px 0 14px;padding-top:10px;border-top:1px solid var(--line)}
+  h3{font-size:15px;margin:20px 0 8px;color:var(--accent)}
+  .sub{color:var(--mut);font-size:13px}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--line)}
+  .p-green{color:var(--green);border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.08)}
+  .p-amber{color:var(--amber);border-color:rgba(210,153,34,.4);background:rgba(210,153,34,.08)}
+  .p-red{color:var(--red);border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.08)}
+  .p-blue{color:var(--accent);border-color:rgba(88,166,255,.4);background:rgba(88,166,255,.08)}
+  .p-purple{color:var(--purple);border-color:rgba(188,140,255,.4);background:rgba(188,140,255,.08)}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 6px}
+  @media(max-width:760px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 10px;font-size:14px;letter-spacing:.3px;text-transform:uppercase;color:var(--mut)}
+  .score{display:flex;align-items:baseline;gap:8px}
+  .score b{font-size:34px;line-height:1}
+  .gauge{height:9px;border-radius:6px;background:#21262d;margin:12px 0 8px;overflow:hidden}
+  .gauge > i{display:block;height:100%;border-radius:6px}
+  .card p{margin:6px 0 0;font-size:13px;color:var(--mut)}
+
+  table{width:100%;border-collapse:collapse;margin:6px 0;font-size:13.5px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+  tr:hover td{background:rgba(255,255,255,.015)}
+  td.c{text-align:center;white-space:nowrap}
+  code{background:#21262d;padding:1px 6px;border-radius:5px;font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 18px 14px;box-shadow:var(--shadow)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+
+  .flow{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0}
+  .track{flex:1;min-width:300px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--panel)}
+  .track.a{border-left:4px solid var(--amber)}
+  .track.b{border-left:4px solid var(--purple)}
+  .track ul{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--mut)}
+  .track li{margin:3px 0}
+  .vs{display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--red);font-size:18px;padding:6px}
+
+  .rec{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+  .rec:last-child{border-bottom:0}
+  .num{flex:0 0 30px;height:30px;border-radius:50%;background:var(--accent);color:#06121f;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .rec.crit .num{background:var(--red);color:#1a0606}
+  .rec b{display:block;margin-bottom:2px}
+  .rec span{color:var(--mut);font-size:13.5px}
+  .legend{font-size:12px;color:var(--mut);margin-top:6px}
+  .foot{margin-top:40px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
+  .tag{font-family:ui-monospace,monospace;font-size:11px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>📊 Repository State Report — <code>bgauduch/terraform-aws-cli</code></h1>
+  <div class="sub">Minimal Docker image bundling Terraform CLI + AWS CLI on Debian · Generated 2026-06-14 · default branch <code>master</code> @ <code>d99846e</code></div>
+  <div style="margin-top:10px">
+    <span class="pill p-amber">Roadmap: Conflicted</span>
+    <span class="pill p-amber">Process: Documented · not validated</span>
+    <span class="pill p-red">Framework / SSOT: Not yet a source of truth</span>
+  </div>
+</header>
+
+<p>You want to start tackling issues while ensuring the <b>roadmap is clear</b>, the <b>process is documented &amp; validated</b>, and the <b>framework is clear, documented, validated and single-source-of-truth</b>. Today none of the three fully hold — primarily because <b>two parallel modernization plans exist side by side and contradict each other</b>, and the framework documentation references artifacts that have not been created yet.</p>
+
+<!-- SCORECARDS -->
+<div class="cards">
+  <div class="card">
+    <h4>🗺️ Roadmap clarity</h4>
+    <div class="score"><b style="color:var(--amber)">4</b><span class="sub">/ 10 · partial</span></div>
+    <div class="gauge"><i style="width:40%;background:var(--amber)"></i></div>
+    <p>Two competing roadmaps (issue&nbsp;#106 vs doc&nbsp;#116) cover the same scope with different structure &amp; decisions. Neither is authoritative.</p>
+  </div>
+  <div class="card">
+    <h4>⚙️ Process docs &amp; validation</h4>
+    <div class="score"><b style="color:var(--amber)">5</b><span class="sub">/ 10 · partial</span></div>
+    <div class="gauge"><i style="width:50%;background:var(--amber)"></i></div>
+    <p>Manual upgrade process is documented. But CI has <b>no <code>pull_request</code> trigger</b>, so the 17 open PRs can't be validated. No CONTRIBUTING / SECURITY / CODEOWNERS / templates.</p>
+  </div>
+  <div class="card">
+    <h4>🧩 Framework &amp; SSOT</h4>
+    <div class="score"><b style="color:var(--red)">3</b><span class="sub">/ 10 · weak</span></div>
+    <div class="gauge"><i style="width:30%;background:var(--red)"></i></div>
+    <p>Roadmap doc declares itself "source of truth" but references <code>docs/adr/</code>, ADR-0001..5, <code>CLAUDE.md</code>, <code>.claude/</code> — <b>none of which exist</b>. Decisions contradict the epics.</p>
+  </div>
+</div>
+<div class="legend">Scores are a qualitative read of the current state against your three goals, not a code-quality grade.</div>
+
+<!-- THE CORE PROBLEM -->
+<h2>① The core problem: two roadmaps, one repo</h2>
+<p>The repository is being modernized along <b>two independent tracks that were never merged</b>. They target the same outcomes but disagree on tooling, structure and delivery unit.</p>
+
+<div class="flow">
+  <div class="track a">
+    <span class="pill p-amber">Track A · "Plan de modernisation"</span>
+    <div class="sub" style="margin-top:6px">Issue <b>#106</b> (2026-04-22, FR) · epic-driven</div>
+    <ul>
+      <li><b>8 epics</b> → #98 versions, #99 supply-chain, #100 distribution, #101 commits/release, #102 renovate, #103 CI/CD, #104 code quality, #105 docs</li>
+      <li>Organised into <b>4 sprints</b></li>
+      <li>Delivery: <b>1 PR per epic</b> → PRs <b>#107–#114</b> already open</li>
+      <li>Release tool: <b>Semantic Release</b></li>
+    </ul>
+  </div>
+  <div class="vs">VS</div>
+  <div class="track b">
+    <span class="pill p-purple">Track B · "Claude Code framework roadmap"</span>
+    <div class="sub" style="margin-top:6px">Doc <code>docs/claude-framework-roadmap.md</code> in PRs <b>#115/#116</b> (2026-05-21, EN)</div>
+    <ul>
+      <li><b>7 phases</b> (Phase 0–6), Phase 0 = cleanup, declares itself "source of truth"</li>
+      <li>Delivery: <b>1 PR per phase</b></li>
+      <li>Release tool: <b>release-please</b>, squash-merge, ADR-driven (MADR)</li>
+      <li>Adds Claude tooling: <code>CLAUDE.md</code>, skills, subagents, ADRs</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Where the two tracks directly contradict each other</h3>
+<div class="panel">
+<table>
+  <tr><th>Topic</th><th>Track A (epics / open PRs)</th><th>Track B (framework roadmap)</th><th>Status</th></tr>
+  <tr><td>Release automation</td><td>Semantic Release (#101 / PR #107)</td><td>release-please (Google)</td><td class="c"><span class="pill p-red">conflict</span></td></tr>
+  <tr><td>Docker tag strategy</td><td><code>vX.Y.Z_tf-…_aws-…</code> (#100)</td><td><code>latest/edge/vX.Y.Z/vX.Y</code>+pinned</td><td class="c"><span class="pill p-red">conflict</span></td></tr>
+  <tr><td>Dependency bot</td><td>Extend Renovate (#102); <b>Dependabot still active</b></td><td>Renovate only, <b>retire Dependabot</b></td><td class="c"><span class="pill p-red">conflict</span></td></tr>
+  <tr><td>Delivery unit</td><td>1 PR per epic (8 PRs)</td><td>1 PR per phase (7 phases)</td><td class="c"><span class="pill p-amber">divergent</span></td></tr>
+  <tr><td>Governance model</td><td>Tasks in epic #105</td><td>ADR (MADR) + CLAUDE.md + conventions</td><td class="c"><span class="pill p-amber">divergent</span></td></tr>
+  <tr><td>Roadmap doc itself</td><td>PR #115 (doc only, 1 file)</td><td>PR #116 (doc + fixes, superset)</td><td class="c"><span class="pill p-red">duplicate</span></td></tr>
+</table>
+</div>
+
+<!-- SSOT GAP -->
+<h2>② Framework / single-source-of-truth gaps</h2>
+<p>The roadmap document is well written and explicitly aims to be the SSOT — but its claim is not yet backed by the artifacts it points to. Everything below is <b>referenced but missing</b> on <code>master</code> and unmerged:</p>
+<div class="two">
+  <div class="panel">
+    <h3>Referenced by the roadmap, but missing</h3>
+    <table>
+      <tr><td><code>docs/adr/</code> + ADR-0001…0005</td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>CLAUDE.md</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>.claude/</code> (skills, agents, settings)</td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>docs/claude-framework-conventions.md</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>docs/rollback.md</code>, <code>docs/branch-protection.md</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+    </table>
+    <p class="sub">Result: the "source of truth" currently points at empty references → not yet validated, not yet authoritative.</p>
+  </div>
+  <div class="panel">
+    <h3>OSS governance files — missing</h3>
+    <table>
+      <tr><td><code>CONTRIBUTING.md</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>SECURITY.md</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>CODEOWNERS</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>.github/PULL_REQUEST_TEMPLATE.md</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>.github/ISSUE_TEMPLATE/</code></td><td class="c"><span class="pill p-red">missing</span></td></tr>
+      <tr><td><code>CODE_OF_CONDUCT.md</code></td><td class="c"><span class="pill p-green">present</span></td></tr>
+    </table>
+    <p class="sub">All planned in Track A epic #105 / Track B Phase 1.</p>
+  </div>
+</div>
+
+<!-- PROCESS / CI -->
+<h2>③ Process &amp; validation gaps</h2>
+<div class="panel">
+<table>
+  <tr><th>Finding</th><th>Detail</th><th>Impact</th></tr>
+  <tr>
+    <td><b>CI does not run on PRs</b></td>
+    <td>All workflows trigger on <code>push</code> to <code>master</code> only (no <code>pull_request</code>). Tracked as issue #46 / epic #103.</td>
+    <td class="c"><span class="pill p-red">high</span></td>
+  </tr>
+  <tr>
+    <td>All open PRs <code>mergeable_state: blocked</code></td>
+    <td>#115 &amp; #116 (and the epic PRs) report blocked — consistent with no PR validation / branch protection without passing checks.</td>
+    <td class="c"><span class="pill p-amber">med</span></td>
+  </tr>
+  <tr>
+    <td>Two dependency bots</td>
+    <td><code>.github/dependabot.yml</code> active <b>and</b> <code>renovate.json</code> present. 5 Dependabot PRs open (#93–#97) the roadmap wants to retire.</td>
+    <td class="c"><span class="pill p-amber">med</span></td>
+  </tr>
+  <tr>
+    <td>Stale identity in docs</td>
+    <td><code>README.md</code> still references <code>zenika/terraform-aws-cli</code> &amp; <code>zenika-open-source</code> across badges/links; image is now <code>bgauduch/*</code>.</td>
+    <td class="c"><span class="pill p-amber">med</span></td>
+  </tr>
+  <tr>
+    <td>Known tech debt</td>
+    <td><code>dev.sh</code>: <code>getopts</code> &amp; semver-validation FIXMEs, typo <code>PLATEFORM</code>. Dockerfile pins Debian <code>bookworm-20231120</code> + EOL Terraform 0.11–0.15 in <code>supported_versions.json</code>.</td>
+    <td class="c"><span class="pill p-amber">med</span></td>
+  </tr>
+  <tr>
+    <td>Documented manual process</td>
+    <td><code>docs/dependencies-upgrades.md</code> + <code>docs/binaries-verifications.md</code> exist and are reasonable — but describe the <i>old</i> manual flow the roadmap intends to automate.</td>
+    <td class="c"><span class="pill p-green">ok</span></td>
+  </tr>
+</table>
+</div>
+
+<!-- BACKLOG INVENTORY -->
+<h2>④ Backlog inventory</h2>
+<div class="two">
+  <div class="panel">
+    <h3>Open issues — 19</h3>
+    <table>
+      <tr><th>Group</th><th>Items</th><th></th></tr>
+      <tr><td>Tracking roadmap</td><td>#106</td><td class="c"><span class="pill p-purple">1</span></td></tr>
+      <tr><td>Epics (modernization)</td><td>#98–#105</td><td class="c"><span class="pill p-blue">8</span></td></tr>
+      <tr><td>Community bugs/requests</td><td>#13 #16 #20 #25 #46 #60 #80 #81 #91 #92</td><td class="c"><span class="pill p-amber">10</span></td></tr>
+    </table>
+    <p class="sub">#92/#80 (python3), #91 (git-lfs), #81 (cache-key bug), #46/#60/#20/#25/#13/#16 are long-standing — several already absorbed into epics.</p>
+  </div>
+  <div class="panel">
+    <h3>Open pull requests — 17</h3>
+    <table>
+      <tr><th>Group</th><th>Items</th><th></th></tr>
+      <tr><td>Roadmap docs (dup)</td><td>#115, #116</td><td class="c"><span class="pill p-purple">2</span></td></tr>
+      <tr><td>Epic implementations</td><td>#107–#114</td><td class="c"><span class="pill p-blue">8</span></td></tr>
+      <tr><td>Dependabot bumps</td><td>#93–#97</td><td class="c"><span class="pill p-amber">5</span></td></tr>
+      <tr><td>External contributors</td><td>#88 (python3), #90 (TF/AWS bump)</td><td class="c"><span class="pill p-amber">2</span></td></tr>
+    </table>
+    <p class="sub">Every PR is currently <code>blocked</code>. The 8 epic PRs follow Track A; the phase model (Track B) would restructure them.</p>
+  </div>
+</div>
+
+<!-- RECOMMENDATIONS -->
+<h2>⑤ Recommended path to "clear · documented · validated · SSOT"</h2>
+<div class="panel">
+  <div class="rec crit">
+    <div class="num">1</div>
+    <div><b>Choose ONE roadmap as the single source of truth.</b><span> Recommended: keep the framework roadmap (PR #116, newer &amp; broader), fold the 8 epics (#98–#105) into its phases as the work items, and <b>close #115 as superseded by #116</b>. Update tracking issue #106 to point at the chosen doc so there is one authority.</span></div>
+  </div>
+  <div class="rec crit">
+    <div class="num">2</div>
+    <div><b>Resolve the contradictions before building on them.</b><span> Decide release tool (Semantic Release vs release-please), tag strategy, and the Dependabot→Renovate cutover. Record each as a real ADR so "validated" is backed by committed decisions — this also creates the <code>docs/adr/</code> the roadmap already references.</span></div>
+  </div>
+  <div class="rec">
+    <div class="num">3</div>
+    <div><b>Unblock validation first.</b><span> Land the <code>pull_request</code> trigger (issue #46 / epic #103) so CI actually gates PRs. Without it, nothing else can be "validated" on the way in.</span></div>
+  </div>
+  <div class="rec">
+    <div class="num">4</div>
+    <div><b>Land Phase 0 + Phase 1 to make the framework real.</b><span> Merge the cleanup (#116) then create the missing SSOT/governance files: <code>CLAUDE.md</code>, <code>CONTRIBUTING.md</code>, <code>SECURITY.md</code>, <code>CODEOWNERS</code>, PR/issue templates, ADRs. After this, the roadmap's references stop dangling.</span></div>
+  </div>
+  <div class="rec">
+    <div class="num">5</div>
+    <div><b>Triage the bot &amp; community PRs.</b><span> Decide Dependabot PRs #93–#97 (accept-then-retire, or close in favour of Renovate) and external PRs #88/#90 (overlap with epic #98 / python3 requests #80/#92). One decision clears 7 PRs.</span></div>
+  </div>
+  <div class="rec">
+    <div class="num">6</div>
+    <div><b>Then start tackling issues</b><span> against the now-single roadmap, with CI validating each PR and ADRs capturing structural choices. At that point all three of your guarantees hold.</span></div>
+  </div>
+</div>
+
+<div class="foot">
+  <span class="tag">Sources: git (master @ d99846e), GitHub issues &amp; PRs API, Dockerfile, dev.sh, renovate.json, supported_versions.json, .github/workflows/*, docs/*, PR #115/#116 diffs.</span><br>
+  Assessment report — terraform-aws-cli · for planning use.
+</div>
+
+</div>
+</body>
+</html>
