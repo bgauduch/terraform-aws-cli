@@ -1,0 +1,41 @@
+name: Bug report
+description: Something is broken in the image or build
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, with error output if any.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Commands run, including the image tag / tool versions used.
+      placeholder: |
+        docker run --rm bgauduch/terraform-aws-cli:latest ...
+    validations:
+      required: true
+  - type: input
+    id: image-tag
+    attributes:
+      label: Image tag
+      description: e.g. latest, vX.Y.Z, or a fully-pinned tag
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform / architecture
+      placeholder: linux/amd64, linux/arm64, macOS (Docker Desktop), …
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: false

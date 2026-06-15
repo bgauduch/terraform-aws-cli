@@ -1,0 +1,30 @@
+name: Version bump request
+description: Request a new Terraform or AWS CLI version in the image
+title: "chore: add <tool> <version>"
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Tool
+      options:
+        - Terraform
+        - AWS CLI
+        - Debian base image
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Target version
+      placeholder: e.g. Terraform 1.11.0 / AWS CLI 2.17.0
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: >
+        Note: most version updates are handled automatically by Renovate. Open
+        this only if a needed version is missing. Terraform < 1.0 is out of scope
+        (ADR-0004). Adding a version also requires signature files under
+        `security/` — see docs/dependencies-upgrades.md.
