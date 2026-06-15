@@ -3,7 +3,7 @@
 * Supported tools versions:
   * [Report to the doc](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files (stored under `security/`, e.g. `security/hashicorp.asc`) when adding a new supported versions
   * check available **AWS CLI** version on the [project release page](https://github.com/aws/aws-cli/tags)
-  * check available **Terraform CLI** version (keep all minor versions from 0.11) on the [project release page](https://github.com/hashicorp/terraform/releases)
+  * check available **Terraform CLI** version (keep one patch per minor, from 1.0 — see ADR-0004) on the [project release page](https://github.com/hashicorp/terraform/releases)
 * Dockerfile:
   * check **base image** version [on DockerHub](https://hub.docker.com/_/debian?tab=tags&page=1&name=bookworm)
   * check OS package versions on Debian package repository
@@ -16,6 +16,13 @@
     * Available **curl** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=curl)
     * Available **gnupg** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=gnupg)
     * Available **unzip** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=unzip)
+  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — refresh **all** pins to the current candidates and update the Dockerfile:
+
+    ```bash
+    docker run --rm debian:bookworm-slim bash -c \
+      'apt-get update -qq && for p in ca-certificates curl gnupg unzip git jq openssh-client; do \
+         printf "%s=%s\n" "$p" "$(apt-cache policy "$p" | awk "/Candidate:/{print \$2}")"; done'
+    ```
 * Dockerfile tests : update version according to changes in Dockerfile in [tests/container-structure-tests.yml.template](tests/container-structure-tests.yml.template)
 * Github actions:
   * check [runner version](https://github.com/actions/virtual-environments#available-environments)
