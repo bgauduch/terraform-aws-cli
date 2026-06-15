@@ -8,7 +8,7 @@ on:
       - master
     paths:
       - README.md
-      - .github/workflows/dockerhub-description.yml
+      - .github/workflows/dockerhub-description-update.yml
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-22.04
