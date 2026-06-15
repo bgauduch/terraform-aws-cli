@@ -110,6 +110,7 @@ Code) (Phase 2).
 | Dependency bot | **Renovate only** (Dependabot retired) | ADR-0002 |
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` | ADR-0004 |
+| APT package pinning | OS utility packages unpinned (stable suite); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types), `type/phase-N-topic` for phases; no tool names | ADR-0008 |

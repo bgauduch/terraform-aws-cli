@@ -1,2 +1,3 @@
 ignored:
   - DL3059 # Ignore https://github.com/hadolint/hadolint/wiki/DL3059, specific to build stages
+  - DL3008 # APT packages intentionally unpinned (stable suite); see docs/adr/0010-apt-package-pinning-strategy.md
