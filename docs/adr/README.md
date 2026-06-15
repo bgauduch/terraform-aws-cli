@@ -58,3 +58,4 @@ Phase 6) will scaffold this automatically.
 | [0007](0007-adopt-entire-checkpoints.md) | Adopt Entire / Checkpoints for agent-session capture | Proposed |
 | [0008](0008-conventional-branch-naming.md) | Conventional branch naming | Accepted |
 | [0009](0009-agent-agnostic-framework.md) | Agent-agnostic framework with a tool-specific adapter layer | Accepted |
+| [0010](0010-apt-package-pinning-strategy.md) | APT package pinning strategy | Accepted |
