@@ -30,8 +30,8 @@ Chosen option: **role/tier abstraction, config-driven**.
 
 - Define **roles**, not models: `orchestrator`, `executor`, optional `reviewer`.
 - Subagents and docs reference a **role**; never a concrete model name.
-- A **single mapping** lives in `.claude/settings.json` (created in roadmap
-  Phase 2):
+- A **single mapping** lives in the active tool's adapter (`.claude/settings.json`
+  for Claude Code; see ADR-0009), created in roadmap Phase 2:
 
   ```jsonc
   // illustrative shape — authoritative version lands in Phase 2

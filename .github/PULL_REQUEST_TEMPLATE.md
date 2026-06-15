@@ -12,7 +12,7 @@ Roadmap phase / closes: <!-- e.g. Phase 1 — closes #105 -->
 ## Architecture Decision Record
 
 <!-- A structural change (Dockerfile, workflows, supported_versions.json, release/
-commit/dependency config, or the Claude framework) requires an ADR. See docs/adr/. -->
+commit/dependency config, or the agent framework `.claude/`) requires an ADR. See docs/adr/. -->
 
 - [ ] This PR adds/updates an ADR under `docs/adr/` (link: ____)
 - [ ] This PR is **not** a structural change — no ADR needed
