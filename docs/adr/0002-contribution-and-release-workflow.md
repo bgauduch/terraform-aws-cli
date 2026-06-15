@@ -30,7 +30,10 @@ Adopted as one interlocking workflow:
 - **Conventional Commits**, strict from day one, enforced by `commitlint` on
   **both** each commit and the **PR title**.
 - **Squash-merge** (one PR = one commit on `master`); the PR title becomes the
-  squash subject and feeds the changelog.
+  squash subject and feeds the changelog. Repo merge setting: *Default commit
+  message = **Pull request title and description*** (squash-only; merge-commit
+  and rebase-merge disabled) so footers such as `BREAKING CHANGE:` flow into the
+  commit body for release-please.
 - **release-please** drives versioning, changelog and GitHub releases via a
   Release PR; `release.yml` triggers on Release-PR merge. The manual release
   flow is removed.
@@ -52,3 +55,9 @@ release state reviewable in a PR.
 ## More information
 
 Tag strategy is decided separately in ADR-0003.
+
+> **Amended 2026-06-15** — recorded the squash *Default commit message* setting
+> (*Pull request title and description*) and the squash-only merge mode.
+> Editorial clarification of the existing squash decision, not a reversal — see
+> the amend-vs-supersede rule in [`README.md`](README.md). Branch-protection
+> details live in [`../branch-protection.md`](../branch-protection.md).

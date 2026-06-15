@@ -45,6 +45,21 @@ Copy the template, take the next free number, fill it in, and reference it from
 the [roadmap](../roadmap.md) Decisions table. The `propose-adr` skill (roadmap
 Phase 6) will scaffold this automatically.
 
+## Amending vs superseding
+
+The **decision** an ADR records is immutable. To change the repository's history
+of decisions:
+
+- **Amend in place** when the decision still holds and you are only *clarifying*,
+  adding a detail/consequence/link, or recording an implementation specific that
+  follows from it. Add a dated `> **Amended YYYY-MM-DD** — …` note so the change
+  is traceable. No new ADR.
+- **Supersede** when the decision itself *changes or reverses*. Write a new ADR,
+  set the old one's status to `Superseded by ADR-XXXX` with a forward pointer,
+  and never delete it — the old rationale stays on record.
+
+Rule of thumb: *clarification → amend; reversal → supersede.*
+
 ## Index
 
 | ADR | Title | Status |
