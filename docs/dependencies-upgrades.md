@@ -16,7 +16,7 @@
     * Available **curl** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=curl)
     * Available **gnupg** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=gnupg)
     * Available **unzip** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=unzip)
-  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — refresh **all** pins to the current candidates and update the Dockerfile:
+  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — refresh **all** pins to the current candidates, then update the Dockerfile **and** the matching version assertions in [`tests/container-structure-tests.yml.template`](tests/container-structure-tests.yml.template) (e.g. the git/jq/openssh versions):
 
     ```bash
     docker run --rm debian:bookworm-slim bash -c \
