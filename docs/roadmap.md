@@ -155,7 +155,7 @@ The contribution + release machinery. May split into 1a (governance docs) and
 - `.github/PULL_REQUEST_TEMPLATE.md` (ADR checkbox) + `.github/ISSUE_TEMPLATE/` (`bug.yml`, `bump-version.yml`, `feature.yml`) *(#105)*
 - `.commitlintrc.json` + `.github/workflows/commitlint.yml` validating each PR commit **and** the PR title; **strict** failure mode *(#101)*
 - **release-please** config + workflow; migrate `release.yml` to trigger on Release-PR merge; remove the manual release flow *(#101)*
-- Squash-only merge button + `docs/branch-protection.md` (documentary; applied via GitHub UI)
+- Branch protection applied via the GitHub UI (squash-merge, required review); settings are maintainer-managed — GitHub is their source of truth, not prose
 - Tag strategy applied — P0 subset (`latest`, `vX.Y.Z`, fully-pinned)
 - **Retire `.github/dependabot.yml`; extend `renovate.json`** (grouping, automerge patches, `chore(deps):` prefix, custom manager for `supported_versions.json`) *(#102, relates #20)*
 - Clean `supported_versions.json` — drop Terraform `< 1.0` *(part of #98)*
