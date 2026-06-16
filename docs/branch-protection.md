@@ -1,7 +1,7 @@
 # Branch protection & merge policy
 
 > Documentary reference for the settings applied via the GitHub UI on the
-> default branch (`master`, → `main` in roadmap Phase 8). Decision: ADR-0002.
+> default branch (`master`; a later rename to `main` is planned — see [`roadmap.md`](roadmap.md)). Decision: ADR-0002.
 
 ## Merge settings (Settings → General → Pull Requests)
 

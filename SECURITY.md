@@ -26,5 +26,6 @@ What to expect:
 
 Bundled binaries are verified at build time: Terraform and AWS CLI archives are
 checked against their publishers' GPG signatures and checksums (material under
-[`security/`](security/)). Image scanning, SBOM, provenance and signing are
-delivered in roadmap Phase 5.
+[`security/`](security/)). Additional supply-chain hardening (image
+vulnerability scanning, SBOM, provenance, signing) is **planned** — see
+[`docs/roadmap.md`](docs/roadmap.md).
