@@ -1,0 +1,32 @@
+name: release-please
+
+# Versioning, changelog and GitHub releases (ADR-0002).
+#
+# On every push to master, release-please maintains a "Release PR" that bumps
+# the project version (from Conventional Commits) and updates CHANGELOG.md.
+# Merging that Release PR creates the GitHub release and the project version
+# tag (vX.Y.Z), which in turn triggers release.yml to build & push the images
+# (tag strategy: ADR-0003).
+#
+# NOTE: the tag must be created with a Personal Access Token (RELEASE_PLEASE_TOKEN),
+# not the default GITHUB_TOKEN — tags pushed by GITHUB_TOKEN do not trigger other
+# workflows (here: release.yml). See repo secrets / CONTRIBUTING.
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
