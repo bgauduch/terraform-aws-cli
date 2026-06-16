@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/bgauduch/terraform-aws-cli/security/advisories/new
+    about: Please report vulnerabilities privately — see SECURITY.md, not a public issue.
+  - name: Question / discussion
+    url: https://github.com/bgauduch/terraform-aws-cli/issues
+    about: For usage questions, search existing issues first.

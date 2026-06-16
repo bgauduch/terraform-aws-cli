@@ -29,8 +29,9 @@ Adopted as one interlocking workflow:
 
 - **Conventional Commits**, strict from day one, enforced by `commitlint` on
   **both** each commit and the **PR title**.
-- **Squash-merge** (one PR = one commit on `master`); the PR title becomes the
-  squash subject and feeds the changelog.
+- **Squash-merge** (one PR = one commit on `master`); the PR title is the squash
+  subject and feeds the changelog. Squash default message = *Pull request title
+  and description* (carries `BREAKING CHANGE:` footers for release-please).
 - **release-please** drives versioning, changelog and GitHub releases via a
   Release PR; `release.yml` triggers on Release-PR merge. The manual release
   flow is removed.
@@ -52,3 +53,6 @@ release state reviewable in a PR.
 ## More information
 
 Tag strategy is decided separately in ADR-0003.
+
+> **Amended 2026-06-15/16** — recorded the squash default commit message
+> (*Pull request title and description*). Clarification, not a reversal.
