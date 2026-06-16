@@ -59,3 +59,4 @@ Phase 6) will scaffold this automatically.
 | [0008](0008-conventional-branch-naming.md) | Conventional branch naming | Accepted |
 | [0009](0009-agent-agnostic-framework.md) | Agent-agnostic framework with a tool-specific adapter layer | Accepted |
 | [0010](0010-apt-package-pinning-strategy.md) | APT package pinning strategy | Accepted |
+| [0011](0011-consolidate-cloud-cli-images-into-a-monorepo.md) | Consolidate the Terraform + cloud-CLI images into a monorepo | Proposed |
