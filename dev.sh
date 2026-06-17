@@ -10,7 +10,7 @@ set -eo pipefail
 [[ -n $2 ]] && TF_VERSION=$2 || TF_VERSION=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)
 
 # Set image name and tag (dev if not specified)
-IMAGE_NAME="zenika/terraform-aws-cli"
+IMAGE_NAME="bgauduch/terraform-aws-cli"
 [[ -n $3 ]] && IMAGE_TAG=$3 || IMAGE_TAG="dev"
 
 # Set platform for Hadolint image (only linux/arm64 or linux/arm64 supported)

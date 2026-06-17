@@ -20,7 +20,7 @@ on:
       - ".github/workflows/build-test.yml"
 
 env:
-  IMAGE_NAME: "terraform-aws-cli"
+  IMAGE_NAME: "bgauduch/terraform-aws-cli"
 
 jobs:
   load_supported_versions:
