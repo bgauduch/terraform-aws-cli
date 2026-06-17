@@ -1,16 +1,14 @@
 name: release-please
 
-# Versioning, changelog and GitHub releases (ADR-0002).
+# Single release workflow (ADR-0002, ADR-0003).
 #
 # On every push to master, release-please maintains a "Release PR" that bumps
 # the project version (from Conventional Commits) and updates CHANGELOG.md.
-# Merging that Release PR creates the GitHub release and the project version
-# tag (vX.Y.Z), which in turn triggers release.yml to build & push the images
-# (tag strategy: ADR-0003).
-#
-# NOTE: the tag must be created with a Personal Access Token (RELEASE_PLEASE_TOKEN),
-# not the default GITHUB_TOKEN — tags pushed by GITHUB_TOKEN do not trigger other
-# workflows (here: release.yml). See repo secrets / CONTRIBUTING.
+# Merging that Release PR creates the GitHub release + the project version tag
+# (vX.Y.Z); the build/push jobs below are gated on that release and publish the
+# images. No separate release.yml and no Personal Access Token are needed — the
+# build is wired in-workflow on the `release_created` output, so the default
+# GITHUB_TOKEN (plus the existing DockerHub secrets) is enough.
 
 on:
   push:
@@ -24,9 +22,94 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-22.04
+    outputs:
+      release_created: ${{ steps.release.outputs['.--release_created'] }}
+      tag_name: ${{ steps.release.outputs['.--tag_name'] }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - id: release
+        uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  load_supported_versions:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Save supported versions as output
+        id: set-matrix
+        run: |
+          VERSIONS=$(cat ./supported_versions.json | jq -c)
+          echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
+
+  build_push_release:
+    needs: [release-please, load_supported_versions]
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
+
+    env:
+      ORGANIZATION: "zenika"
+      IMAGE_NAME: "terraform-aws-cli"
+      RELEASE_VERSION: ${{ needs.release-please.outputs.tag_name }}
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Determine if this is the latest version combination
+        run: |
+          LATEST_TF=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)
+          LATEST_AWS=$(jq -r '.awscli_versions | sort | .[-1]' supported_versions.json)
+          if [ "${{ matrix.tf_versions }}" = "${LATEST_TF}" ] && [ "${{ matrix.awscli_versions }}" = "${LATEST_AWS}" ]; then
+            echo "IS_LATEST=true" >> $GITHUB_ENV
+          else
+            echo "IS_LATEST=false" >> $GITHUB_ENV
+          fi
+
+      - name: Login to Docker Hub registry
+        run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push image (pinned combination)
+        if: env.IS_LATEST != 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
+          build-args: |
+            TERRAFORM_VERSION=${{ matrix.tf_versions }}
+            AWS_CLI_VERSION=${{ matrix.awscli_versions }}
+          tags: ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push image (latest combination)
+        if: env.IS_LATEST == 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386
+          build-args: |
+            TERRAFORM_VERSION=${{ matrix.tf_versions }}
+            AWS_CLI_VERSION=${{ matrix.awscli_versions }}
+          tags: |
+            ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
+            ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+            ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:latest
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

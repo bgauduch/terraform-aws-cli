@@ -155,7 +155,7 @@ The contribution + release machinery. May split into 1a (governance docs) and
 - `CONTRIBUTING.md`, `SECURITY.md`, `CODEOWNERS` *(#105)*
 - `.github/PULL_REQUEST_TEMPLATE.md` (ADR checkbox) + `.github/ISSUE_TEMPLATE/` (`bug.yml`, `bump-version.yml`, `feature.yml`) *(#105)*
 - `.commitlintrc.json` + `.github/workflows/commitlint.yml` validating each PR commit **and** the PR title; **strict** failure mode *(#101)*
-- **release-please** config + workflow; migrate `release.yml` to trigger on Release-PR merge; remove the manual release flow *(#101)*
+- **release-please** config + a single `release-please.yml` workflow (versioning/changelog/GitHub release, with the image build/push gated on the Release-PR merge via the `release_created` output); remove the manual release flow *(#101)*
 - Branch protection applied via the GitHub UI (squash-merge, required review)
 - Tag strategy applied — P0 subset (`latest`, `vX.Y.Z`, fully-pinned)
 - **Retire `.github/dependabot.yml`; extend `renovate.json`** (grouping, automerge patches, `chore(deps):` prefix, custom manager for `supported_versions.json`) *(#102, relates #20)*
