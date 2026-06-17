@@ -33,8 +33,11 @@ Adopted as one interlocking workflow:
   subject and feeds the changelog. Squash default message = *Pull request title
   and description* (carries `BREAKING CHANGE:` footers for release-please).
 - **release-please** drives versioning, changelog and GitHub releases via a
-  Release PR; `release.yml` triggers on Release-PR merge. The manual release
-  flow is removed.
+  Release PR. Merging that Release PR is the release trigger; the image
+  build/push runs in the **same `release-please.yml` workflow**, gated on the
+  `release_created` output (no separate `release.yml`, no Personal Access
+  Token — the default `GITHUB_TOKEN` suffices). The manual release flow is
+  removed.
 - Optional opt-in local `.githooks/commit-msg` running commitlint in Docker.
 - **Renovate only**; `.github/dependabot.yml` is retired.
 
@@ -56,3 +59,10 @@ Tag strategy is decided separately in ADR-0003.
 
 > **Amended 2026-06-15/16** — recorded the squash default commit message
 > (*Pull request title and description*). Clarification, not a reversal.
+>
+> **Amended 2026-06-17** — the build/push runs inside the single
+> `release-please.yml` workflow gated on `release_created`, rather than a
+> separate tag-triggered `release.yml`. This avoids a Personal Access Token
+> (tags pushed by `GITHUB_TOKEN` do not trigger other workflows) and fits the
+> low-friction driver. Mechanism clarification; the decision (release-please,
+> Release-PR trigger) is unchanged.
