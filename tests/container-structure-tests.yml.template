@@ -11,7 +11,7 @@ commandTests:
   - name: "Check Git version"
     command: "git"
     args: ["--version"]
-    expectedOutput: ["git version 2.39.2"]
+    expectedOutput: ["git version 2.39.5"]
 
   - name: "Check JQ version"
     command: "jq"
