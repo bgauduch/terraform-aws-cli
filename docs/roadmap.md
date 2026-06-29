@@ -123,7 +123,6 @@ Code) (Phase 2).
 | PostToolUse ADR nudge hook | Deferred (rely on skill description + agent-instructions rule + PR checkbox) | — |
 | `audit-agent-framework` skill | Replaced by a monthly CI health-check workflow | — |
 | MCP custom servers | Out of scope | — |
-| Monorepo consolidation | Merge `terraform-aws-cli` + `terraform-azure-cli` into one monorepo (`images/<provider>/` + `shared/`); **promote this repo in place**, Azure via `git subtree`; per-image Docker Hub names + release-please manifest mode; **after** Phases 1–8 (Phase 9) | ADR-0011, `docs/monorepo-refactor-plan.md` |
 
 Superseded plans: issue #106 and PRs #115 (close) / #116 (its Phase 0 work is
 retained, its roadmap doc is replaced by this file).
@@ -233,17 +232,6 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 - Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs, `dev.sh` if needed)
 - Update external links pointing at `master` (Docker Hub description, badges)
 - Record the rename in an ADR when executed
-
-### Phase 9 — Monorepo consolidation *(P2, after Phases 1–8)* — see `docs/monorepo-refactor-plan.md`
-Fold `terraform-azure-cli` into this repo (promoted in place) as a monorepo of
-images, structured to accept more providers. Detailed plan: [`docs/monorepo-refactor-plan.md`](monorepo-refactor-plan.md); decision: ADR-0011.
-- 9a — reshape AWS into `images/aws/` + `shared/` (extract the shared Terraform builder stage); AWS still builds & publishes identically
-- 9b — add `docker-bake.hcl`; convert workflows to a path-filtered, single-entry matrix (AWS-only)
-- 9c — merge Azure with history (`git subtree add --prefix=images/azure`); dedupe its Terraform/HashiCorp material into `shared/`
-- 9d — extend the CI + Bake matrix to `[aws, azure]`; per-image structure tests, security gates, Docker Hub READMEs
-- 9e — release-please **manifest** mode: `aws`/`azure` components, tag prefixes, Conventional-Commit scope → component routing
-- 9f — archive `terraform-azure-cli` with a redirect README; triage its issues; migration notes; (optional) rename repo → `terraform-cloud-cli`
-- Preserves published image names (no consumer breakage) and both repos' git history; reuses the existing framework/ADR discipline unchanged
 
 ---
 
