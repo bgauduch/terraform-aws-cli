@@ -1,0 +1,53 @@
+name: commitlint
+
+# Validate Conventional Commits (ADR-0002) with commitlint as the SINGLE engine,
+# on both the PR commits and the PR title (the squash-merge subject that feeds
+# release-please). Only official actions/* + the @commitlint/* packages — no
+# third-party actions (supply-chain hardening; Phase 4/5 orientation).
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-22.04
+    steps:
+      # TODO(supply-chain): pin actions to commit SHA — via Renovate digest
+      # pinning once #122 lands, or provide the SHAs to pin manually (ADR-0002 / #99).
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install commitlint
+        run: npm install --no-save @commitlint/cli @commitlint/config-conventional
+
+      - name: Lint PR commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npx commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+
+      - name: Lint PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s' "$PR_TITLE" | npx commitlint --verbose
