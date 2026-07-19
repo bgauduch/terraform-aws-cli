@@ -88,12 +88,19 @@ TERRAFORM_VERSION=1.5.2
 ```
 
 ## 🙏 Contributions
+
+Before contributing, please read the [contributing guide](CONTRIBUTING.md), the [code of conduct](CODE_OF_CONDUCT.md) and the [security policy](SECURITY.md).
+
 Do not hesitate to contribute by [filling an issue](https://github.com/Zenika/terraform-aws-cli/issues) or [a PR](https://github.com/Zenika/terraform-aws-cli/pulls) !
 
 ## 📚 Documentations
 
-* [Dependencies upgrades checklist](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/dependencies-upgrades.md)
-* [Binaries verifications](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md)
+* [Contributing guide](CONTRIBUTING.md)
+* [Code of conduct](CODE_OF_CONDUCT.md)
+* [Security policy](SECURITY.md)
+* [Rollback policy](docs/rollback.md)
+* [Dependencies upgrades checklist](docs/dependencies-upgrades.md)
+* [Binaries verifications](docs/binaries-verifications.md)
 
 ## 🚩 Similar repositories
 
