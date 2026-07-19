@@ -26,15 +26,16 @@ build matrix for versions virtually no one should still run.
 
 Chosen option: **drop all Terraform versions `< 1.0`** from
 `supported_versions.json` (and their `security/` artifacts). Recent lines
-(1.7.x → 1.11.x) are added in roadmap Phase 3.
+(1.7.x → 1.11.x) are added later as separate roadmap work.
 
 ### Consequences
 
 - Good: smaller matrix, fewer signature files, clearer support promise.
 - Bad: users pinned to pre-1.0 tags must use an older immutable image tag
   (which remain available — they are immutable, ADR-0003).
-- Follow-ups: roadmap Phase 1 (cleanup) + Phase 3 (add recent versions);
-  `validate-supported-versions` check (Phase 5/6) guards JSON ↔ `security/`.
+- Follow-ups: the cleanup and the later addition of recent versions are tracked
+  on the roadmap; a `validate-supported-versions` check guards
+  `supported_versions.json` ↔ `security/` consistency.
 
 ## More information
 

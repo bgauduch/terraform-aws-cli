@@ -50,8 +50,9 @@ release state reviewable in a PR.
 - Good: hands-off releases; consistent history; one bot.
 - Cost: contributors must learn Conventional Commits; the in-flight
   Semantic Release work (PR #107) is reworked to release-please.
-- Follow-ups: roadmap Phase 1; Renovate extension tracked with #102/#20;
-  Dependabot PRs #93–#97 close once Renovate covers their scope.
+- Follow-ups: delivered as the roadmap's contribution/release work; Renovate
+  extension tracked with #102/#20; Dependabot PRs #93–#97 close once Renovate
+  covers their scope.
 
 ## More information
 

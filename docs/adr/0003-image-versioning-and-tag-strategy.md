@@ -41,10 +41,12 @@ Repo versioning is project semver `vX.Y.Z`; image tags are derived from it.
 - Good: reproducible pins for CI; floating tags for humans.
 - Cost: more tags to publish and document.
 - Policy: immutable full tags are **never** mutated; rollback = consumers
-  re-pin an older tag (see `docs/rollback.md`, roadmap Phase 1).
+  re-pin an older tag.
 - Follows: replaces the old `release-S.T_terraform-…_awscli-…` scheme; supersedes
   the pinned-only proposal in epic #100.
 
 ## More information
 
-Roadmap Phase 1 (P0 subset) and Phase 3 (full strategy + GHCR).
+The strategy is rolled out incrementally on the roadmap: first the P0 subset
+(`latest`, `vX.Y.Z`, fully-pinned), then the full alias set plus GHCR
+publication.

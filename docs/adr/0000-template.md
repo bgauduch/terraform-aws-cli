@@ -27,7 +27,7 @@ Chosen option: **<option>**, because <justification>.
 
 - Good: <positive consequence>
 - Bad / cost: <negative consequence or trade-off>
-- Follow-ups: <links to roadmap phase, issues, other ADRs>
+- Follow-ups: <the roadmap, issues, other ADRs — avoid pinning volatile phase or rule numbers that drift>
 
 ## More information
 
