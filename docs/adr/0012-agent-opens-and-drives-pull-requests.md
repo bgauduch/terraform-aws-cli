@@ -48,8 +48,8 @@ its own; the human still owns the merge.**
   (rule 2), force-push / history rewrite (rule 4), branch/tag/ref deletion
   (rule 6). Hooks are never bypassed (rule 5).
 
-This **amends rule 3** in `docs/agent-conventions.md`; the roadmap's hard-rules
-section (which now points to that file) reflects the new wording.
+This **amends rule 3** in `docs/agent-conventions.md` (its single home); the
+roadmap's hard-rules section points there.
 
 ### Consequences
 
@@ -59,8 +59,9 @@ section (which now points to that file) reflects the new wording.
   test harness strong enough that "green locally" predicts "green in CI" — built
   as the agent-foundations harness work (SessionStart bootstrap +
   local build/test).
-- Follow-ups: `AGENTS.md` encodes the amended rule; the SessionStart hook and the
-  local build/test path make self-verification-before-push routine.
+- Follow-ups: `AGENTS.md` and the roadmap point to the amended rule (single home
+  in `docs/agent-conventions.md`); the SessionStart hook + local build/test make
+  self-verification-before-push routine.
 
 ## More information
 

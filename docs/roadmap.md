@@ -38,23 +38,11 @@ upstream is no longer maintained).
 
 ## Orchestration & development conventions (hard rules)
 
-These rules bind any agent session, sub-agent, or human contributor and apply
-**now**. They were extracted from this section into their single authoritative
-home, **[`docs/agent-conventions.md`](agent-conventions.md)** (agent-foundations
-work). `AGENTS.md` is the tool-agnostic entry point; `CLAUDE.md` is the thin
-Claude Code adapter (ADR-0009). The numbering there is stable, so references like
-"rule 8" elsewhere in this document still resolve.
-
-In one breath: authorization (no merge without a human · no `master` push · no
-force-push/history rewrite · no ref deletion · no hook bypass) · branching
-(`type/topic` / `type/phase-N-topic`, ADR-0008) · Conventional Commits (commits
-**and** PR titles) · one PR per phase · role/tier orchestration (ADR-0006) · scope
-discipline · English-only / SSOT.
-
-> **Amended 2026-07-20 (ADR-0012):** the former rule *"never open a PR without an
-> explicit request"* is replaced by **the agent opens PRs and drives their CI to
-> green; the human still owns the merge.** Every other authorization rule is
-> unchanged. Full text: [`docs/agent-conventions.md`](agent-conventions.md).
+The binding hard rules live in their single authoritative home,
+**[`docs/agent-conventions.md`](agent-conventions.md)** (entry point `AGENTS.md`;
+Claude Code adapter `CLAUDE.md`, ADR-0009). Rule numbering there is stable, so
+"rule N" references elsewhere in this document still resolve. Rule 3 was amended
+by ADR-0012 (the agent opens PRs and drives CI to green; the human owns the merge).
 
 ---
 

@@ -1,11 +1,9 @@
 # Agent & contribution conventions
 
-> **Authoritative home for the hard rules** that bind any agent session,
-> sub-agent, or human contributor to this repository. These were previously
-> inlined in [`docs/roadmap.md`](roadmap.md) and are **extracted here** as their
-> single source of truth (the roadmap now points to this file). They apply
-> **now**. `AGENTS.md` (repo root) is the entry point that references this file;
-> `CLAUDE.md` is the thin Claude Code adapter (ADR-0009).
+Single authoritative home for the hard rules binding any agent session,
+sub-agent, or human contributor. Extracted from `docs/roadmap.md` (which now
+points here). Entry point: [`AGENTS.md`](../AGENTS.md); Claude Code adapter
+`CLAUDE.md` (ADR-0009).
 
 ## Authorization (irreversible / shared-state actions)
 
@@ -53,9 +51,8 @@
 15. Phase briefs are ephemeral (conversation only). They are reconstructable from
     the roadmap + the relevant ADRs, so they are not committed.
 
-> Roles map to concrete models in one place (`.claude/settings.json` for Claude
-> Code) per ADR-0006 — never hard-coded in prose. See ADR-0009 for the
-> agent-agnostic / tool-adapter split.
+> Roles map to concrete models in one place (`.claude/settings.json`) per
+> ADR-0006 — never in prose. See ADR-0009 for the agnostic core / adapter split.
 
 ## Scope discipline
 
@@ -76,10 +73,3 @@
 20. **Never mirror mutable infra/UI settings in prose** — reference the GitHub
     config (branch protection, merge settings, repo options). Decisions about
     them live in ADRs; live values live in GitHub.
-
-## How to resume a session
-
-Read, in order: the tracking issue **#106** (live status), this file (rules),
-[`docs/roadmap.md`](roadmap.md) (plan) and [`docs/adr/`](adr/) (decisions). Live
-PR/issue state comes from the GitHub API; reconcile it with #106 and edit that
-issue's body in place if it drifted.
