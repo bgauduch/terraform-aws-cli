@@ -36,14 +36,15 @@ branches.
 - Examples: `docs/framework-foundation`, `ci/pr-triggers`,
   `chore/bump-terraform`, `docs/phase-1-oss-governance`.
 
-This replaces hard-rule #7's `claude/phase-N-<topic>` in
+This replaces the earlier `claude/phase-N-<topic>` branch-naming rule in
 [`docs/roadmap.md`](../roadmap.md).
 
 ### Consequences
 
 - Good: tool-agnostic, consistent with commit/PR conventions, still phase-aware.
 - Cost: none material; one rule updated.
-- Follow-ups: roadmap hard-rule #7 updated; Decisions table records this ADR.
+- Follow-ups: the roadmap's branch-naming hard rule is updated; the Decisions
+  table records this ADR.
 
 ## More information
 

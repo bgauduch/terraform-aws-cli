@@ -54,12 +54,12 @@ Session transcripts live on a separate `entire/checkpoints/v1` branch, not on
 
 - Good: durable, searchable agent-session history linked to commits.
 - Risk: early-stage product; account/auth dependency; `.claude/settings.json`
-  overlaps with roadmap Phase 2 — sequence the two together.
+  overlaps with the agent-foundations roadmap work — sequence the two together.
 - Bad: cannot be fully automated from CI (interactive login).
 - Status flips to **Accepted** once activation is committed.
 
 ## More information
 
 - https://entire.io · https://github.com/entireio/cli
-- Sequence with roadmap Phase 2 (Agent foundations) so `.claude/settings.json`
+- Sequence with the agent-foundations roadmap work so `.claude/settings.json`
   is authored once, consistently with ADR-0006.

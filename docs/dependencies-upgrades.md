@@ -16,14 +16,14 @@
     * Available **curl** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=curl)
     * Available **gnupg** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=gnupg)
     * Available **unzip** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=bookworm&arch=any&searchon=names&keywords=unzip)
-  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — refresh **all** pins to the current candidates, then update the Dockerfile **and** the matching version assertions in [`tests/container-structure-tests.yml.template`](tests/container-structure-tests.yml.template) (e.g. the git/jq/openssh versions):
+  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — refresh **all** pins to the current candidates, then update the Dockerfile **and** the matching version assertions in [`tests/container-structure-tests.yml.template`](../tests/container-structure-tests.yml.template) (e.g. the git/jq/openssh versions):
 
     ```bash
     docker run --rm debian:bookworm-slim bash -c \
       'apt-get update -qq && for p in ca-certificates curl gnupg unzip git jq openssh-client; do \
          printf "%s=%s\n" "$p" "$(apt-cache policy "$p" | awk "/Candidate:/{print \$2}")"; done'
     ```
-* Dockerfile tests : update version according to changes in Dockerfile in [tests/container-structure-tests.yml.template](tests/container-structure-tests.yml.template)
+* Dockerfile tests : update version according to changes in Dockerfile in [tests/container-structure-tests.yml.template](../tests/container-structure-tests.yml.template)
 * Github actions:
   * check [runner version](https://github.com/actions/virtual-environments#available-environments)
   * check **each action release** versions

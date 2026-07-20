@@ -42,8 +42,8 @@ ADRs use the [MADR](https://adr.github.io/madr/) format — see
 ## Creating one
 
 Copy the template, take the next free number, fill it in, and reference it from
-the [roadmap](../roadmap.md) Decisions table. The `propose-adr` skill (roadmap
-Phase 6) will scaffold this automatically.
+the [roadmap](../roadmap.md) Decisions table. A planned `propose-adr` skill will
+scaffold this automatically.
 
 ## Amending vs superseding
 

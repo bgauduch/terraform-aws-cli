@@ -54,7 +54,7 @@ Code support" in ADR-0007) remain — they name a real tool, not the framework.
 
 - Good: portable framework; consistent with ADR-0006/0008; one place per tool.
 - Cost: a thin `CLAUDE.md` adapter duplicating a pointer to `AGENTS.md`.
-- Follow-ups: implemented in roadmap Phase 2 (now "Agent foundations"); existing
+- Follow-ups: implemented as the agent-foundations roadmap work; existing
   docs/ADRs reworded in this change.
 
 ## More information

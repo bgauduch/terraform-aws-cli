@@ -31,10 +31,11 @@ Chosen option: **role/tier abstraction, config-driven**.
 - Define **roles**, not models: `orchestrator`, `executor`, optional `reviewer`.
 - Subagents and docs reference a **role**; never a concrete model name.
 - A **single mapping** lives in the active tool's adapter (`.claude/settings.json`
-  for Claude Code; see ADR-0009), created in roadmap Phase 2:
+  for Claude Code; see ADR-0009), created as part of the agent-foundations
+  roadmap work:
 
   ```jsonc
-  // illustrative shape — authoritative version lands in Phase 2
+  // illustrative shape — the authoritative version lands with the adapter
   {
     "agentRoles": {
       "orchestrator": { "model": "<current-flagship>", "purpose": "planning, review-before-push, ADR drafting, structural decisions" },
@@ -54,8 +55,9 @@ Chosen option: **role/tier abstraction, config-driven**.
 
 - Good: portable, drift-free, one-edit model swaps; consistent with SSOT rule.
 - Cost: one indirection (role → model) to learn.
-- Follow-ups: implemented in roadmap Phase 2 (`.claude/settings.json`,
-  `docs/agent-framework.md`) and Phase 6 (subagents reference roles).
+- Follow-ups: delivered as roadmap work — the role→model mapping
+  (`.claude/settings.json`, `docs/agent-framework.md`), then the subagents that
+  reference roles rather than model names.
 
 ## More information
 
