@@ -74,3 +74,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0008](0008-conventional-branch-naming.md) | Conventional branch naming | Accepted |
 | [0009](0009-agent-agnostic-framework.md) | Agent-agnostic framework with a tool-specific adapter layer | Accepted |
 | [0010](0010-apt-package-pinning-strategy.md) | APT package pinning strategy | Accepted |
+| [0011](0011-migrate-base-image-to-debian-trixie.md) | Migrate the base image to Debian 13 (trixie) | Accepted |

@@ -11,17 +11,17 @@ commandTests:
   - name: "Check Git version"
     command: "git"
     args: ["--version"]
-    expectedOutput: ["git version 2.39.5"]
+    expectedOutput: ["git version 2.47.3"]
 
   - name: "Check JQ version"
     command: "jq"
     args: ["--version"]
-    expectedOutput: ["jq-1.6"]
+    expectedOutput: ["jq-1.7"]
 
   - name: "Check OpenSSH client version"
     command: "ssh"
     args: ["-V"]
-    expectedError: ["OpenSSH_9.2p1"]
+    expectedError: ["OpenSSH_10.0p2"]
 
   - name: "Check Terraform CLI version"
     command: "terraform"
@@ -37,10 +37,11 @@ fileExistenceTests:
   - name: 'Check non-root user home'
     path: '/home/nonroot'
     shouldExist: true
-    permissions: 'drwxr-xr-x'
+    # Debian 13 (trixie) defaults HOME_MODE to 0700 (drwx------), stricter than
+    # bookworm's 0755 — see ADR-0011. The home is owned by the nonroot user.
+    permissions: 'drwx------'
     uid: 1001
     gid: 1001
-    isExecutableBy: 'group'
   - name: 'Check non-root user rights on /workspace folder'
     path: '/workspace'
     shouldExist: true
