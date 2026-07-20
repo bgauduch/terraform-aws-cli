@@ -37,10 +37,11 @@ fileExistenceTests:
   - name: 'Check non-root user home'
     path: '/home/nonroot'
     shouldExist: true
-    permissions: 'drwxr-xr-x'
+    # Debian 13 (trixie) defaults HOME_MODE to 0700 (drwx------), stricter than
+    # bookworm's 0755 — see ADR-0011. The home is owned by the nonroot user.
+    permissions: 'drwx------'
     uid: 1001
     gid: 1001
-    isExecutableBy: 'group'
   - name: 'Check non-root user rights on /workspace folder'
     path: '/workspace'
     shouldExist: true

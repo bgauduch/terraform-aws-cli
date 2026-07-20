@@ -53,6 +53,11 @@ work stay separate, so this migration is reviewable on its own.
 - Cost: the OS-package pins and the test assertions must be refreshed together
   with the base (same ADR-0010 maintenance step); the digest must be bumped when
   a newer `trixie-slim` is adopted.
+- Behaviour change: trixie hardens the default `HOME_MODE` to `0700`
+  (`/etc/login.defs`), so the non-root user's home is created `drwx------` instead
+  of bookworm's `drwxr-xr-x`. This is kept as-is (stricter is better; the home is
+  owned by the `nonroot` user) and the container-structure-test assertion is
+  updated to match rather than re-loosening the mode.
 - Follow-ups: the bundled-tool version refresh and the distribution / tag strategy
   are tracked separately in the roadmap; a `snapshot.debian.org` source (ADR-0010)
   remains the future path to pins that never break.
