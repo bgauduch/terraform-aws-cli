@@ -7,7 +7,7 @@
 > - Track A — *"Plan de modernisation"* (issue #106 + epics #98–#105)
 > - Track B — *"Claude Code framework roadmap"* (PRs #115 / #116)
 >
-> Last updated: 2026-06-14 · Status: Phase 0 in progress
+> Last updated: 2026-07-20 · Status: Phases 0–1 complete; Phase 2 (agent foundations) in progress
 >
 > Reconciliation decisions validated 2026-06-14:
 > phases backbone (epics folded in as content) · release-please ·
@@ -38,61 +38,23 @@ upstream is no longer maintained).
 
 ## Orchestration & development conventions (hard rules)
 
-These rules bind any agent session, sub-agent, or human contributor. They apply
-**now**, even before the framework phases land. They are the source of truth
-until extracted to `docs/agent-conventions.md` (Phase 2) and reflected in the
-agent instructions file (`AGENTS.md`, with a thin `CLAUDE.md` adapter for Claude
-Code) (Phase 2).
+These rules bind any agent session, sub-agent, or human contributor and apply
+**now**. They were extracted from this section into their single authoritative
+home, **[`docs/agent-conventions.md`](agent-conventions.md)** (agent-foundations
+work). `AGENTS.md` is the tool-agnostic entry point; `CLAUDE.md` is the thin
+Claude Code adapter (ADR-0009). The numbering there is stable, so references like
+"rule 8" elsewhere in this document still resolve.
 
-### Authorization (irreversible / shared-state actions)
-1. **NEVER merge a pull request without explicit human approval.** Even with
-   green CI and positive reviews, only the human triggers a merge.
-2. **NEVER push to `master` directly.** All changes flow through a phase branch
-   and a pull request.
-3. **NEVER create a pull request without an explicit request from the user.**
-   The agent commits, pushes, then reports — the user decides when to open the PR.
-4. **NEVER force-push, amend pushed commits, or rewrite shared history.** Always
-   add a new commit on top.
-5. **NEVER bypass hooks** (no `--no-verify`, no `--no-gpg-sign`). A failing hook
-   is a signal — fix the cause.
-6. **NEVER delete a branch, tag, or remote ref without explicit approval.**
+In one breath: authorization (no merge without a human · no `master` push · no
+force-push/history rewrite · no ref deletion · no hook bypass) · branching
+(`type/topic` / `type/phase-N-topic`, ADR-0008) · Conventional Commits (commits
+**and** PR titles) · one PR per phase · role/tier orchestration (ADR-0006) · scope
+discipline · English-only / SSOT.
 
-### Branching & delivery
-7. One branch per phase, named `type/phase-N-<topic>` (Conventional-Commits type,
-   kebab-case topic), off `master`. Non-phase work uses `type/<topic>`. No tool
-   or agent names in branch names. See ADR-0008.
-8. One pull request per phase. A phase may be split into a small number of
-   sequential PRs **only** if a single PR would be too large to review — they
-   stay strictly within the phase scope.
-
-### Commits
-9. Conventional Commits (`type(scope): subject`) for **both** commit messages
-   **and** PR titles. Strict from day one (enforced by `commitlint.yml` once
-   Phase 1 lands). The PR title matters because the squash-merge subject feeds
-   the release-please changelog.
-10. One commit per logical change for reviewability. Avoid mega-commits.
-11. Every commit body ends with the session trailer when produced in an agent
-    session.
-
-### Roles and delegation (orchestration)
-12. **The `orchestrator` role** owns planning, briefs, diff review before push,
-    structural decisions, ADR drafting.
-13. **The `executor` role** runs scoped briefs: implementation, refactors, docs.
-14. Every `executor` delegation **must** be reviewed by the `orchestrator`
-    (`git diff master..HEAD`) before push.
-15. Phase briefs are ephemeral (conversation only). They are reconstructable
-    from this roadmap + the relevant ADRs, so they are not committed.
-
-> Roles map to concrete models in one place (`.claude/settings.json` for Claude
-> Code) per ADR-0006 — never hard-coded in prose. See ADR-0009 for the
-> agent-agnostic / tool-adapter split.
-
-### Scope discipline
-16. A phase touches only files within its declared scope. Drift discovered
-    mid-phase is captured as a follow-up (TODO in the PR description or a new
-    ADR) — not silently included.
-17. Out-of-scope items are not added back without a decision update (a new entry
-    in the Decisions table and, if structural, an ADR).
+> **Amended 2026-07-20 (ADR-0012):** the former rule *"never open a PR without an
+> explicit request"* is replaced by **the agent opens PRs and drives their CI to
+> green; the human still owns the merge.** Every other authorization rule is
+> unchanged. Full text: [`docs/agent-conventions.md`](agent-conventions.md).
 
 ---
 
@@ -116,6 +78,7 @@ Code) (Phase 2).
 | Branch naming | `type/topic` (Conventional types), `type/phase-N-topic` for phases; no tool names | ADR-0008 |
 | Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
+| PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
 | Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
 | End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |
