@@ -11,17 +11,17 @@ commandTests:
   - name: "Check Git version"
     command: "git"
     args: ["--version"]
-    expectedOutput: ["git version 2.39.5"]
+    expectedOutput: ["git version 2.47.3"]
 
   - name: "Check JQ version"
     command: "jq"
     args: ["--version"]
-    expectedOutput: ["jq-1.6"]
+    expectedOutput: ["jq-1.7"]
 
   - name: "Check OpenSSH client version"
     command: "ssh"
     args: ["-V"]
-    expectedError: ["OpenSSH_9.2p1"]
+    expectedError: ["OpenSSH_10.0p2"]
 
   - name: "Check Terraform CLI version"
     command: "terraform"

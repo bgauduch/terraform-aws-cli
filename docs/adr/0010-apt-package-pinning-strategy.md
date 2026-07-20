@@ -53,10 +53,14 @@ adopted now, to keep this change minimal.
 
 ## More information
 
+> **Amended 2026-07-20** — the base image moved from `bookworm` to Debian 13
+> (`trixie`) in ADR-0011; the pin-refresh procedure and the read-pins command
+> below now target `trixie`. The pinning *decision* is unchanged.
+
 Pin values are read with:
 
 ```bash
-docker run --rm debian:bookworm-slim bash -c \
+docker run --rm debian:trixie-slim bash -c \
   'apt-get update -qq && for p in ca-certificates curl gnupg unzip git jq openssh-client; do \
      printf "%s=%s\n" "$p" "$(apt-cache policy "$p" | awk "/Candidate:/{print \$2}")"; done'
 ```

@@ -7,7 +7,7 @@
 > - Track A — *"Plan de modernisation"* (issue #106 + epics #98–#105)
 > - Track B — *"Claude Code framework roadmap"* (PRs #115 / #116)
 >
-> Last updated: 2026-06-14 · Status: Phase 0 in progress
+> Last updated: 2026-07-20 · Status: Phases 0–1 complete; Phase 3 (Debian trixie base) in progress
 >
 > Reconciliation decisions validated 2026-06-14:
 > phases backbone (epics folded in as content) · release-please ·
@@ -111,6 +111,7 @@ Code) (Phase 2).
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` | ADR-0004 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
+| Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types), `type/phase-N-topic` for phases; no tool names | ADR-0008 |
@@ -175,7 +176,7 @@ Agnostic core + a thin Claude Code adapter (ADR-0009).
 
 ### Phase 3 — Versions & distribution *(P0)* — folds in #98, #100
 Urgent: current versions are frozen at end-2023 and accrue CVEs.
-- Bump Debian base image (`bookworm-20231120-slim` → recent dated tag) *(#98)*
+- Bump Debian base image (`bookworm-20231120-slim` → Debian 13 `trixie`, digest-pinned) — **done, ADR-0011** *(#98)*
 - Re-pin APT packages in all stages (`curl`, `gnupg`, `ca-certificates`, `git`, `jq`, `openssh-client`, `unzip`) *(#98)*
 - Add recent Terraform (1.7.x → 1.11.x) and AWS CLI (2.15.x → 2.17.x) to `supported_versions.json`; regenerate `security/` files (`.asc`, `SHA256SUMS`, `.sig`) *(#98)*
 - Bump GitHub Actions (`checkout`, `setup-qemu`, `setup-buildx`, `build-push`, `dockerhub-description`), `container-structure-test`, `hadolint` *(#98)*
