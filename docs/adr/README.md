@@ -76,3 +76,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0010](0010-apt-package-pinning-strategy.md) | APT package pinning strategy | Accepted |
 | [0011](0011-migrate-base-image-to-debian-trixie.md) | Migrate the base image to Debian 13 (trixie) | Accepted |
 | [0012](0012-agent-opens-and-drives-pull-requests.md) | The agent opens and drives pull requests; the human owns the merge | Accepted |
+| [0013](0013-documentation-ssot-and-concision.md) | Documentation is SSOT-pointered and concise | Accepted |

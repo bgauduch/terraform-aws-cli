@@ -22,4 +22,5 @@ commit/dependency config, or the agent framework `.claude/`) requires an ADR. Se
 - [ ] PR title follows Conventional Commits
 - [ ] Commits are scoped and reviewable
 - [ ] Docs / roadmap updated if behaviour or policy changed
+- [ ] Docs point to their single home (no restated facts); intros/sections earn their space (ADR-0013)
 - [ ] Touches only files within the declared phase scope
