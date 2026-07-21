@@ -19,8 +19,8 @@ authoritative plan and decisions live in [`docs/roadmap.md`](docs/roadmap.md) an
 
 ## Branches
 
-- `type/topic` (kebab-case), e.g. `fix/aws-cli-checksum`.
-- Roadmap-phase work: `type/phase-N-topic`, e.g. `ci/phase-5-trivy`.
+- `type/topic` (kebab-case), e.g. `fix/aws-cli-checksum`. No phase numbers — phase
+  membership is roadmap/issue domain, not the branch name.
 - No tool or agent names in branch names. See [ADR-0008](docs/adr/0008-conventional-branch-naming.md).
 
 ## Architecture Decision Records

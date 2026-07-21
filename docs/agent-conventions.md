@@ -25,9 +25,10 @@ points here). Entry point: [`AGENTS.md`](../AGENTS.md); Claude Code adapter
 
 ## Branching & delivery
 
-7. One branch per phase, named `type/phase-N-<topic>` (Conventional-Commits type,
-   kebab-case topic), off `master`. Non-phase work uses `type/<topic>`. No tool
-   or agent names in branch names. See ADR-0008.
+7. Branches are named `type/<topic>` — a Conventional-Commits type + a short
+   kebab-case topic — off `master`. No phase numbers (phase membership is
+   roadmap/issue domain, not the branch name) and no tool or agent names. See
+   ADR-0008.
 8. One pull request per phase. A phase may be split into a small number of
    sequential PRs **only** if a single PR would be too large to review — they
    stay strictly within the phase scope.
