@@ -21,8 +21,8 @@ Agent-session rules (authorization boundaries, roles) live in
 ## Branching
 
 - **B1 — Branches are named `type/<topic>`**: a Conventional-Commits type + a
-  short kebab-case slug, off `master`. `NEVER` phase numbers (roadmap/issue
-  domain, not git) or tool/agent names. See ADR-0008.
+  short kebab-case slug, off `master`. `NEVER` tool or agent names (tools
+  default to them). See ADR-0008.
 - **B2 — Every change flows through a branch and a pull request.** `NEVER` push
   `master` directly.
 - **B3 — `NEVER` force-push, amend pushed commits, or rewrite shared history.**
