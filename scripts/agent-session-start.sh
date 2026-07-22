@@ -50,7 +50,7 @@ fi
 cat >&2 <<'PTR'
 [agent-session-start] Resume here:
   * tracking issue #106  — live status, open PRs/issues, next actions (status SSOT)
-  * AGENTS.md            — rules entry point (-> docs/agent-conventions.md)
+  * AGENTS.md            — rules entry point (-> docs/conventions.md)
   * docs/roadmap.md      — the plan (phases, decisions)
   * docs/adr/            — the decisions and their rationale
   Local image verify recipe (Debian/version bumps): docs/agent-framework.md
