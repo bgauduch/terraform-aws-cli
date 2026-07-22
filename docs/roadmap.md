@@ -38,11 +38,13 @@ upstream is no longer maintained).
 
 ## Orchestration & development conventions (hard rules)
 
-The binding hard rules live in their single authoritative home,
-**[`docs/agent-conventions.md`](agent-conventions.md)** (entry point `AGENTS.md`;
-Claude Code adapter `CLAUDE.md`, ADR-0009). Rule numbering there is stable, so
-"rule N" references elsewhere in this document still resolve. Rule 3 was amended
-by ADR-0012 (the agent opens PRs and drives CI to green; the human owns the merge).
+The binding conventions live in their single authoritative homes, split by
+audience: **[`docs/conventions.md`](conventions.md)** (shared working
+conventions — branching, commits, delivery, ADRs, docs/language) and
+**`AGENTS.md`** (agent-session rules: authorization boundaries, roles;
+Claude Code adapter `CLAUDE.md`, ADR-0009). Durable records reference rules by
+concept; PR autonomy is governed by ADR-0012 (the agent opens PRs and drives CI
+to green; the human owns the merge).
 
 ---
 
@@ -68,7 +70,7 @@ by ADR-0012 (the agent opens PRs and drives CI to green; the human owns the merg
 | Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
-| Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `agent-conventions.md` |
+| Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `docs/conventions.md` |
 | Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
 | End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |
@@ -90,7 +92,8 @@ retained, its roadmap doc is replaced by this file).
 
 ## Phases
 
-Each phase is delivered as **one pull request** (occasionally split per rule 8)
+Each phase is delivered as **one pull request** (split only when a single PR
+would be too large to review — see the delivery conventions)
 to enable focused review. The "Folds in" column traces each former epic to its
 new home.
 
@@ -119,7 +122,7 @@ The contribution + release machinery. May split into 1a (governance docs) and
 ### Phase 2 — Agent foundations *(P0)* — Track B
 Agnostic core + a thin Claude Code adapter (ADR-0009).
 - `AGENTS.md` at repo root — agnostic SSOT (sources of truth, ADR rule, no hard-coded values); thin `CLAUDE.md` adapter pointing to it (Claude Code reads `CLAUDE.md`)
-- `docs/agent-framework.md` (architecture, walkthrough, token-cost notes) + `docs/agent-conventions.md` (extract of the hard rules above)
+- `docs/agent-framework.md` (architecture, walkthrough, token-cost notes) + `docs/conventions.md` (the working conventions, extracted from this file)
 - `.claude/README.md` (Claude adapter map)
 - `.claude/settings.json` — permissions allowlist **+ the role→model mapping** (`orchestrator`/`executor`/`reviewer`) per ADR-0006; no PostToolUse hook yet
 - `.gitignore`: `.claude/settings.local.json` *(done early)*

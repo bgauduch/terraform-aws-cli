@@ -6,8 +6,8 @@
 
 ## Context and problem statement
 
-The hard rules (`docs/agent-conventions.md`, formerly inlined in the roadmap)
-included: *"NEVER create a pull request without an explicit request from the user
+The agent authorization rules (home: `AGENTS.md`, § Session rules; formerly
+inlined in the roadmap) included: *"NEVER create a pull request without an explicit request from the user
 — the agent commits, pushes, then reports; the user decides when to open the
 PR."* In practice this makes every delivery a two-step hand-off: the agent pushes
 a branch and stops, then waits for the human to open the PR before CI can even
@@ -48,8 +48,8 @@ its own; the human still owns the merge.**
   / history rewrite, and branch/tag/ref deletion. Hooks are never bypassed.
 
 This **amends the authorization rule** that formerly forbade opening a pull request
-without an explicit request, in `docs/agent-conventions.md` (its single home); the
-roadmap's hard-rules section points there.
+without an explicit request. Its single home is `AGENTS.md` (§ Session rules);
+the shared working conventions live in `docs/conventions.md`.
 
 ### Consequences
 
@@ -59,13 +59,12 @@ roadmap's hard-rules section points there.
   test harness strong enough that "green locally" predicts "green in CI" — built
   as the agent-foundations harness work (SessionStart bootstrap +
   local build/test).
-- Follow-ups: `AGENTS.md` and the roadmap point to the amended rule (single home
-  in `docs/agent-conventions.md`); the SessionStart hook + local build/test make
+- Follow-ups: the SessionStart hook + local build/test make
   self-verification-before-push routine.
 
 ## More information
 
-- Rules home: [`docs/agent-conventions.md`](../agent-conventions.md); entry point
-  `AGENTS.md`; adapter `CLAUDE.md` (ADR-0009).
+- Agent-session rules: `AGENTS.md`; shared working conventions:
+  [`docs/conventions.md`](../conventions.md); adapter `CLAUDE.md` (ADR-0009).
 - The merge gate and branch-protection settings remain maintainer-managed in
   GitHub (see ADR-0002 for the squash-merge decision).

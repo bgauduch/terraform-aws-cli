@@ -1,85 +1,70 @@
-# Agent & contribution conventions
+# Working conventions
 
-Single authoritative home for the hard rules binding any agent session,
-sub-agent, or human contributor. Extracted from `docs/roadmap.md` (which now
-points here). Entry point: [`AGENTS.md`](../AGENTS.md); Claude Code adapter
-`CLAUDE.md` (ADR-0009).
+Binding conventions for every contributor, human or agent. Each section below
+has a stable anchor — other docs **link to a section, never restate it**.
+Agent-session rules (authorization boundaries, roles) live in
+[`AGENTS.md`](../AGENTS.md).
 
-## Authorization (irreversible / shared-state actions)
+## How rules are written
 
-1. **NEVER merge a pull request without explicit human approval.** Even with
-   green CI and positive reviews, only the human triggers a merge.
-2. **NEVER push to `master` directly.** All changes flow through a branch and a
-   pull request.
-3. **The agent MAY open a pull request and drive its CI to green** without a
-   per-PR request (**ADR-0012**, supersedes the former "never open a PR without
-   an explicit request"). The agent opens the PR, subscribes to its activity, and
-   fixes CI failures autonomously. It **reports and waits** when a fix is
-   ambiguous, architecturally significant, or would exceed the PR's declared
-   scope. The **human still owns the merge** (rule 1).
-4. **NEVER force-push, amend pushed commits, or rewrite shared history.** Always
-   add a new commit on top.
-5. **NEVER bypass hooks** (no `--no-verify`, no `--no-gpg-sign`). A failing hook
-   is a signal — fix the cause.
-6. **NEVER delete a branch, tag, or remote ref without explicit approval.**
+- One bold imperative sentence, plus at most two supporting sentences.
+- Binary: a reviewer can answer yes/no "was this followed?" on a given change.
+  Advisory guidance lives in `docs/` or an ADR, not here.
+- No judgement words; `NEVER` / `ALWAYS` / `MAY` mark the binding verbs.
+- Evolutions: append to the relevant section — per-section numbers (B1, C2, …)
+  never shift; amend with a dated note; new rules arrive via the learning
+  pipeline (L4). Durable records (ADRs) reference rules **by concept**, not by
+  number.
+- If this file outgrows quick scanning (~150 lines), split it into
+  `docs/conventions/` (one file per section) — as an explicit, separate change.
 
-## Branching & delivery
+## Branching
 
-7. Branches are named `type/<topic>` — a Conventional-Commits type + a short
-   kebab-case topic — off `master`. No phase numbers (phase membership is
-   roadmap/issue domain, not the branch name) and no tool or agent names. See
-   ADR-0008.
-8. One pull request per phase. A phase may be split into a small number of
-   sequential PRs **only** if a single PR would be too large to review — they
-   stay strictly within the phase scope.
+- **B1 — Branches are named `type/<topic>`**: a Conventional-Commits type + a
+  short kebab-case slug, off `master`. `NEVER` phase numbers (roadmap/issue
+  domain, not git) or tool/agent names. See ADR-0008.
+- **B2 — Every change flows through a branch and a pull request.** `NEVER` push
+  `master` directly.
+- **B3 — `NEVER` force-push, amend pushed commits, or rewrite shared history.**
+  Add commits on top; integrate `master` by merging it into the branch (the
+  squash-merge flattens it at the end).
 
 ## Commits
 
-9. Conventional Commits (`type(scope): subject`) for **both** commit messages
-   **and** PR titles (enforced by `commitlint`). The PR title matters because the
-   squash-merge subject feeds the release-please changelog.
-10. One commit per logical change for reviewability. Avoid mega-commits.
-11. Every commit body ends with the session trailer when produced in an agent
-    session.
+- **C1 — Conventional Commits for commit messages AND PR titles**
+  (`type(scope): subject`, enforced by commitlint). The PR title becomes the
+  squash-merge subject and feeds the release-please changelog.
+- **C2 — One commit per logical change.**
+- **C3 — `NEVER` bypass hooks** (no `--no-verify`, no `--no-gpg-sign`) — a
+  failing hook is a signal; fix the cause.
+- **C4 — Agent-session commits end with the session trailer.**
 
-## Roles and delegation (orchestration)
+## Delivery
 
-12. **The `orchestrator` role** owns planning, briefs, diff review before push,
-    structural decisions, ADR drafting.
-13. **The `executor` role** runs scoped briefs: implementation, refactors, docs.
-14. Every `executor` delegation **must** be reviewed by the `orchestrator`
-    (`git diff master..HEAD`) before push.
-15. Phase briefs are ephemeral (conversation only). They are reconstructable from
-    the roadmap + the relevant ADRs, so they are not committed.
+- **D1 — Squash-merge only**: one PR becomes one commit on `master`.
+- **D2 — One focused PR per unit of work.** A roadmap phase ships as one PR,
+  split only when a single PR would be too large to review.
+- **D3 — A PR touches only its declared scope.** Drift discovered mid-work is
+  captured as a follow-up (PR description, issue, or ADR), `NEVER` silently
+  included; out-of-scope items return only with a decision update.
 
-> Roles map to concrete models in one place (`.claude/settings.json`) per
-> ADR-0006 — never in prose. See ADR-0009 for the agnostic core / adapter split.
+## ADRs
 
-## Scope discipline
+- **A1 — A structural change ships with an ADR** (`adr-check` CI gate; the
+  `adr-not-needed` label only when implementing an existing ADR). The **ADR
+  requirement** — what is structural, and when a dated note suffices instead —
+  is defined in [`docs/adr/README.md`](adr/README.md).
 
-16. A phase touches only files within its declared scope. Drift discovered
-    mid-phase is captured as a follow-up (TODO in the PR description or a new ADR)
-    — not silently included.
-17. Out-of-scope items are not added back without a decision update (a new entry
-    in the roadmap Decisions table and, if structural, an ADR).
+## Documentation & language
 
-## Content & language
-
-18. **English only** for all repo-facing content — code, docs, commit and
-    PR/issue text, review comments. This is a public showcase repository.
-19. **SSOT — one home per fact.** Community/prose docs cross-link, never copy;
-    ADRs may repeat content as frozen records. Public docs never embed internal
-    phase numbers (they point to the roadmap; delivering a phase flips
-    *planned → present tense*).
-20. **Never mirror mutable infra/UI settings in prose** — reference the GitHub
-    config (branch protection, merge settings, repo options). Decisions about
-    them live in ADRs; live values live in GitHub.
-21. **Docs point, don't restate; prose earns its space.** A fact has one home (the
-    SSOT rule above); everything else *links* to it and never re-states it — the
-    entry points (`AGENTS.md`, `CLAUDE.md`, the roadmap) are pointers, not copies.
-    Keep prose lean: intros and sections must add information, not boilerplate.
-22. **Learnings graduate to a durable home.** A mistake or learning is captured
-    transiently in the tracking issue (#106); it **graduates** as soon as it should
-    bind future work — to a rule here (with a dated note) for a do/don't, or to an
-    ADR for a decision with a real trade-off (see [`docs/adr/README.md`](adr/README.md)
-    for the bar). #106 keeps only live status and not-yet-graduated learnings.
+- **L1 — English only** for all repo-facing content: code, docs, commits,
+  PR/issue text, review comments.
+- **L2 — One home per fact; docs point, `NEVER` restate.** ADRs may repeat
+  content as frozen records; public docs never embed internal phase numbers.
+  Prose earns its space: intros and sections must add information.
+- **L3 — `NEVER` mirror mutable infra/UI settings in prose.** Reference the
+  GitHub config; decisions about them live in ADRs, live values in GitHub.
+- **L4 — Learnings graduate to a durable home.** Captured transiently in the
+  tracking issue (#106), then promoted: a rule here (with a dated note) for a
+  do/don't, an ADR for a decision meeting the ADR requirement. #106 keeps only
+  live status and not-yet-graduated learnings.
