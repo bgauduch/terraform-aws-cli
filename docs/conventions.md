@@ -47,8 +47,8 @@ Agent-session rules (authorization boundaries, roles) live in
   captured as a follow-up (PR description, issue, or ADR), `NEVER` silently
   included; out-of-scope items return only with a decision update.
 - **D4 — A PR's title and description track its current content.** When new
-  commits change what the PR delivers, update both in the same pass — the title
-  is the future squash-merge subject and feeds the changelog.
+  commits change what the PR delivers, update both in the same pass (the
+  title's downstream role: C1).
 
 ## ADRs
 
