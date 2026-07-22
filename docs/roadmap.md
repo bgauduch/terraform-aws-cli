@@ -182,6 +182,10 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Bump GitHub Actions (`checkout`, `setup-qemu`, `setup-buildx`, `build-push`, `dockerhub-description`), `container-structure-test`, `hadolint` *(#98)*
 - Rename image `zenika/terraform-aws-cli` → `bgauduch/terraform-aws-cli` everywhere *(#100)*
 - Publish to `ghcr.io/bgauduch/terraform-aws-cli` as second registry *(#100)*
+- Migrate the historical releases from the legacy `zenika/terraform-aws-cli`
+  Docker Hub repository to `bgauduch/terraform-aws-cli` — copy **all tags with
+  multi-arch manifests preserved** (`skopeo copy --all`), tags kept as-is
+  *(#137 — one-shot, after the new repo + secrets exist)*
 - Replace `echo | docker login` with `docker/login-action` (DockerHub + GHCR) *(#100, closes #60)*
 - Implement full tag strategy: `latest`, `edge`, `vX.Y.Z`, `vX.Y`, fully-pinned `vX.Y.Z_tf-A.B.C_aws-D.E.F` *(#100)*
 - Enable Docker Scout CVE monitoring *(#100)*
