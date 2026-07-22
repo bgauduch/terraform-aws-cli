@@ -4,6 +4,11 @@
 - Date: 2026-06-14
 - Deciders: @bgauduch
 
+> **Amended 2026-07-22** — the conventions file shipped as `docs/conventions.md`
+> (shared working conventions, all audiences); agent-session rules (authorization
+> boundaries, roles) live in `AGENTS.md` itself, per the AGENTS.md standard. The
+> core/adapter split below is unchanged.
+
 ## Context and problem statement
 
 The framework was authored around "Claude" — naming ("Claude Code framework",
