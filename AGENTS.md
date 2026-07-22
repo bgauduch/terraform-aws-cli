@@ -24,6 +24,9 @@ One home per fact: reference these, never copy them.
   passes). Executor output is diff-reviewed by the orchestrator before push.
   The role→model mapping lives only in `.claude/settings.json`. Phase briefs are
   ephemeral (conversation only) — reconstructable from the roadmap + ADRs.
+- **Session commits end with the session trailer** — the git trailers appended
+  to the commit body identifying the agent and linking the session (e.g.
+  `Co-Authored-By: …` + the session URL). Traceability: commit → session.
 - The [working conventions](docs/conventions.md) bind agents too.
 
 ## Verifying before you push

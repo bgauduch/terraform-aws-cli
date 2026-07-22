@@ -37,7 +37,6 @@ Agent-session rules (authorization boundaries, roles) live in
 - **C2 — One commit per logical change.**
 - **C3 — `NEVER` bypass hooks** (no `--no-verify`, no `--no-gpg-sign`) — a
   failing hook is a signal; fix the cause.
-- **C4 — Agent-session commits end with the session trailer.**
 
 ## Delivery
 
@@ -60,8 +59,8 @@ Agent-session rules (authorization boundaries, roles) live in
 - **L1 — English only** for all repo-facing content: code, docs, commits,
   PR/issue text, review comments.
 - **L2 — One home per fact; docs point, `NEVER` restate.** ADRs may repeat
-  content as frozen records; public docs never embed internal phase numbers.
-  Prose earns its space: intros and sections must add information.
+  content as frozen records. Prose earns its space: intros and sections must
+  add information.
 - **L3 — `NEVER` mirror mutable infra/UI settings in prose.** Reference the
   GitHub config; decisions about them live in ADRs, live values in GitHub.
 - **L4 — Learnings graduate to a durable home.** Captured transiently in the
