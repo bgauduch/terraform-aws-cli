@@ -19,11 +19,14 @@ change is structural if it touches one of these and alters behaviour or policy:
 
 A pure version bump, a typo fix, or a docs tweak does **not** need an ADR.
 
+### The ADR requirement
+
 An ADR records a **durable decision with a real trade-off** that is costly to
 reverse — something a future contributor will ask *why?* about. A **reversible
-convention or style choice** (a naming detail, a doc-style rule) is **not** an ADR:
-it lives in [`docs/agent-conventions.md`](../agent-conventions.md) with a dated
-amend note. Prefer the note over a new ADR, especially during build-out.
+convention or style choice** (a naming detail, a doc-style rule) does **not**
+meet the requirement: it lives in [`docs/conventions.md`](../conventions.md)
+with a dated amend note. When other docs cite "the ADR requirement", they mean
+this section.
 
 ## How it is enforced
 
