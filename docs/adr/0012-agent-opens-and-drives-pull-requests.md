@@ -30,7 +30,7 @@ the irreversible actions human-gated. The question is where to draw the new line
 - **Status quo** — agent pushes, human opens the PR. *Rejected — the relay adds
   latency and defeats the autonomy goal.*
 - **Full autonomy incl. merge** — agent also merges on green. *Rejected — merge is
-  the irreversible act that must stay human-owned (rule 1).*
+  the irreversible act that must stay human-owned.*
 - **Agent opens and drives PRs; human merges.** Chosen.
 
 ## Decision outcome
@@ -44,11 +44,11 @@ its own; the human still owns the merge.**
 - The agent **reports and waits** when a fix is ambiguous, architecturally
   significant, or would exceed the PR's declared scope (unchanged escalation
   discipline).
-- **Unchanged and still human-owned:** merging (rule 1), direct `master` pushes
-  (rule 2), force-push / history rewrite (rule 4), branch/tag/ref deletion
-  (rule 6). Hooks are never bypassed (rule 5).
+- **Unchanged and still human-owned:** merging, direct `master` pushes, force-push
+  / history rewrite, and branch/tag/ref deletion. Hooks are never bypassed.
 
-This **amends rule 3** in `docs/agent-conventions.md` (its single home); the
+This **amends the authorization rule** that formerly forbade opening a pull request
+without an explicit request, in `docs/agent-conventions.md` (its single home); the
 roadmap's hard-rules section points there.
 
 ### Consequences

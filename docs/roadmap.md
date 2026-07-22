@@ -68,7 +68,7 @@ by ADR-0012 (the agent opens PRs and drives CI to green; the human owns the merg
 | Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
-| Docs SSOT & concision | Docs point to one home, never restate; prose earns its space; checked at review (no CI) | ADR-0013 |
+| Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `agent-conventions.md` |
 | Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
 | End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |

@@ -74,8 +74,12 @@ points here). Entry point: [`AGENTS.md`](../AGENTS.md); Claude Code adapter
 20. **Never mirror mutable infra/UI settings in prose** — reference the GitHub
     config (branch protection, merge settings, repo options). Decisions about
     them live in ADRs; live values live in GitHub.
-21. **Docs point, don't restate; prose earns its space (ADR-0013).** A fact has
-    one home (rule 19); everything else *links* to it and never re-states it —
-    the entry points (`AGENTS.md`, `CLAUDE.md`, the roadmap) are pointers, not
-    copies. Keep prose lean: intros and sections must add information, not
-    boilerplate.
+21. **Docs point, don't restate; prose earns its space.** A fact has one home (the
+    SSOT rule above); everything else *links* to it and never re-states it — the
+    entry points (`AGENTS.md`, `CLAUDE.md`, the roadmap) are pointers, not copies.
+    Keep prose lean: intros and sections must add information, not boilerplate.
+22. **Learnings graduate to a durable home.** A mistake or learning is captured
+    transiently in the tracking issue (#106); it **graduates** as soon as it should
+    bind future work — to a rule here (with a dated note) for a do/don't, or to an
+    ADR for a decision with a real trade-off (see [`docs/adr/README.md`](adr/README.md)
+    for the bar). #106 keeps only live status and not-yet-graduated learnings.

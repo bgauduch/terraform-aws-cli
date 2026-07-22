@@ -19,6 +19,12 @@ change is structural if it touches one of these and alters behaviour or policy:
 
 A pure version bump, a typo fix, or a docs tweak does **not** need an ADR.
 
+An ADR records a **durable decision with a real trade-off** that is costly to
+reverse — something a future contributor will ask *why?* about. A **reversible
+convention or style choice** (a naming detail, a doc-style rule) is **not** an ADR:
+it lives in [`docs/agent-conventions.md`](../agent-conventions.md) with a dated
+amend note. Prefer the note over a new ADR, especially during build-out.
+
 ## How it is enforced
 
 1. **PR template checkbox** — every PR declares "ADR added" or "not structural".
@@ -76,4 +82,3 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0010](0010-apt-package-pinning-strategy.md) | APT package pinning strategy | Accepted |
 | [0011](0011-migrate-base-image-to-debian-trixie.md) | Migrate the base image to Debian 13 (trixie) | Accepted |
 | [0012](0012-agent-opens-and-drives-pull-requests.md) | The agent opens and drives pull requests; the human owns the merge | Accepted |
-| [0013](0013-documentation-ssot-and-concision.md) | Documentation is SSOT-pointered and concise | Accepted |
