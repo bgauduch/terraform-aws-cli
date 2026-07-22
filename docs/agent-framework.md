@@ -1,14 +1,14 @@
 # Agent framework
 
 How the framework fits together and how to **verify an image change locally
-before pushing**. Rules: [`docs/conventions.md`](conventions.md);
-entry point: [`AGENTS.md`](../AGENTS.md).
+before pushing**. Working conventions: [`docs/conventions.md`](conventions.md);
+agent entry point and session rules: [`AGENTS.md`](../AGENTS.md).
 
 ## Architecture: agnostic core + tool adapter (ADR-0009)
 
 ```
-AGENTS.md ─────────────► tool-agnostic entry point (any agent reads this)
-  ├─ docs/conventions.md   the binding hard rules
+AGENTS.md ─────────────► agent entry point + session rules (any agent reads this)
+  ├─ docs/conventions.md         the shared working conventions
   ├─ docs/roadmap.md             the plan
   └─ docs/adr/                   the decisions + rationale
 
