@@ -21,25 +21,25 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Retrieve latest suported versions
         run: |
-          echo "TF_VERSION=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)" >> $GITHUB_ENV
-          echo "AWS_VERSION=$(jq -r '.awscli_versions | sort | .[-1]' supported_versions.json)" >> $GITHUB_ENV
+          echo "TF_VERSION=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
+          echo "AWS_VERSION=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push container images
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/386

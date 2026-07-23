@@ -6,8 +6,8 @@ set -eo pipefail
 # FIXME: if provided, both TF and AWS CLI semvers should be regex-validated
 
 # Set AWS and TF CLI to latest supported versions if not specified
-[[ -n $1 ]] && AWS_VERSION=$1 || AWS_VERSION=$(jq -r '.awscli_versions | sort | .[-1]' supported_versions.json)
-[[ -n $2 ]] && TF_VERSION=$2 || TF_VERSION=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)
+[[ -n $1 ]] && AWS_VERSION=$1 || AWS_VERSION=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)
+[[ -n $2 ]] && TF_VERSION=$2 || TF_VERSION=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)
 
 # Set image name and tag (dev if not specified)
 IMAGE_NAME="bgauduch/terraform-aws-cli"
@@ -45,7 +45,7 @@ echo "Executing container structure test..."
 docker container run --rm --interactive \
   --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
   --volume /var/run/docker.sock:/var/run/docker.sock:ro \
-  gcr.io/gcp-runtimes/container-structure-test:v1.15.0 test \
+  gcr.io/gcp-runtimes/container-structure-test:v1.16.0 test \
   --image ${IMAGE_NAME}:${IMAGE_TAG} \
   --config /tests.yml
 
