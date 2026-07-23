@@ -66,8 +66,8 @@ jobs:
 
       - name: Determine if this is the latest version combination
         run: |
-          LATEST_TF=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)
-          LATEST_AWS=$(jq -r '.awscli_versions | sort | .[-1]' supported_versions.json)
+          LATEST_TF=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)
+          LATEST_AWS=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)
           if [ "${{ matrix.tf_versions }}" = "${LATEST_TF}" ] && [ "${{ matrix.awscli_versions }}" = "${LATEST_AWS}" ]; then
             echo "IS_LATEST=true" >> $GITHUB_ENV
           else

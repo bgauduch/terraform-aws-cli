@@ -25,8 +25,8 @@ jobs:
 
       - name: Retrieve latest suported versions
         run: |
-          echo "TF_VERSION=$(jq -r '.tf_versions | sort | .[-1]' supported_versions.json)" >> $GITHUB_ENV
-          echo "AWS_VERSION=$(jq -r '.awscli_versions | sort | .[-1]' supported_versions.json)" >> $GITHUB_ENV
+          echo "TF_VERSION=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
+          echo "AWS_VERSION=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
