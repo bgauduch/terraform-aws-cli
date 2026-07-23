@@ -45,7 +45,7 @@ echo "Executing container structure test..."
 docker container run --rm --interactive \
   --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
   --volume /var/run/docker.sock:/var/run/docker.sock:ro \
-  gcr.io/gcp-runtimes/container-structure-test:v1.15.0 test \
+  gcr.io/gcp-runtimes/container-structure-test:v1.16.0 test \
   --image ${IMAGE_NAME}:${IMAGE_TAG} \
   --config /tests.yml
 
