@@ -103,6 +103,7 @@ Do not hesitate to contribute by [filling an issue](https://github.com/bgauduch/
 * [Contributing guide](CONTRIBUTING.md)
 * [Code of conduct](CODE_OF_CONDUCT.md)
 * [Security policy](SECURITY.md)
+* [Publishing & registry auth](docs/publishing.md)
 * [Rollback policy](docs/rollback.md)
 * [Dependencies upgrades checklist](docs/dependencies-upgrades.md)
 * [Binaries verifications](docs/binaries-verifications.md)
