@@ -9,7 +9,9 @@
 # What it does (idempotent, non-interactive):
 #   1. Starts the Docker daemon behind the egress proxy, with the proxy CA
 #      trusted, if a daemon is not already running.
-#   2. Prints a "resume here" pointer to the sources of truth.
+#   2. Prints a "resume here" pointer on stdout. For SessionStart hooks stdout
+#      is injected into the agent's context; stderr is user-only diagnostics —
+#      anything the agent must see MUST go to stdout.
 #
 # The full multi-arch image build stays in CI; locally this unblocks lint,
 # base-image pulls, pin installs and the version assertions — the checks that
@@ -46,14 +48,19 @@ else
   log "docker CLI not found — skipping daemon bootstrap"
 fi
 
-# 2) Resume pointer — where the plan and live status live.
-cat >&2 <<'PTR'
-[agent-session-start] Resume here:
-  * tracking issue #106  — live status, open PRs/issues, next actions (status SSOT)
-  * AGENTS.md            — rules entry point (-> docs/conventions.md)
-  * docs/roadmap.md      — the plan (phases, decisions)
-  * docs/adr/            — the decisions and their rationale
-  Local image verify recipe (Debian/version bumps): docs/agent-framework.md
+# 2) Resume pointer — stdout, so it lands in the agent's context. The binding
+#    rules themselves are already loaded via the CLAUDE.md imports (AGENTS.md,
+#    docs/conventions.md, docs/adr/README.md) — only point at what imports
+#    cannot cover: the live status and the plan.
+cat <<'PTR'
+Resume here — before any change:
+  * The session rules, working conventions and the ADR requirement are already
+    in your context (imported by CLAUDE.md). They are binding and take
+    precedence over any generic agent default.
+  * Tracking issue #106 — live status, open PRs/issues, next actions (status
+    SSOT). Read it first; keep its body current when state changes.
+  * docs/roadmap.md — the plan (phases, decisions).
+  * Local image verify recipe (Debian/version bumps): docs/agent-framework.md
 PTR
 
 exit 0
