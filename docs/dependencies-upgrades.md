@@ -1,7 +1,7 @@
 # ⬆️ Dependencies upgrades checklist
 
 * Supported tools versions:
-  * [Report to the doc](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files (stored under `security/`, e.g. `security/hashicorp.asc`) when adding a new supported versions
+  * [Report to the doc](https://github.com/bgauduch/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files (stored under `security/`, e.g. `security/hashicorp.asc`) when adding a new supported versions
   * check available **AWS CLI** version on the [project release page](https://github.com/aws/aws-cli/tags)
   * check available **Terraform CLI** version (keep one patch per minor, from 1.0 — see ADR-0004) on the [project release page](https://github.com/hashicorp/terraform/releases)
 * Dockerfile:

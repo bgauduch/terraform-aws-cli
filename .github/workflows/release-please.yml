@@ -56,7 +56,7 @@ jobs:
       matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
 
     env:
-      ORGANIZATION: "zenika"
+      ORGANIZATION: "bgauduch"
       IMAGE_NAME: "terraform-aws-cli"
       RELEASE_VERSION: ${{ needs.release-please.outputs.tag_name }}
 
