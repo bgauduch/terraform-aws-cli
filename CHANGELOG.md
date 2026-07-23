@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.1.1](https://github.com/bgauduch/terraform-aws-cli/compare/v8.1.0...v8.1.1) (2026-07-23)
+
+
+### Bug Fixes
+
+* **publish:** point image identity to the bgauduch namespace ([#141](https://github.com/bgauduch/terraform-aws-cli/issues/141)) ([f251933](https://github.com/bgauduch/terraform-aws-cli/commit/f2519338ced5ca994b2105c0d1904d7d2aa4520a))
+
 ## [8.1.0](https://github.com/bgauduch/terraform-aws-cli/compare/v8.0.1...v8.1.0) (2026-07-22)
 
 
