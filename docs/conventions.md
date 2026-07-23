@@ -52,8 +52,7 @@ Agent-session rules (authorization boundaries, roles) live in
 - **D5 — A state change ships with its status update.** Opening, merging or
   closing a PR — or completing a tracked task — edits the tracking issue (#106)
   body in the same gesture; epic/phase checklists are ticked when the
-  delivering PR merges. *(Added 2026-07-23, graduated from the tracking
-  issue's learnings.)*
+  delivering PR merges. *(Added 2026-07-23.)*
 
 ## ADRs
 
