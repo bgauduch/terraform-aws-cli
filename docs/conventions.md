@@ -12,9 +12,9 @@ Agent-session rules (authorization boundaries, roles) live in
   Advisory guidance lives in `docs/` or an ADR, not here.
 - No judgement words; `NEVER` / `ALWAYS` / `MAY` mark the binding verbs.
 - Evolutions: append to the relevant section — per-section numbers (B1, C2, …)
-  never shift; amend with a dated note; new rules arrive via the learning
-  pipeline (L4). Durable records (ADRs) reference rules **by concept**, not by
-  number.
+  never shift; git history is the change record; new rules arrive via the
+  learning pipeline (L4). Durable records (ADRs) reference rules **by
+  concept**, not by number.
 - If this file outgrows quick scanning (~150 lines), split it into
   `docs/conventions/` (one file per section) — as an explicit, separate change.
 
@@ -52,7 +52,7 @@ Agent-session rules (authorization boundaries, roles) live in
 - **D5 — A state change ships with its status update.** Opening, merging or
   closing a PR — or completing a tracked task — edits the tracking issue (#106)
   body in the same gesture; epic/phase checklists are ticked when the
-  delivering PR merges. *(Added 2026-07-23.)*
+  delivering PR merges.
 
 ## ADRs
 
@@ -71,6 +71,6 @@ Agent-session rules (authorization boundaries, roles) live in
 - **L3 — `NEVER` mirror mutable infra/UI settings in prose.** Reference the
   GitHub config; decisions about them live in ADRs, live values in GitHub.
 - **L4 — Learnings graduate to a durable home.** Captured transiently in the
-  tracking issue (#106), then promoted: a rule here (with a dated note) for a
+  tracking issue (#106), then promoted: a rule here for a
   do/don't, an ADR for a decision meeting the ADR requirement. #106 keeps only
   live status and not-yet-graduated learnings.
