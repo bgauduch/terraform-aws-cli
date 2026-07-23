@@ -1,18 +1,19 @@
 name: lint-dockerfile
 
-# trigger on any push
-# but not on master or tags
-# and only for dockerfile related modifications
+# Runs on pull requests (tests the merge result; covers fork contributions).
+# Secret-free by design; pull_request_target is banned. See ADR-0013.
 on:
-  push:
-    tags-ignore:
-      - "**"
-    branches:
-      - "**"
-      - "!master"
+  pull_request:
     paths:
       - "Dockerfile"
       - ".github/workflows/lint-dockerfile.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:

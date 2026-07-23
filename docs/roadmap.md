@@ -70,6 +70,7 @@ to green; the human owns the merge).
 | Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
+| PR-triggered CI | `pull_request` on secret-free CI only; no secrets in PR-triggered workflows; `pull_request_target` banned | ADR-0013 |
 | Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `docs/conventions.md` |
 | Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
@@ -146,7 +147,7 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Enable Docker Scout CVE monitoring *(#100)*
 
 ### Phase 4 — CI/CD hardening & code quality *(P1)* — folds in #103, #104
-- Add `pull_request` trigger to `lint-dockerfile` and `build-test` *(#103, closes #46)*
+- Add `pull_request` trigger to `lint-dockerfile` and `build-test` — **done, ADR-0013** *(#103, closes #46)*
 - Add `concurrency:` to every workflow (cancel stale runs) *(#103)*
 - Harmonise buildx `cache-from` / `cache-to` across workflows *(#103)*
 - Restrict multi-arch build (`amd64,arm64,arm/v7,386`) to publish workflows only *(#103)*
