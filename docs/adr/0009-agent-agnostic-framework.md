@@ -9,6 +9,16 @@
 > boundaries, roles) live in `AGENTS.md` itself, per the AGENTS.md standard. The
 > core/adapter split below is unchanged.
 
+> **Amended 2026-07-23** — the thin `CLAUDE.md` adapter now *imports*
+> (`@AGENTS.md`, `@docs/conventions.md`, `@docs/adr/README.md`) instead of only
+> linking: Claude Code loads imports into the session context at start, so the
+> binding rules reach the agent before any edit. A link had proven insufficient
+> (an agent skipped it and fell back on generic defaults). Likewise the
+> SessionStart hook prints its resume pointer on **stdout** — hook stdout is
+> injected into the agent's context, stderr is user-only, so the pointer was
+> previously invisible to agents. The core/adapter split is unchanged; another
+> tool's adapter would use its own equivalent loading mechanism.
+
 ## Context and problem statement
 
 The framework was authored around "Claude" — naming ("Claude Code framework",
