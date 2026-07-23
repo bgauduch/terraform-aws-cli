@@ -12,6 +12,13 @@ permissions:
   contents: read
   pull-requests: read
 
+# Cancel a superseded run for the same PR. Without this, the label-free `opened`
+# run can finish after the `labeled` run and flip the check red (a scheduling
+# race). Grouping per PR + cancel-in-progress keeps only the latest run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   adr-check:
     runs-on: ubuntu-22.04
