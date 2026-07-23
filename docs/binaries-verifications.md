@@ -6,7 +6,7 @@ Both Terraform SHA256SUM and signature files are verified against [Hashicorp pub
 
 Terraform archives are verified against there SHA256SUMS after donwload.
 
-Theses files need to be added to the [/security](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/security) folder.
+Theses files need to be added to the [/security](https://github.com/bgauduch/terraform-aws-cli/tree/master/security) folder.
 
 They can be downloaded from the [official Terraform releases](https://releases.hashicorp.com/terraform).
 
@@ -14,7 +14,7 @@ They can be downloaded from the [official Terraform releases](https://releases.h
 
 Both AWS CLI archives and signatures files are verified against AWS public GPG key.
 
-Theses files need to be added to the [/security](https://github.com/zenika-open-source/terraform-aws-cli/tree/master/security) folder.
+Theses files need to be added to the [/security](https://github.com/bgauduch/terraform-aws-cli/tree/master/security) folder.
 
 They can be downloaded locally using this command:
 

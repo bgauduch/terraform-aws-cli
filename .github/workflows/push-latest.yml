@@ -46,7 +46,7 @@ jobs:
           build-args: |
             TERRAFORM_VERSION=${{ env.TF_VERSION }}
             AWS_CLI_VERSION=${{ env.AWS_VERSION }}
-          tags: zenika/terraform-aws-cli:latest
+          tags: bgauduch/terraform-aws-cli:latest
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max

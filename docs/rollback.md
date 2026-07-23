@@ -29,17 +29,17 @@ meaning). That distinction is what makes rollback safe and predictable.
    reproducibility (CI jobs, base images):
 
    ```dockerfile
-   FROM zenika/terraform-aws-cli:v8.1.0_tf-1.6.5_aws-2.14.5
+   FROM bgauduch/terraform-aws-cli:v8.1.0_tf-1.6.5_aws-2.14.5
    ```
 
 2. To roll back, change the pin to the previous known-good fully-pinned tag:
 
    ```dockerfile
-   FROM zenika/terraform-aws-cli:v8.0.1_tf-1.6.5_aws-2.14.5
+   FROM bgauduch/terraform-aws-cli:v8.0.1_tf-1.6.5_aws-2.14.5
    ```
 
 3. Browse available tags on the
-   [Docker Hub tags page](https://hub.docker.com/r/zenika/terraform-aws-cli/tags)
+   [Docker Hub tags page](https://hub.docker.com/r/bgauduch/terraform-aws-cli/tags)
    and the matching changelog on the
    [GitHub releases page](https://github.com/bgauduch/terraform-aws-cli/releases).
 
