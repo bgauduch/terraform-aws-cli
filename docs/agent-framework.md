@@ -12,7 +12,9 @@ AGENTS.md ─────────────► agent entry point + session
   ├─ docs/roadmap.md             the plan
   └─ docs/adr/                   the decisions + rationale
 
-CLAUDE.md ─────────────► thin Claude Code adapter → AGENTS.md
+CLAUDE.md ─────────────► thin Claude Code adapter — imports AGENTS.md,
+  │                       docs/conventions.md and docs/adr/README.md into the
+  │                       session context at start (ADR-0009, amended)
   └─ .claude/{settings.json, README.md}   hook wiring + role→model map + perms
 
 scripts/agent-session-start.sh ► agnostic bootstrap (reused by the adapter)
