@@ -6,7 +6,7 @@ name: release-please
 # the project version (from Conventional Commits) and updates CHANGELOG.md.
 # Merging that Release PR creates the GitHub release + the project version tag
 # (vX.Y.Z); the build/push jobs below are gated on that release and publish the
-# images. No separate release.yml and no Personal Access Token are needed — the
+# images. No separate release.yml and no Personal Access Token are needed: the
 # build is wired in-workflow on the `release_created` output, so the default
 # GITHUB_TOKEN (plus the existing DockerHub secrets) is enough. A final
 # verify_release job asserts every expected tag is live on the registry and

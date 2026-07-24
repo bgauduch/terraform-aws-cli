@@ -1,7 +1,7 @@
 name: build-test
 
 # Runs on pull requests (tests the merge result; covers fork contributions).
-# Fork PRs get no secrets and a read-only token by design — this workflow must
+# Fork PRs get no secrets and a read-only token by design: this workflow must
 # stay secret-free, and pull_request_target is banned. See ADR-0013.
 on:
   pull_request:
