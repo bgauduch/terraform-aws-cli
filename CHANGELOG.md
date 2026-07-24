@@ -1,5 +1,18 @@
 # Changelog
 
+## [8.2.0](https://github.com/bgauduch/terraform-aws-cli/compare/v8.1.1...v8.2.0) (2026-07-24)
+
+
+### Features
+
+* **versions:** update Terraform (1.7–1.15) and AWS CLI to current releases ([#145](https://github.com/bgauduch/terraform-aws-cli/issues/145)) ([d4ff0c0](https://github.com/bgauduch/terraform-aws-cli/commit/d4ff0c0afe57a69c430cd72116421ad9651860d7))
+
+
+### Bug Fixes
+
+* **agent:** load binding docs into agent context at session start ([#146](https://github.com/bgauduch/terraform-aws-cli/issues/146)) ([1cadd7b](https://github.com/bgauduch/terraform-aws-cli/commit/1cadd7b25c5417f0029886fbe41b4578a571f900))
+* **publish:** survive download failures and verify the release publication ([#149](https://github.com/bgauduch/terraform-aws-cli/issues/149)) ([1f2ac71](https://github.com/bgauduch/terraform-aws-cli/commit/1f2ac713b1a05e5c355314481aaffeea6860df42))
+
 ## [8.1.1](https://github.com/bgauduch/terraform-aws-cli/compare/v8.1.0...v8.1.1) (2026-07-23)
 
 
