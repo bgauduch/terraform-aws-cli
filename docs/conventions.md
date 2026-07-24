@@ -74,3 +74,7 @@ Agent-session rules (authorization boundaries, roles) live in
   tracking issue (#106), then promoted: a rule here for a
   do/don't, an ADR for a decision meeting the ADR requirement. #106 keeps only
   live status and not-yet-graduated learnings.
+- **L5 — Code comments state only what the code cannot show.** A comment
+  records a constraint or non-obvious behaviour, tersely; incident context,
+  versions and narration belong in commits, PRs and docs. `NEVER` em or en
+  dashes in code comments.
