@@ -45,6 +45,8 @@ jobs:
     runs-on: ubuntu-22.04
     needs: load_supported_versions
     strategy:
+      # One flaky combo must not cancel the others (matrix jobs are independent)
+      fail-fast: false
       matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
 
     steps:
