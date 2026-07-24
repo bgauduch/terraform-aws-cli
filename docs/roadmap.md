@@ -72,6 +72,7 @@ to green; the human owns the merge).
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
 | PR-triggered CI | `pull_request` on secret-free CI only; no secrets in PR-triggered workflows; `pull_request_target` banned | ADR-0013 |
 | Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `docs/conventions.md` |
+| Work intake & triage | Five-phase pipeline (dedup → study/go-nogo → prioritise → plan → realise) + closing integrity | ADR-0014 |
 | Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
 | Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
 | End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |
