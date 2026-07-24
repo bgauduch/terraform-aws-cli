@@ -6,9 +6,11 @@ name: release-please
 # the project version (from Conventional Commits) and updates CHANGELOG.md.
 # Merging that Release PR creates the GitHub release + the project version tag
 # (vX.Y.Z); the build/push jobs below are gated on that release and publish the
-# images. No separate release.yml and no Personal Access Token are needed — the
+# images. No separate release.yml and no Personal Access Token are needed: the
 # build is wired in-workflow on the `release_created` output, so the default
-# GITHUB_TOKEN (plus the existing DockerHub secrets) is enough.
+# GITHUB_TOKEN (plus the existing DockerHub secrets) is enough. A final
+# verify_release job asserts every expected tag is live on the registry and
+# opens an issue when the publication is incomplete.
 
 on:
   push:
@@ -18,6 +20,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   release-please:
@@ -53,6 +56,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     strategy:
+      # a failed combo must not cancel the independent sibling builds
+      fail-fast: false
       matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
 
     env:
@@ -113,3 +118,53 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  verify_release:
+    needs: [release-please, build_push_release]
+    # runs on partial matrix failure too and reports the missing tags
+    if: ${{ !cancelled() && needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-22.04
+
+    env:
+      ORGANIZATION: "bgauduch"
+      IMAGE_NAME: "terraform-aws-cli"
+      RELEASE_VERSION: ${{ needs.release-please.outputs.tag_name }}
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Assert every expected tag is live on Docker Hub
+        run: |
+          set -euo pipefail
+          missing=0
+          check () {
+            if curl --silent --fail --retry 5 --retry-delay 2 --retry-all-errors \
+              "https://hub.docker.com/v2/repositories/${ORGANIZATION}/${IMAGE_NAME}/tags/$1" > /dev/null; then
+              echo "OK       $1"
+            else
+              echo "MISSING  $1"
+              missing=1
+            fi
+          }
+          for tf in $(jq -r '.tf_versions[]' supported_versions.json); do
+            for aws in $(jq -r '.awscli_versions[]' supported_versions.json); do
+              check "${RELEASE_VERSION}_tf-${tf}_aws-${aws}"
+            done
+          done
+          check "${RELEASE_VERSION}"
+          check "latest"
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Release ${RELEASE_VERSION} publication is incomplete, image tags are missing on the registry."
+            exit 1
+          fi
+
+      - name: Open an issue when the publication is incomplete
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Release ${RELEASE_VERSION}: publication incomplete" \
+            --body "verify_release failed: expected image tags are missing on the registry. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,7 +1,7 @@
 name: build-test
 
 # Runs on pull requests (tests the merge result; covers fork contributions).
-# Fork PRs get no secrets and a read-only token by design — this workflow must
+# Fork PRs get no secrets and a read-only token by design: this workflow must
 # stay secret-free, and pull_request_target is banned. See ADR-0013.
 on:
   pull_request:
@@ -45,6 +45,8 @@ jobs:
     runs-on: ubuntu-22.04
     needs: load_supported_versions
     strategy:
+      # a failed combo must not cancel the independent sibling builds
+      fail-fast: false
       matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
 
     steps:
