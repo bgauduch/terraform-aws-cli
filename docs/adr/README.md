@@ -85,3 +85,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0011](0011-migrate-base-image-to-debian-trixie.md) | Migrate the base image to Debian 13 (trixie) | Accepted |
 | [0012](0012-agent-opens-and-drives-pull-requests.md) | The agent opens and drives pull requests; the human owns the merge | Accepted |
 | [0013](0013-pr-triggered-ci-security-boundary.md) | PR-triggered CI and its security boundary | Accepted |
+| [0014](0014-work-intake-and-triage-process.md) | Work intake and triage process (features, fixes, contributions) | Accepted |
