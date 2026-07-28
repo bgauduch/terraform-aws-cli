@@ -53,6 +53,10 @@ Agent-session rules (authorization boundaries, roles) live in
   closing a PR — or completing a tracked task — edits the tracking issue (#106)
   body in the same gesture; epic/phase checklists are ticked when the
   delivering PR merges.
+- **D6 — Close an issue or epic `completed` only when its declared scope is
+  delivered.** Undelivered scope is re-homed to a tracked issue with the
+  pointer in place before closing, or the item stays open. See ADR-0014
+  (closing integrity).
 
 ## ADRs
 

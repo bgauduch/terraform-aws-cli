@@ -46,15 +46,14 @@ version bumps, one-line fixes) skips to phase 5.
   - Reversible convention or style → `docs/conventions.md`, not an ADR.
 
 ### 5. Realisation
-- [ ] Deliver as one focused PR — delivery conventions D1–D5.
+- [ ] Deliver as one focused PR — delivery conventions D1–D6.
 - [ ] May be deferred or delegated; the issue body carries the plan across sessions.
 
 ## Closing integrity
 
-An issue or epic is `completed` **only** when its declared scope is delivered.
-Undelivered scope is **re-homed to a tracked issue with the pointer in place
-before closing**, or the item stays open. Never close `completed` over an
-unchecked box (the failure that stranded the Renovate custom manager in #20).
+Binding rule: **D6** in [`docs/conventions.md`](conventions.md) — declared scope
+delivered, or explicitly re-homed *before* closing. Never close `completed` over
+an unchecked box (the failure that stranded the Renovate custom manager in #20).
 
 ## Pointers
 

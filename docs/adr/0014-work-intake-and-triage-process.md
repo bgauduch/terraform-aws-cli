@@ -53,7 +53,7 @@ work flows through. The phases are the decision; the operational checklist is
    on behaviour, docs and process; record the plan in the **issue body** (the
    issue is the single home for its own spec + plan); resolve the **ADR
    lifecycle** (below).
-5. **Realisation** — deliver as one focused PR (delivery conventions D1–D5);
+5. **Realisation** — deliver as one focused PR (delivery conventions D1–D6);
    may be deferred or delegated over time.
 
 **ADR lifecycle is not re-specified here.** Creation, amendment, and
@@ -68,7 +68,9 @@ pipeline hooks into that process rather than duplicating it (conventions L2).
 `completed` only when its declared scope is delivered. Undelivered scope is
 **re-homed explicitly** (to another tracked issue, with the pointer in place
 *before* closing) or the item stays open. Never closed `completed` with an
-unchecked box and no re-home.
+unchecked box and no re-home. The rule is binding as **Delivery D6** in
+[`docs/conventions.md`](../conventions.md) — this ADR records the decision
+behind it.
 
 **Scales down:** a typo, a pure version bump, or an obvious one-line fix skips
 straight to realisation — the pipeline binds *net-new features, structural
@@ -82,15 +84,14 @@ changes, and external contributions*, not trivial hygiene.
 - Bad / cost: upfront ceremony per item; mitigated by the scale-down clause and
   by keeping the reference doc a short checklist, not a process manual.
 - Follow-ups: the operational checklist lives in
-  [`docs/work-intake-and-triage.md`](../work-intake-and-triage.md); a binary
-  *closing-integrity* rule may graduate into `docs/conventions.md` (Delivery) via
-  the learning pipeline if the ADR statement proves too soft in practice; the
-  Renovate custom-manager work (#20) is the first item re-run through this
-  pipeline.
+  [`docs/work-intake-and-triage.md`](../work-intake-and-triage.md); the
+  closing-integrity rule ships as the binding `docs/conventions.md` Delivery
+  rule **D6** alongside this ADR; the Renovate custom-manager work (#20) is the
+  first item re-run through this pipeline.
 
 ## More information
 
 - Motivating leak: epic #102 (closed `completed`) → re-homed to #20 / #106.
 - Related: `docs/roadmap.md` (prioritisation home), `docs/conventions.md`
-  (Delivery D1–D5, Docs/language L2), ADR-0001 (roadmap + framework as SSOT).
+  (Delivery D1–D6, Docs/language L2), ADR-0001 (roadmap + framework as SSOT).
 - The ADR requirement itself: [`docs/adr/README.md`](README.md).
