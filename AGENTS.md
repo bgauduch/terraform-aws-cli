@@ -19,6 +19,10 @@ One home per fact: reference these, never copy them.
   wait when a fix is ambiguous, architecturally significant, or beyond the PR's
   declared scope.
 - **`NEVER` delete a branch, tag, or remote ref** without explicit approval.
+- **Net-new work enters through the intake pipeline** (ADR-0014,
+  [`docs/work-intake-and-triage.md`](docs/work-intake-and-triage.md)): dedupe
+  and get a human `go` before creating an issue or starting delivery. Trivial
+  hygiene skips to realisation.
 - **Roles (ADR-0006):** `orchestrator` (planning, diff review before push, ADR
   drafting), `executor` (scoped implementation), `reviewer` (diff/lint/security
   passes). Executor output is diff-reviewed by the orchestrator before push.
