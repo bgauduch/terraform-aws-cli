@@ -19,6 +19,8 @@ version bumps, one-line fixes) skips to phase 5.
 - [ ] **Go/nogo gate** — answer both:
   - Is it **useful** (real problem, worth the maintenance)?
   - Does it **stay in product scope** (minimalist Terraform + AWS CLI image)?
+- [ ] The call is the **human maintainer's** (ADR-0014) — agents study and
+  recommend, the human decides.
 - [ ] Flag any **conflict with a recorded decision** (an existing ADR): it is a
   supersede candidate, resolved at planning.
 - [ ] `nogo` → record the reasoning, close `not planned` (or decline the PR).

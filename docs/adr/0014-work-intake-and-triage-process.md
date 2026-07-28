@@ -43,7 +43,9 @@ work flows through. The phases are the decision; the operational checklist is
 1. **Deduplication** — search existing issues, PRs, ADRs and the roadmap before
    anything else; link and defer to the existing home if found.
 2. **Study & framing** — analyse, qualify, ideate; a **go/nogo gate** answers *is
-   it useful?* and *does it stay in product scope?*. A `go` creates the issue
+   it useful?* and *does it stay in product scope?*. **The go/nogo call is the
+   human maintainer's** — agents study, qualify and recommend, the human decides
+   (the same ownership split as the merge, ADR-0012). A `go` creates the issue
    (the qualified spec); a `nogo` is recorded and closed `not planned`.
 3. **Prioritisation** — rank against other work, identify dependencies, and add
    it to `docs/roadmap.md` (phase + Decisions table when a decision is made).
