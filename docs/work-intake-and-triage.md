@@ -19,6 +19,8 @@ version bumps, one-line fixes) skips to phase 5.
 - [ ] **Go/nogo gate** — answer both:
   - Is it **useful** (real problem, worth the maintenance)?
   - Does it **stay in product scope** (minimalist Terraform + AWS CLI image)?
+- [ ] Flag any **conflict with a recorded decision** (an existing ADR): it is a
+  supersede candidate, resolved at planning.
 - [ ] `nogo` → record the reasoning, close `not planned` (or decline the PR).
 - [ ] `go` → create the issue: it is the **qualified spec** and its single home.
 
@@ -33,7 +35,13 @@ version bumps, one-line fixes) skips to phase 5.
   process, CI, security.
 - [ ] Record the plan in the **issue body** (edited in place, not scattered in
   comments).
-- [ ] Structural change? Draft the ADR now (the [ADR requirement](adr/README.md)).
+- [ ] Resolve the **ADR lifecycle** — the pipeline hooks into the existing ADR
+  process ([`docs/adr/README.md`](adr/README.md)), it does not restate it:
+  - New structural decision → draft a **new ADR** (the [ADR requirement](adr/README.md)).
+  - Reverses/changes a recorded decision → **supersede** the old ADR (status +
+    forward pointer).
+  - Clarifies or adds a detail/consequence → **amend in place** (dated note).
+  - Reversible convention or style → `docs/conventions.md`, not an ADR.
 
 ### 5. Realisation
 - [ ] Deliver as one focused PR — delivery conventions D1–D5.

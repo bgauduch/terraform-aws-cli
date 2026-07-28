@@ -49,9 +49,18 @@ work flows through. The phases are the decision; the operational checklist is
    it to `docs/roadmap.md` (phase + Decisions table when a decision is made).
 4. **Planning** — validate the plan; surface edge cases and cross-cutting impact
    on behaviour, docs and process; record the plan in the **issue body** (the
-   issue is the single home for its own spec + plan).
+   issue is the single home for its own spec + plan); resolve the **ADR
+   lifecycle** (below).
 5. **Realisation** — deliver as one focused PR (delivery conventions D1–D5);
    may be deferred or delegated over time.
+
+**ADR lifecycle is not re-specified here.** Creation, amendment, and
+supersession follow the existing ADR process
+([`docs/adr/README.md`](README.md), § Amending vs superseding): a conflict with a
+recorded decision is flagged as early as dedup/study (phase 1–2, a supersede
+candidate) and resolved at planning (phase 4) — new decision → new ADR; reversal
+→ supersede; clarification → amend; reversible convention → `conventions.md`. The
+pipeline hooks into that process rather than duplicating it (conventions L2).
 
 **Closing integrity (the rule that fixes the #102 defect):** an issue or epic is
 `completed` only when its declared scope is delivered. Undelivered scope is
