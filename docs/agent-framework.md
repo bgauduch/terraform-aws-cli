@@ -38,7 +38,7 @@ CA trusted system-wide) so the checks below need no manual setup.
 
 ### Runs locally (fast feedback)
 
-- **Lint** — `hadolint` on the `Dockerfile` (CI's version), via `dev.sh` or directly.
+- **Lint** — `hadolint` on the `Dockerfile` (CI's version), via `scripts/validate.sh` or directly.
 - **Base pull + pin gather** — pull the target base, read candidate OS package versions ([`docs/dependencies-upgrades.md`](dependencies-upgrades.md)).
 - **Pin install check** — confirm the *exact* pins install on the target base (catches a superseded pin before CI).
 - **Assertion values** — read the real tool outputs (`git`/`jq`/`ssh` versions, home-dir mode) the `container-structure-test` assertions must match.

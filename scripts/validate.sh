@@ -1,39 +1,47 @@
 #!/usr/bin/env bash
 #
-# Single verification oracle (see the ADR "single verification oracle"): the
-# same checks for the maintainer, the agent mid-loop, and CI (validate.yml).
-# T0 (--fast) needs no Docker and runs in seconds.
+# Single verification oracle (ADR-0016): the same checks for the maintainer,
+# the agent mid-loop, and CI. One entry point, two tiers:
+#   --fast  T0: structural checks only, no Docker, seconds (validate.yml runs
+#           exactly this on every PR)
+#   --full  T1: T0 checks, then hadolint, a single-platform image build and
+#           the container-structure-test run (absorbs the former dev.sh)
 #
 # Principle (ADR-0016): the oracle checks only invariants no purpose-built
-# tool covers, and calls tools rather than re-implementing them. Pass 1a
-# scope (#152):
-#   1. supported_versions.json <-> security/ signature material (both
-#      directions; nothing else checks the orphan direction at all)
-#   2. ADR files <-> ADR index (docs/adr/README.md)
-# plus hadolint when the binary is available locally (in CI that gate is
-# owned by lint-dockerfile.yml). Pin/template drift is deliberately NOT
-# checked here: container-structure-test owns its detection (T1/T2) and
-# the atomic write scripts (#152 PR 4) remove the drift class itself.
+# tool covers, and calls tools rather than re-implementing them. hadolint,
+# buildx and container-structure-test are called; their verdicts are theirs.
 #
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+HADOLINT_IMAGE="hadolint/hadolint:2.12.0-alpine"
+CST_IMAGE="gcr.io/gcp-runtimes/container-structure-test:v1.16.0"
+IMAGE_NAME="bgauduch/terraform-aws-cli"
+SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+$'
+
 FAIL=0
 pass() { printf 'PASS %s\n' "$*"; }
 fail() { printf 'FAIL %s\n' "$*" >&2; FAIL=1; }
 skip() { printf 'SKIP %s\n' "$*"; }
+die()  { printf 'validate: %s\n' "$*" >&2; exit 2; }
 
 usage() {
-  printf 'usage: %s --fast\n' "${0##*/}" >&2
-  printf '  --fast   structural checks only, no Docker required (T0)\n' >&2
+  cat >&2 <<'USAGE'
+usage: validate.sh --fast
+       validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
+
+  --fast   structural checks only, no Docker required (T0)
+  --full   T0 checks, then hadolint, single-platform image build and
+           container-structure-test (T1). Versions default to the latest
+           in supported_versions.json; the tag defaults to "dev".
+USAGE
   exit 2
 }
-[ "${1:-}" = "--fast" ] || usage
 
 # ---------------------------------------------------------------------------
-# 1. supported_versions.json <-> security/
+# T0: supported_versions.json <-> security/
 # Every supported version has its signature material; no orphan material for
 # versions that are no longer supported (sunset, ADR-0015).
 # ---------------------------------------------------------------------------
@@ -62,7 +70,7 @@ check_versions_security() {
 }
 
 # ---------------------------------------------------------------------------
-# 2. ADR files <-> index (docs/adr/README.md)
+# T0: ADR files <-> index (docs/adr/README.md)
 # ---------------------------------------------------------------------------
 check_adr_index() {
   local ok=1 f n
@@ -79,9 +87,10 @@ check_adr_index() {
 }
 
 # ---------------------------------------------------------------------------
-# 3. hadolint, when available (CI gate: lint-dockerfile.yml)
+# T0: hadolint via local binary when present (CI gate: lint-dockerfile.yml;
+# --full runs the pinned container instead)
 # ---------------------------------------------------------------------------
-check_hadolint() {
+check_hadolint_local() {
   if command -v hadolint >/dev/null 2>&1; then
     if hadolint --config hadolint.yaml Dockerfile; then
       pass "hadolint"
@@ -89,13 +98,88 @@ check_hadolint() {
       fail "hadolint reported issues"
     fi
   else
-    skip "hadolint not installed (CI gate: lint-dockerfile.yml)"
+    skip "hadolint not installed (CI gate: lint-dockerfile.yml; --full runs it in Docker)"
   fi
 }
 
-check_versions_security
-check_adr_index
-check_hadolint
+run_fast() {
+  check_versions_security
+  check_adr_index
+  check_hadolint_local
+}
+
+# ---------------------------------------------------------------------------
+# T1 (--full): hadolint + single-platform build + container-structure-test,
+# the pipeline formerly in dev.sh. Tool images stay pinned.
+# ---------------------------------------------------------------------------
+host_platform() {
+  case "$(uname -m)" in
+    x86_64)          printf 'linux/amd64' ;;
+    aarch64 | arm64) printf 'linux/arm64' ;;
+    *) die "unsupported host architecture: $(uname -m)" ;;
+  esac
+}
+
+run_full() {
+  local aws_version tf_version image_tag platform
+  aws_version="${1:-$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)}"
+  tf_version="${2:-$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)}"
+  image_tag="${3:-dev}"
+  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
+  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
+  platform="$(host_platform)"
+
+  run_fast
+  [ "$FAIL" = 0 ] || { printf 'validate: T0 failed, not building\n' >&2; exit 1; }
+
+  printf 'Linting Dockerfile (%s)...\n' "$HADOLINT_IMAGE"
+  docker container run --rm \
+    --volume "${PWD}":/data:ro \
+    --workdir /data \
+    "$HADOLINT_IMAGE" /bin/hadolint \
+    --config hadolint.yaml Dockerfile
+  pass "hadolint (containerized)"
+
+  printf 'Building %s:%s (AWS CLI %s, Terraform %s, %s)...\n' \
+    "$IMAGE_NAME" "$image_tag" "$aws_version" "$tf_version" "$platform"
+  docker buildx build \
+    --progress plain \
+    --platform "$platform" \
+    --build-arg AWS_CLI_VERSION="$aws_version" \
+    --build-arg TERRAFORM_VERSION="$tf_version" \
+    --tag "${IMAGE_NAME}:${image_tag}" \
+    --load .
+  pass "image build"
+
+  printf 'Running container-structure-test (%s)...\n' "$CST_IMAGE"
+  AWS_VERSION="$aws_version" TF_VERSION="$tf_version" \
+    envsubst '${AWS_VERSION},${TF_VERSION}' \
+    < tests/container-structure-tests.yml.template \
+    > tests/container-structure-tests.yml
+  docker container run --rm \
+    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+    "$CST_IMAGE" test \
+    --image "${IMAGE_NAME}:${image_tag}" \
+    --config /tests.yml
+  pass "container-structure-test"
+}
+
+MODE="${1:-}"
+case "$MODE" in
+  --fast)
+    [ "$#" -le 1 ] || usage
+    run_fast
+    ;;
+  --full)
+    shift
+    [ "$#" -le 3 ] || usage
+    run_full "$@"
+    ;;
+  *)
+    usage
+    ;;
+esac
 
 if [ "$FAIL" != 0 ]; then
   printf 'validate: FAILED\n' >&2

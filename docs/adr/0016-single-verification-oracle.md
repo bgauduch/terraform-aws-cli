@@ -41,9 +41,18 @@ linting, container-structure-test owns what the built image prints,
 commitlint owns messages — the oracle never re-derives their verdicts. Its
 territory is the cross-file repository invariants nothing else looks at.
 
-- `scripts/validate.sh --fast` is the T0 oracle: structural checks only, no
-  Docker, seconds. `validate.yml` runs exactly this script on every pull
-  request; it adds no logic of its own.
+- `scripts/validate.sh` is the **only verification entry point** — for the
+  contributor (CONTRIBUTING), the agent (AGENTS.md) and CI alike. `--fast`
+  is the T0 oracle: structural checks only, no Docker, seconds;
+  `validate.yml` runs exactly this on every pull request and adds no logic
+  of its own. `--full` is the T1 tier: the T0 checks, then hadolint, a
+  single-platform image build and the container-structure-test run — the
+  pipeline formerly in `dev.sh`, which is **decommissioned** in the same
+  change (one script locally and in CI; two entry points would themselves
+  violate the single-oracle invariant). The absorption fixes the open
+  `dev.sh` defects on the way: the `PLATEFORM` typo, the invalid
+  `linux/x86_64` platform string, missing `set -u`, unvalidated version
+  arguments, and the needless `--interactive` flags.
 - The oracle is built **in passes** (#152 PR 1): pass 1a ships
   `supported_versions.json` ↔ `security/**` (both directions — the orphan
   direction is checked by nothing else at all, and the missing-file

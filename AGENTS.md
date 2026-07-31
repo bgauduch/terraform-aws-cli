@@ -35,8 +35,10 @@ One home per fact: reference these, never copy them.
 
 ## Verifying before you push
 
-The repo ships a Docker image — verify with the tools, don't guess. `dev.sh`
-lints, builds and runs the `container-structure-test` assertions; pin/version
+The repo ships a Docker image — verify with the tools, don't guess.
+`scripts/validate.sh` is the single oracle (ADR-0016): `--fast` for the
+structural checks (seconds, no Docker), `--full` to also lint, build and run
+the `container-structure-test` assertions; pin/version
 data for base bumps comes from
 [`docs/dependencies-upgrades.md`](docs/dependencies-upgrades.md). CI is the
 authoritative (multi-arch) gate.
