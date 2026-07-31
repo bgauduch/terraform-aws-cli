@@ -65,6 +65,7 @@ to green; the human owns the merge).
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` — superseded by the sunset policy | ADR-0004 |
 | Version sunset | Support follows upstream EOL: latest three minor lines (two HashiCorp-patched + one grace); retired versions stay on immutable tags (#157) | ADR-0015 |
+| Verification oracle | One script, three callers (`scripts/validate.sh`): the same T0 fast checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
@@ -190,6 +191,13 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 - Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs, `dev.sh` if needed)
 - Update external links pointing at `master` (Docker Hub description, badges)
 - Record the rename in an ADR when executed
+
+### Harness track — pre-push verification & agent execution layer
+Cross-cutting track from the #152 study (staged `go 1–2`, 2026-07-31): fast
+validation oracle (ADR-0016), representative PR build matrix, then — behind a
+second gate — session guardrails, version/pin automation scripts, and agent
+skills. The qualified spec, sequencing and acceptance criteria live in #152
+(single home).
 
 ---
 

@@ -1,0 +1,26 @@
+name: validate
+
+# Fast structural checks (T0) on every pull request: the same oracle a human
+# or an agent runs locally (scripts/validate.sh --fast) — one oracle, three
+# callers (see the "single verification oracle" ADR). Secret-free by design
+# (ADR-0013). hadolint is not duplicated here: lint-dockerfile.yml owns it.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fast-checks:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Run the fast validation oracle
+        run: ./scripts/validate.sh --fast

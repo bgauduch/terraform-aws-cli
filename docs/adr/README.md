@@ -87,3 +87,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0013](0013-pr-triggered-ci-security-boundary.md) | PR-triggered CI and its security boundary | Accepted |
 | [0014](0014-work-intake-and-triage-process.md) | Work intake and triage process (features, fixes, contributions) | Accepted |
 | [0015](0015-version-support-follows-upstream-eol.md) | Version support follows upstream EOL (sunset policy) | Accepted |
+| [0016](0016-single-verification-oracle.md) | A single verification oracle shared by human, agent and CI | Accepted |
