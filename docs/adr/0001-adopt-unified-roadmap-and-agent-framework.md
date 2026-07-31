@@ -4,6 +4,12 @@
 - Date: 2026-06-14
 - Deciders: @bgauduch
 
+> **Amended 2026-07-31** — the SSOT is split by mutation rate: `docs/roadmap.md`
+> holds only the durable plan (phase scopes, decisions) and carries no progress
+> state; all live status is tracked solely in the issue #106 body (conventions
+> D5). Status annotations were removed from the roadmap accordingly. The
+> single-roadmap decision below is unchanged.
+
 ## Context and problem statement
 
 The repository was being modernized along two parallel, overlapping plans:

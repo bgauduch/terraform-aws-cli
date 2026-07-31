@@ -7,10 +7,15 @@ section.
 
 ## Workflow
 
-1. **Branch** off `master` — naming: [branching conventions](docs/conventions.md#branching).
-2. **Commit** — [commit conventions](docs/conventions.md#commits): Conventional
+1. **Qualify** — net-new features and non-trivial changes flow through the
+   [work-intake pipeline](docs/work-intake-and-triage.md) (ADR-0014): check for
+   an existing home, then open an issue and get the maintainer's go before
+   coding. Trivial hygiene (typos, pure version bumps, one-line fixes) skips
+   straight to a PR.
+2. **Branch** off `master` — naming: [branching conventions](docs/conventions.md#branching).
+3. **Commit** — [commit conventions](docs/conventions.md#commits): Conventional
    Commits, enforced by commitlint on every commit **and** the PR title.
-3. **Test locally**:
+4. **Test locally**:
 
    ```bash
    ./dev.sh                                        # latest supported versions
@@ -22,9 +27,9 @@ section.
    signature files under `security/` — see
    [`docs/binaries-verifications.md`](docs/binaries-verifications.md) and
    [`docs/dependencies-upgrades.md`](docs/dependencies-upgrades.md).
-4. **Open a PR** and fill the template. A structural change ships with an ADR —
+5. **Open a PR** and fill the template. A structural change ships with an ADR —
    see the [ADR requirement](docs/adr/README.md).
-5. **Review & merge** — CI must pass; the maintainer reviews and squash-merges
+6. **Review & merge** — CI must pass; the maintainer reviews and squash-merges
    ([delivery conventions](docs/conventions.md#delivery)). Head branches are
    auto-deleted.
 

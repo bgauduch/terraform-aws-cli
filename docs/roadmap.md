@@ -7,7 +7,9 @@
 > - Track A — *"Plan de modernisation"* (issue #106 + epics #98–#105)
 > - Track B — *"Claude Code framework roadmap"* (PRs #115 / #116)
 >
-> Last updated: 2026-07-20 · Status: Phases 0–1 complete; Phase 3 Debian-trixie base merged (#133); Phase 2 (agent foundations) in progress
+> **Live status lives only in issue #106** (the status SSOT, conventions D5).
+> This document holds the durable plan — phase scopes and decisions — and
+> carries no progress state.
 >
 > Reconciliation decisions validated 2026-06-14:
 > phases backbone (epics folded in as content) · release-please ·
@@ -84,12 +86,6 @@ to green; the human owns the merge).
 Superseded plans: issue #106 and PRs #115 (close) / #116 (its Phase 0 work is
 retained, its roadmap doc is replaced by this file).
 
-> **Brought forward (delivered ahead of Phase 1):** the ADR system now exists at
-> `docs/adr/` (ADR-0001…0007) capturing every decision above, together with its
-> enforcement (`.github/PULL_REQUEST_TEMPLATE.md`, `.github/workflows/adr-check.yml`,
-> `.github/CODEOWNERS`). The Entire scaffold (`docs/entire-setup.md`, `.gitignore`)
-> is also in place; activation is a local maintainer step (ADR-0007).
-
 ---
 
 ## Phases
@@ -99,7 +95,7 @@ would be too large to review — see the delivery conventions)
 to enable focused review. The "Folds in" column traces each former epic to its
 new home.
 
-### Phase 0 — Cleanup *(P0, in progress — PR #116)*
+### Phase 0 — Cleanup *(P0)*
 Pure hygiene, no new tooling.
 - This roadmap document (replaces the former `claude-framework-roadmap.md`)
 - Fix `push-latest.yml` (`supported_platforms.json` inexistent ref, wrong `hashicorp.asc` path → `security/**`)
@@ -133,7 +129,7 @@ Agnostic core + a thin Claude Code adapter (ADR-0009).
 
 ### Phase 3 — Versions & distribution *(P0)* — folds in #98, #100
 Urgent: current versions are frozen at end-2023 and accrue CVEs.
-- Bump Debian base image (`bookworm-20231120-slim` → Debian 13 `trixie`, digest-pinned) — **done, ADR-0011** *(#98)*
+- Bump Debian base image (`bookworm-20231120-slim` → Debian 13 `trixie`, digest-pinned) — ADR-0011 *(#98)*
 - Re-pin APT packages in all stages (`curl`, `gnupg`, `ca-certificates`, `git`, `jq`, `openssh-client`, `unzip`) *(#98)*
 - Add recent Terraform (1.7.x → 1.11.x) and AWS CLI (2.15.x → 2.17.x) to `supported_versions.json`; regenerate `security/` files (`.asc`, `SHA256SUMS`, `.sig`) *(#98)*
 - Bump GitHub Actions (`checkout`, `setup-qemu`, `setup-buildx`, `build-push`, `dockerhub-description`), `container-structure-test`, `hadolint` *(#98)*
@@ -148,12 +144,11 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Enable Docker Scout CVE monitoring *(#100)*
 
 ### Phase 4 — CI/CD hardening & code quality *(P1)* — folds in #103, #104
-- Add `pull_request` trigger to `lint-dockerfile` and `build-test` — **done, ADR-0013** *(#103, closes #46)*
+- Add `pull_request` trigger to `lint-dockerfile` and `build-test` — ADR-0013 *(#103, closes #46)*
 - Add `concurrency:` to every workflow (cancel stale runs) *(#103)*
 - Harmonise buildx `cache-from` / `cache-to` across workflows *(#103)*
 - Restrict multi-arch build (`amd64,arm64,arm/v7,386`) to publish workflows only *(#103)*
 - `dev.sh`: `getopts` parsing, semver validation, fix `PLATEFORM`→`PLATFORM` typo, `set -euo pipefail` *(#104)*
-- Dockerfile: merge separate `apt-get install` RUN layers in the `terraform` and `aws-cli` stages *(#104)*
 - Extend `container-structure-tests.yml.template`: negative tests (non-root user), binaries-in-`PATH` checks *(#104)*
 
 ### Phase 5 — Supply chain security *(P1)* — folds in #99
@@ -199,7 +194,8 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 
 ## Open PR & issue disposition
 
-How the existing work is preserved or retired under the reconciled plan.
+**Frozen record of the 2026-06-14 reconciliation** — how the then-existing work
+was preserved or retired. Live disposition is tracked in #106.
 
 | Item | Disposition |
 |---|---|
@@ -236,8 +232,8 @@ How the existing work is preserved or retired under the reconciled plan.
 
 - This roadmap is updated when a decision is added or changed; older entries are
   not deleted but marked superseded with a pointer to the new ADR.
-- Every structural change requires an ADR. See `.claude/skills/propose-adr`
-  (Phase 6).
+- Every structural change requires an ADR (see `docs/adr/README.md`); a
+  `propose-adr` skill is planned (Phase 6).
 - Every phase delivery is a single PR; the PR description references the phase
   block above.
 - Agent instructions (`AGENTS.md`/`CLAUDE.md`) and skill files reference sources
