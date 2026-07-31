@@ -33,6 +33,14 @@ Please report to the [releases page](https://github.com/bgauduch/terraform-aws-c
 
 > Any other tags are not supported even if available.
 
+**Version support policy:** supported Terraform versions follow upstream EOL —
+the latest three minor lines (the two [HashiCorp still patches](https://support.hashicorp.com/hc/en-us/articles/360021185113-Support-Period-and-End-of-Life-EOL-Policy)
+plus one kept as grace), one patch per line
+(see [ADR-0015](docs/adr/0015-version-support-follows-upstream-eol.md)).
+Retiring a version stops **new builds only**: every previously published
+fully-pinned tag (`vX.Y.Z_tf-A.B.C_aws-D.E.F`) is immutable and stays pullable
+forever — pin one of those to keep using an older combination.
+
 ## 💡 Motivation
 
 The goal is to create a **minimalist** and **lightweight** image with these tools in order to reduce network and storage impact.

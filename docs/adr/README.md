@@ -75,7 +75,7 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0001](0001-adopt-unified-roadmap-and-agent-framework.md) | Adopt a single reconciled roadmap and the agent development framework as SSOT | Accepted |
 | [0002](0002-contribution-and-release-workflow.md) | Contribution & release workflow (Conventional Commits, squash, release-please, Renovate) | Accepted |
 | [0003](0003-image-versioning-and-tag-strategy.md) | Image versioning and Docker tag strategy | Accepted |
-| [0004](0004-deprecate-terraform-below-1.0.md) | Deprecate Terraform versions below 1.0 | Accepted |
+| [0004](0004-deprecate-terraform-below-1.0.md) | Deprecate Terraform versions below 1.0 | Superseded by ADR-0015 |
 | [0005](0005-use-madr-format-for-adrs.md) | Use the MADR format for ADRs | Accepted |
 | [0006](0006-agent-orchestration-strategy.md) | Generic, config-driven agent orchestration strategy | Accepted |
 | [0007](0007-adopt-entire-checkpoints.md) | Adopt Entire / Checkpoints for agent-session capture | Proposed |
@@ -86,3 +86,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0012](0012-agent-opens-and-drives-pull-requests.md) | The agent opens and drives pull requests; the human owns the merge | Accepted |
 | [0013](0013-pr-triggered-ci-security-boundary.md) | PR-triggered CI and its security boundary | Accepted |
 | [0014](0014-work-intake-and-triage-process.md) | Work intake and triage process (features, fixes, contributions) | Accepted |
+| [0015](0015-version-support-follows-upstream-eol.md) | Version support follows upstream EOL (sunset policy) | Accepted |

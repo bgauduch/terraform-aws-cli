@@ -1,8 +1,13 @@
 # 0004 — Deprecate Terraform versions below 1.0
 
-- Status: Accepted
+- Status: Superseded by [ADR-0015](0015-version-support-follows-upstream-eol.md)
 - Date: 2026-06-14
 - Deciders: @bgauduch
+
+> **Superseded 2026-07-31** — the fixed `>= 1.0` floor is replaced by a rolling
+> upstream-EOL window (latest three minor lines) in ADR-0015; the floor is
+> subsumed. The "latest two minor lines" option rejected below is effectively
+> adopted there, in its one-release-grace form.
 
 ## Context and problem statement
 
