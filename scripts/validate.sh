@@ -4,12 +4,16 @@
 # same checks for the maintainer, the agent mid-loop, and CI (validate.yml).
 # T0 (--fast) needs no Docker and runs in seconds.
 #
-# Pass 1a scope (#152): the three highest-value drift checks
-#   1. supported_versions.json <-> security/ signature material
-#   2. Dockerfile apt pins <-> container-structure-test version assertions
-#   3. ADR files <-> ADR index (docs/adr/README.md)
+# Principle (ADR-0016): the oracle checks only invariants no purpose-built
+# tool covers, and calls tools rather than re-implementing them. Pass 1a
+# scope (#152):
+#   1. supported_versions.json <-> security/ signature material (both
+#      directions; nothing else checks the orphan direction at all)
+#   2. ADR files <-> ADR index (docs/adr/README.md)
 # plus hadolint when the binary is available locally (in CI that gate is
-# owned by lint-dockerfile.yml; the oracle does not duplicate it there).
+# owned by lint-dockerfile.yml). Pin/template drift is deliberately NOT
+# checked here: container-structure-test owns its detection (T1/T2) and
+# the atomic write scripts (#152 PR 4) remove the drift class itself.
 #
 set -euo pipefail
 
@@ -58,40 +62,7 @@ check_versions_security() {
 }
 
 # ---------------------------------------------------------------------------
-# 2. Dockerfile apt pins <-> test template version assertions
-# The template asserts what the tool prints, the Dockerfile pins the Debian
-# package: epochs, Debian revisions and pN suffixes differ (a 10.0p1 package
-# may print OpenSSH_10.0p2), so the comparison uses the numeric base version
-# with dot-boundary prefix matching in either direction.
-# ---------------------------------------------------------------------------
-pin_upstream() { # tool name -> upstream version from its Dockerfile pin
-  local raw
-  raw="$(grep -oE "${1}=[^ \\\\]+" Dockerfile | head -1 | cut -d= -f2)"
-  raw="${raw#*:}"          # strip epoch
-  printf '%s' "${raw%%-*}" # strip Debian revision
-}
-base_match() { # numeric bases match if one is a dot-prefix of the other
-  local a="${1%%p*}" b="${2%%p*}"
-  case "$b" in "$a" | "$a".*) return 0 ;; esac
-  case "$a" in "$b" | "$b".*) return 0 ;; esac
-  return 1
-}
-check_pins_template() {
-  local ok=1 tpl=tests/container-structure-tests.yml.template expected pinned
-  expected="$(grep -oE 'git version [0-9.]+' "$tpl" | awk '{print $3}')"
-  pinned="$(pin_upstream git)"
-  base_match "$expected" "$pinned" || { fail "git: template asserts ${expected}, Dockerfile pins ${pinned}"; ok=0; }
-  expected="$(grep -oE 'jq-[0-9.]+' "$tpl" | head -1 | cut -d- -f2)"
-  pinned="$(pin_upstream jq)"
-  base_match "$expected" "$pinned" || { fail "jq: template asserts ${expected}, Dockerfile pins ${pinned}"; ok=0; }
-  expected="$(grep -oE 'OpenSSH_[0-9.]+p?[0-9]*' "$tpl" | head -1 | cut -d_ -f2)"
-  pinned="$(pin_upstream openssh-client)"
-  base_match "$expected" "$pinned" || { fail "openssh: template asserts ${expected}, Dockerfile pins ${pinned}"; ok=0; }
-  [ "$ok" = 1 ] && pass "Dockerfile pins <-> test template assertions consistent"
-}
-
-# ---------------------------------------------------------------------------
-# 3. ADR files <-> index (docs/adr/README.md)
+# 2. ADR files <-> index (docs/adr/README.md)
 # ---------------------------------------------------------------------------
 check_adr_index() {
   local ok=1 f n
@@ -108,7 +79,7 @@ check_adr_index() {
 }
 
 # ---------------------------------------------------------------------------
-# 4. hadolint, when available (CI gate: lint-dockerfile.yml)
+# 3. hadolint, when available (CI gate: lint-dockerfile.yml)
 # ---------------------------------------------------------------------------
 check_hadolint() {
   if command -v hadolint >/dev/null 2>&1; then
@@ -123,7 +94,6 @@ check_hadolint() {
 }
 
 check_versions_security
-check_pins_template
 check_adr_index
 check_hadolint
 

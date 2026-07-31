@@ -33,19 +33,33 @@ worse than none — green locally must predict green in CI.
 
 ## Decision outcome
 
-Chosen option: **one script, three callers**.
+Chosen option: **one script, three callers**, bounded by one principle:
+
+**The oracle checks only invariants that no purpose-built tool covers, and
+it calls tools rather than re-implementing them.** hadolint owns Dockerfile
+linting, container-structure-test owns what the built image prints,
+commitlint owns messages — the oracle never re-derives their verdicts. Its
+territory is the cross-file repository invariants nothing else looks at.
 
 - `scripts/validate.sh --fast` is the T0 oracle: structural checks only, no
   Docker, seconds. `validate.yml` runs exactly this script on every pull
   request; it adds no logic of its own.
-- The oracle is built **in passes** (#152 PR 1): pass 1a ships the three
-  highest-value checks — `supported_versions.json` ↔ `security/**`,
-  Dockerfile apt pins ↔ `tests/container-structure-tests.yml.template`
-  assertions (numeric-base comparison: epochs, Debian revisions and pN
-  suffixes differ from what tools print), ADR files ↔ index — plus hadolint
-  when the binary is available. Later passes add the remaining #152 P2
-  checks (version policy per ADR-0015, workflow path filters, GPG key
-  expiry, the L5 dash gate) and `--full` (absorbing `dev.sh`, #152 PR 4).
+- The oracle is built **in passes** (#152 PR 1): pass 1a ships
+  `supported_versions.json` ↔ `security/**` (both directions — the orphan
+  direction is checked by nothing else at all, and the missing-file
+  direction otherwise fails minutes into a build at the GPG step) and ADR
+  files ↔ index, plus hadolint when the binary is available. Later passes
+  add the remaining #152 P2 checks (version policy per ADR-0015, workflow
+  path filters, GPG key expiry, the L5 dash gate) and `--full` (absorbing
+  `dev.sh`, #152 PR 4).
+- **Deliberately excluded — Dockerfile pins ↔ test-template assertions**: a
+  static re-parse would duplicate container-structure-test's authoritative
+  detection (T1 via `dev.sh`, T2 in CI) with a necessarily fuzzy version
+  comparison (a `10.0p1` package legitimately prints `OpenSSH_10.0p2`), and
+  the drift class itself is eliminated at the source by the atomic
+  Dockerfile+template writes of the automation scripts (#152 PR 4).
+  Rejected in review (2026-07-31) as wheel-reinvention — the principle
+  above generalises that review.
 - hadolint is **not** duplicated into `validate.yml`: `lint-dockerfile.yml`
   already owns that CI gate; locally the script runs it opportunistically.
 - `scripts/` joins the adr-check structural paths in the same change: the
@@ -55,8 +69,9 @@ Chosen option: **one script, three callers**.
 ### Consequences
 
 - Good: agents self-verify in seconds instead of paying a CI round-trip;
-  drift classes (the ADR-0011 pin/template class, the sunset material class)
-  are caught at T0; the acceptance criteria in #152 become measurable.
+  the sunset-material drift class is caught at T0; the acceptance criteria
+  in #152 become measurable. (The pin/template class stays with its owners:
+  container-structure-test detects, the PR 4 scripts prevent.)
 - Good: a red `validate` check on a PR means a structural inconsistency in
   the *change*, reviewable in one glance.
 - Constraint: a red T0 on `master` is treated as an oracle bug and fixed
