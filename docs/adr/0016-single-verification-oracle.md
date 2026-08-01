@@ -7,11 +7,10 @@
 ## Context and problem statement
 
 The repository's cheap structural invariants (supported versions ↔ signature
-material, Dockerfile pins ↔ test assertions, ADR files ↔ index) were checked
-by nothing: drift was only caught — sometimes — by an expensive CI build, or
-by a human noticing. The harness study (#152, staged `go 1–2` on 2026-07-31)
-calls for a fast pre-push oracle (T0) that an agent or a human can iterate
-against in seconds, without Docker.
+material, ADR files ↔ index) were checked by nothing: drift was only caught
+— sometimes — by an expensive CI build, or by a human noticing. The harness
+study (#152, staged `go 1–2` on 2026-07-31) calls for a fast pre-push oracle
+(T0) that an agent or a human can iterate against in seconds, without Docker.
 
 The design risk is duplication: a local script *and* a separate CI
 implementation of "the checks" inevitably diverge, and a divergent oracle is
@@ -42,31 +41,24 @@ commitlint owns messages — the oracle never re-derives their verdicts. Its
 territory is the cross-file repository invariants nothing else looks at.
 
 - `scripts/validate.sh` is the **only verification entry point** — for the
-  contributor (CONTRIBUTING), the agent (AGENTS.md) and CI alike. `--fast`
-  is the T0 oracle: structural checks only, no Docker, seconds;
+  contributor (README, CONTRIBUTING), the agent (AGENTS.md) and CI alike.
+  `--fast` is the T0 oracle: structural checks only, no Docker, seconds;
   `validate.yml` runs exactly this on every pull request and adds no logic
   of its own. `--full` is the T1 tier: the T0 checks, then hadolint, a
-  single-platform image build and the container-structure-test run. The
-  previous build script is **removed** in the same change: two local entry
-  points would themselves violate the single-oracle invariant. `--full`
-  therefore also delivers the #104 fixes that script never got — a correct
-  platform string, `set -u`, validated version arguments, no needless
-  `--interactive`.
-- The oracle is built **in passes** (#152 PR 1): pass 1a ships
-  `supported_versions.json` ↔ `security/**` (both directions — the orphan
-  direction is checked by nothing else at all, and the missing-file
-  direction otherwise fails minutes into a build at the GPG step) and ADR
-  files ↔ index, hadolint when the binary is available, and the `--full`
-  tier. Later passes add the remaining #152 P2 checks (version policy per
-  ADR-0015, workflow path filters, GPG key expiry, the L5 dash gate).
-- **Deliberately excluded — Dockerfile pins ↔ test-template assertions**: a
-  static re-parse would duplicate container-structure-test's authoritative
-  detection (T1 via `--full`, T2 in CI) with a necessarily fuzzy version
-  comparison (a `10.0p1` package legitimately prints `OpenSSH_10.0p2`), and
-  the drift class itself is eliminated at the source by the atomic
-  Dockerfile+template writes of the automation scripts (#152 PR 4).
-  Rejected in review (2026-07-31) as wheel-reinvention — the principle
-  above generalises that review.
+  single-platform image build and the container-structure-test run.
+- **T0's territory is the cross-file pair nothing watches**, and both
+  directions of a pair usually differ in value: for
+  `supported_versions.json` ↔ `security/**`, the orphan direction is
+  checked by nothing else at all, while the missing-file direction is
+  caught eventually, minutes into a build, at the GPG step. The check
+  inventory and its sequencing live in #152 (single home).
+- **Deliberately excluded — Dockerfile pins ↔ test-template assertions**:
+  container-structure-test already detects that drift authoritatively, on
+  the built image. A static re-parse would re-derive its verdict from the
+  source files with a necessarily fuzzy comparison, since a pin and the
+  string a tool prints are not the same value (a `10.0p1` package
+  legitimately prints `OpenSSH_10.0p2`). Rejected in review (2026-07-31) as
+  wheel-reinvention — the principle above generalises that review.
 - hadolint is **not** duplicated into `validate.yml`: `lint-dockerfile.yml`
   already owns that CI gate; locally the script runs it opportunistically.
 - **Orchestration is a thin per-environment adapter** (the ADR-0009
@@ -79,16 +71,14 @@ territory is the cross-file repository invariants nothing else looks at.
   and is called by CI; residual cross-adapter drift (tool versions pinned on
   both sides) is closed by a T0 coherence check rather than by forcing one
   caller through the other's machinery.
-- `scripts/` joins the adr-check structural paths in the same change: the
-  oracle and the coming capability layer live there, and a change to the
-  verifier is structural by nature.
+- `scripts/` joins the adr-check structural paths: a change to what verifies
+  the repository is structural by nature.
 
 ### Consequences
 
 - Good: agents self-verify in seconds instead of paying a CI round-trip;
   the sunset-material drift class is caught at T0; the acceptance criteria
-  in #152 become measurable. (The pin/template class stays with its owners:
-  container-structure-test detects, the PR 4 scripts prevent.)
+  in #152 become measurable.
 - Good: a red `validate` check on a PR means a structural inconsistency in
   the *change*, reviewable in one glance.
 - Constraint: a red T0 on `master` is treated as an oracle bug and fixed
