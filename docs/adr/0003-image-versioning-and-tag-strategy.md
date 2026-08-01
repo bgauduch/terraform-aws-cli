@@ -1,6 +1,6 @@
 # 0003 — Image versioning and Docker tag strategy
 
-- Status: Accepted
+- Status: Superseded by ADR-0017
 - Date: 2026-06-14
 - Deciders: @bgauduch
 
@@ -47,6 +47,8 @@ Repo versioning is project semver `vX.Y.Z`; image tags are derived from it.
 
 ## More information
 
-The strategy is rolled out incrementally on the roadmap: first the P0 subset
-(`latest`, `vX.Y.Z`, fully-pinned), then the full alias set plus GHCR
-publication.
+**Superseded by [ADR-0017](0017-single-owner-publication-matrix.md)**
+(2026-08-01), which keeps this vocabulary but gives every tag a single
+publisher: `latest` follows releases instead of `master`, `master` publishes
+`edge`, and `vX.Y` is activated. The rationale above stays on record as the
+decision that introduced the tag set.

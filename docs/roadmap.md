@@ -55,8 +55,8 @@ to green; the human owns the merge).
 | Topic | Decision | ADR |
 |---|---|---|
 | Roadmap structure | Phases backbone; the former epics #98–#105 are folded in as phase content | this doc |
-| Image versioning | Repo semver `vX.Y.Z`; image tags derived | ADR-0003 |
-| Tag strategy | Floating `latest`, `edge`, `vX.Y.Z`, `vX.Y` **+** fully-pinned immutable `vX.Y.Z_tf-A.B.C_aws-D.E.F` | ADR-0003 |
+| Image versioning | Repo semver `vX.Y.Z`; image tags derived from the release version | ADR-0017 |
+| Publication matrix | One publisher per tag: `latest` and the version tags from releases, `edge` from `master`, fully-pinned `vX.Y.Z_tf-A.B.C_aws-D.E.F` immutable | ADR-0017 (supersedes ADR-0003) |
 | Commit convention | Conventional Commits, **strict** from day one (commit history **and** PR titles) | ADR-0002 |
 | Merge strategy | **Squash-merge** (one PR = one commit on `master`); PR title becomes the squash subject and feeds the changelog | ADR-0002 |
 | Release automation | **release-please** (Google), Release-PR workflow | ADR-0002 |
@@ -100,7 +100,7 @@ new home.
 ### Phase 0 — Cleanup *(P0)*
 Pure hygiene, no new tooling.
 - This roadmap document
-- Fix `push-latest.yml` (`supported_platforms.json` inexistent ref, wrong `hashicorp.asc` path → `security/**`)
+- Fix the master-push publish workflow (`supported_platforms.json` inexistent ref, wrong `hashicorp.asc` path → `security/**`)
 - Fix `build-test.yml` (wrong `hashicorp.asc` path → `security/**`)
 - Fix `dockerhub-description-update.yml` (wrong watched path filter)
 - Refresh `docs/dependencies-upgrades.md` (bullseye → bookworm, accurate package list and paths)
