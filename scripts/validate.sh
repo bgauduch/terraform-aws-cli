@@ -5,7 +5,7 @@
 #   --fast  T0: structural checks only, no Docker, seconds (validate.yml runs
 #           exactly this on every PR)
 #   --full  T1: T0 checks, then hadolint, a single-platform image build and
-#           the container-structure-test run (absorbs the former dev.sh)
+#           the container-structure-test run
 #
 # Principle (ADR-0016): the oracle checks only invariants no purpose-built
 # tool covers, and calls tools rather than re-implementing them. hadolint,
@@ -109,8 +109,8 @@ run_fast() {
 }
 
 # ---------------------------------------------------------------------------
-# T1 (--full): hadolint + single-platform build + container-structure-test,
-# the pipeline formerly in dev.sh. Tool images stay pinned.
+# T1 (--full): hadolint + single-platform build + container-structure-test.
+# Tool images stay pinned.
 # ---------------------------------------------------------------------------
 host_platform() {
   case "$(uname -m)" in

@@ -150,7 +150,7 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Add `concurrency:` to every workflow (cancel stale runs) *(#103)*
 - Harmonise buildx `cache-from` / `cache-to` across workflows *(#103)*
 - Restrict multi-arch build (`amd64,arm64,arm/v7,386`) to publish workflows only *(#103)*
-- `dev.sh`: `getopts` parsing, semver validation, fix `PLATEFORM`→`PLATFORM` typo, `set -euo pipefail` *(#104)*
+- `scripts/validate.sh`: argument parsing, semver validation, correct platform string, `set -euo pipefail` *(#104)*
 - Extend `container-structure-tests.yml.template`: negative tests (non-root user), binaries-in-`PATH` checks *(#104)*
 
 ### Phase 5 — Supply chain security *(P1)* — folds in #99
@@ -188,7 +188,7 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 - Rename the default branch `master` → `main` (GitHub UI)
 - Update workflow refs across `.github/workflows/**` (`branches: [master]`, `!master`, base-branch assumptions)
 - Re-point branch protection + squash/auto-delete settings to `main`
-- Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs, `dev.sh` if needed)
+- Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs)
 - Update external links pointing at `master` (Docker Hub description, badges)
 - Record the rename in an ADR when executed
 

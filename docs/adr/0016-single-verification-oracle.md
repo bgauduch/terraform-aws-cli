@@ -46,24 +46,23 @@ territory is the cross-file repository invariants nothing else looks at.
   is the T0 oracle: structural checks only, no Docker, seconds;
   `validate.yml` runs exactly this on every pull request and adds no logic
   of its own. `--full` is the T1 tier: the T0 checks, then hadolint, a
-  single-platform image build and the container-structure-test run — the
-  pipeline formerly in `dev.sh`, which is **decommissioned** in the same
-  change (one script locally and in CI; two entry points would themselves
-  violate the single-oracle invariant). The absorption fixes the open
-  `dev.sh` defects on the way: the `PLATEFORM` typo, the invalid
-  `linux/x86_64` platform string, missing `set -u`, unvalidated version
-  arguments, and the needless `--interactive` flags.
+  single-platform image build and the container-structure-test run. The
+  previous build script is **removed** in the same change: two local entry
+  points would themselves violate the single-oracle invariant. `--full`
+  therefore also delivers the #104 fixes that script never got — a correct
+  platform string, `set -u`, validated version arguments, no needless
+  `--interactive`.
 - The oracle is built **in passes** (#152 PR 1): pass 1a ships
   `supported_versions.json` ↔ `security/**` (both directions — the orphan
   direction is checked by nothing else at all, and the missing-file
   direction otherwise fails minutes into a build at the GPG step) and ADR
-  files ↔ index, plus hadolint when the binary is available. Later passes
-  add the remaining #152 P2 checks (version policy per ADR-0015, workflow
-  path filters, GPG key expiry, the L5 dash gate) and `--full` (absorbing
-  `dev.sh`, #152 PR 4).
+  files ↔ index, plus hadolint when the binary is available. `--full`
+  follows in the same PR. Later passes add the remaining #152 P2 checks
+  (version policy per ADR-0015, workflow path filters, GPG key expiry, the
+  L5 dash gate).
 - **Deliberately excluded — Dockerfile pins ↔ test-template assertions**: a
   static re-parse would duplicate container-structure-test's authoritative
-  detection (T1 via `dev.sh`, T2 in CI) with a necessarily fuzzy version
+  detection (T1 via `--full`, T2 in CI) with a necessarily fuzzy version
   comparison (a `10.0p1` package legitimately prints `OpenSSH_10.0p2`), and
   the drift class itself is eliminated at the source by the atomic
   Dockerfile+template writes of the automation scripts (#152 PR 4).
