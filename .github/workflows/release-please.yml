@@ -1,6 +1,9 @@
 name: release-please
 
-# Single release workflow (ADR-0002, ADR-0003).
+# Single release workflow (ADR-0002, ADR-0017).
+#
+# Sole publisher of latest, vX.Y, vX.Y.Z and the pinned combination tags; the
+# master-push workflow owns edge and never writes latest (ADR-0017).
 #
 # On every push to master, release-please maintains a "Release PR" that bumps
 # the project version (from Conventional Commits) and updates CHANGELOG.md.
@@ -78,6 +81,8 @@ jobs:
           else
             echo "IS_LATEST=false" >> $GITHUB_ENV
           fi
+          # vX.Y floating alias, derived from the release tag (ADR-0017)
+          echo "MINOR_TAG=${RELEASE_VERSION%.*}" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -114,6 +119,7 @@ jobs:
           tags: |
             ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}_tf-${{ matrix.tf_versions }}_aws-${{ matrix.awscli_versions }}
             ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+            ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:${{ env.MINOR_TAG }}
             ${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }}:latest
           push: true
           cache-from: type=gha
@@ -153,6 +159,7 @@ jobs:
             done
           done
           check "${RELEASE_VERSION}"
+          check "${RELEASE_VERSION%.*}"
           check "latest"
           if [ "$missing" -ne 0 ]; then
             echo "::error::Release ${RELEASE_VERSION} publication is incomplete, image tags are missing on the registry."
