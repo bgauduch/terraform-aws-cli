@@ -154,7 +154,9 @@ run_full() {
     envsubst '${AWS_VERSION},${TF_VERSION}' \
     < tests/container-structure-tests.yml.template \
     > tests/container-structure-tests.yml
+  # CST ships amd64-only; request it explicitly so arm64 hosts emulate silently
   docker container run --rm \
+    --platform linux/amd64 \
     --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
     --volume /var/run/docker.sock:/var/run/docker.sock:ro \
     "$CST_IMAGE" test \
