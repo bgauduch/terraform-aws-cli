@@ -1,7 +1,7 @@
 name: validate
 
 # Thin CI caller of the verification oracle (ADR-0016): it adds no logic of
-# its own, so a green run here means the same locally. Secret-free (ADR-0013).
+# its own, so a green run here means the same locally.
 on:
   pull_request:
 
