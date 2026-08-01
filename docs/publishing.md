@@ -1,11 +1,47 @@
 # Publishing
 
-Authentication for the image-publishing workflows. What each workflow publishes
-and which secret it consumes is defined in the workflows themselves
-([`.github/workflows/`](../.github/workflows/)); the user-facing tags are in the
-[README](../README.md#-supported-tags-and-respective-dockerfile-links) (scheme:
-[ADR-0003](adr/0003-image-versioning-and-tag-strategy.md)). This page is the single home for the
-**credential model** and the **publication reliability model**.
+How the images reach the registry. This page is the single home for the
+**publication matrix** (which workflow owns which tag), the **credential
+model** and the **publication reliability model**. The same tags are described
+for users, by what they point at rather than by who writes them, in the
+[README](../README.md#-supported-tags-and-respective-dockerfile-links); the
+decision behind the matrix is [ADR-0017](adr/0017-single-owner-publication-matrix.md).
+
+## Publication matrix
+
+Two git events publish images, and **each tag has exactly one publisher** — a
+mutable tag with two writers has no defined content (ADR-0017).
+
+```mermaid
+flowchart LR
+  C["commit on master<br/>touching the image"] --> WE["push-edge.yml"]
+  R["release vX.Y.Z<br/>cut by release-please"] --> WR["release-please.yml"]
+
+  WE --> E["edge"]
+  WR --> L["latest"]
+  WR --> M["vX.Y"]
+  WR --> P["vX.Y.Z"]
+  WR --> F["vX.Y.Z_tf-A.B.C_aws-D.E.F"]
+
+  E --> UE["try what is merged<br/>but not released"]
+  L --> UL["everyday use"]
+  M --> UL
+  P --> UP["stay on one release"]
+  F --> UF["reproducible builds:<br/>never moves"]
+```
+
+| Tag | Publisher | Trigger | Mutable | Points at |
+|---|---|---|---|---|
+| `edge` | `push-edge.yml` | push to `master` touching the image | yes | latest supported combination, built from `master` |
+| `latest` | `release-please.yml` | release created | yes | the newest release, latest supported combination |
+| `vX.Y` | `release-please.yml` | release created | yes | latest patch of that minor line |
+| `vX.Y.Z` | `release-please.yml` | release created | no | that release, latest supported combination |
+| `vX.Y.Z_tf-A.B.C_aws-D.E.F` | `release-please.yml` | release created | **no** | one fixed combination, never re-pushed |
+
+Every tag in this table except `edge` is asserted live on the registry by
+`verify_release` after each release; `edge` is not part of a release and is
+reproduced by the next `master` push. Rollback semantics for the immutable
+form: [`docs/rollback.md`](rollback.md).
 
 ## Registry credentials (least privilege)
 
