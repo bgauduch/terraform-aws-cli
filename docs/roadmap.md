@@ -99,7 +99,7 @@ new home.
 
 ### Phase 0 — Cleanup *(P0)*
 Pure hygiene, no new tooling.
-- This roadmap document (replaces the former `claude-framework-roadmap.md`)
+- This roadmap document
 - Fix `push-latest.yml` (`supported_platforms.json` inexistent ref, wrong `hashicorp.asc` path → `security/**`)
 - Fix `build-test.yml` (wrong `hashicorp.asc` path → `security/**`)
 - Fix `dockerhub-description-update.yml` (wrong watched path filter)
@@ -231,7 +231,7 @@ was preserved or retired. Live disposition is tracked in #106.
 - Custom MCP servers
 - `audit-agent-framework` as an agent skill (replaced by CI)
 - Generic pre-commit framework (Python dependency)
-- Pre-push git hooks (covered by `/preflight` + CI)
+- Pre-push git hooks (covered by `scripts/validate.sh` + CI)
 - PostToolUse hook for ADR nudge (unless the agent is observed forgetting in practice)
 - Retroactive backfill of ADRs
 - Image variants (alpine, slim)

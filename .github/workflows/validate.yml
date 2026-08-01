@@ -1,9 +1,7 @@
 name: validate
 
-# Fast structural checks (T0) on every pull request: the same oracle a human
-# or an agent runs locally (scripts/validate.sh --fast) — one oracle, three
-# callers (see the "single verification oracle" ADR). Secret-free by design
-# (ADR-0013). hadolint is not duplicated here: lint-dockerfile.yml owns it.
+# Thin CI caller of the verification oracle (ADR-0016): it adds no logic of
+# its own, so a green run here means the same locally. Secret-free (ADR-0013).
 on:
   pull_request:
 

@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 #
-# Single verification oracle (ADR-0016): the same checks for the maintainer,
-# the agent mid-loop, and CI. One entry point, two tiers:
-#   --fast  T0: structural checks only, no Docker, seconds (validate.yml runs
-#           exactly this on every PR)
-#   --full  T1: T0 checks, then hadolint, a single-platform image build and
-#           the container-structure-test run
+# Single verification oracle (ADR-0016): one entry point for the maintainer,
+# the agent mid-loop and CI. Tiers and arguments: see usage() below.
 #
-# Principle (ADR-0016): the oracle checks only invariants no purpose-built
-# tool covers, and calls tools rather than re-implementing them. hadolint,
-# buildx and container-structure-test are called; their verdicts are theirs.
+# Only add a check that no purpose-built tool covers: hadolint,
+# container-structure-test and commitlint own their verdicts, this script
+# calls them (ADR-0016).
 #
 set -euo pipefail
 
@@ -57,11 +53,13 @@ check_versions_security() {
     [ -f "$f" ] || { fail "missing ${f} for supported AWS CLI ${v}"; ok=0; }
   done
   for f in security/terraform_*_SHA256SUMS; do
+    [ -e "$f" ] || continue
     v="${f#security/terraform_}"; v="${v%_SHA256SUMS}"
     jq -e --arg v "$v" '.tf_versions | index($v)' supported_versions.json >/dev/null \
       || { fail "orphan ${f}: Terraform ${v} is not in supported_versions.json"; ok=0; }
   done
   for f in security/awscli-exe-linux-x86_64-*.zip.sig; do
+    [ -e "$f" ] || continue
     v="${f#security/awscli-exe-linux-x86_64-}"; v="${v%.zip.sig}"
     jq -e --arg v "$v" '.awscli_versions | index($v)' supported_versions.json >/dev/null \
       || { fail "orphan ${f}: AWS CLI ${v} is not in supported_versions.json"; ok=0; }

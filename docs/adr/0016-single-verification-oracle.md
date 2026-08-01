@@ -56,10 +56,9 @@ territory is the cross-file repository invariants nothing else looks at.
   `supported_versions.json` ↔ `security/**` (both directions — the orphan
   direction is checked by nothing else at all, and the missing-file
   direction otherwise fails minutes into a build at the GPG step) and ADR
-  files ↔ index, plus hadolint when the binary is available. `--full`
-  follows in the same PR. Later passes add the remaining #152 P2 checks
-  (version policy per ADR-0015, workflow path filters, GPG key expiry, the
-  L5 dash gate).
+  files ↔ index, hadolint when the binary is available, and the `--full`
+  tier. Later passes add the remaining #152 P2 checks (version policy per
+  ADR-0015, workflow path filters, GPG key expiry, the L5 dash gate).
 - **Deliberately excluded — Dockerfile pins ↔ test-template assertions**: a
   static re-parse would duplicate container-structure-test's authoritative
   detection (T1 via `--full`, T2 in CI) with a necessarily fuzzy version
@@ -100,5 +99,3 @@ territory is the cross-file repository invariants nothing else looks at.
 ## More information
 
 Study and sequencing: #152 (target architecture, tiers T0–T3, pass plan).
-The one-oracle invariant is stated there as "core invariant: one oracle,
-three callers".
