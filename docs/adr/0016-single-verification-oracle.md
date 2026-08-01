@@ -71,6 +71,16 @@ territory is the cross-file repository invariants nothing else looks at.
   above generalises that review.
 - hadolint is **not** duplicated into `validate.yml`: `lint-dockerfile.yml`
   already owns that CI gate; locally the script runs it opportunistically.
+- **Orchestration is a thin per-environment adapter** (the ADR-0009
+  core/adapter pattern applied to verification): CI workflows keep their
+  native machinery (matrix fan-out, GHA build cache, QEMU, hadolint-action's
+  PR annotations) and the script keeps the local pipeline — both invoke the
+  same tools against the same single-home config (`hadolint.yaml`, the test
+  template, `supported_versions.json`, the `Dockerfile`). Shared *logic*
+  (e.g. rendering the test config from the template) belongs in the script
+  and is called by CI; residual cross-adapter drift (tool versions pinned on
+  both sides) is closed by a T0 coherence check rather than by forcing one
+  caller through the other's machinery.
 - `scripts/` joins the adr-check structural paths in the same change: the
   oracle and the coming capability layer live there, and a change to the
   verifier is structural by nature.
