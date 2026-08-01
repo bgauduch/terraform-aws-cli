@@ -65,7 +65,7 @@ to green; the human owns the merge).
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` — superseded by the sunset policy | ADR-0004 |
 | Version sunset | Support follows upstream EOL: latest three minor lines (two HashiCorp-patched + one grace); retired versions stay on immutable tags (#157) | ADR-0015 |
-| Verification oracle | One script, three callers (`scripts/validate.sh`): the same T0 fast checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
+| Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |

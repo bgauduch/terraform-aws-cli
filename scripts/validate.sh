@@ -28,16 +28,16 @@ usage() {
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
 
-  --fast   structural checks only, no Docker required (T0)
-  --full   T0 checks, then hadolint, single-platform image build and
-           container-structure-test (T1). Versions default to the latest
+  --fast   structural checks only, no Docker required (tier 0)
+  --full   the fast checks, then hadolint, single-platform image build and
+           container-structure-test (tier 1). Versions default to the latest
            in supported_versions.json; the tag defaults to "dev".
 USAGE
   exit 2
 }
 
 # ---------------------------------------------------------------------------
-# T0: supported_versions.json <-> security/
+# Tier 0: supported_versions.json <-> security/
 # Every supported version has its signature material; no orphan material for
 # versions that are no longer supported (sunset, ADR-0015).
 # ---------------------------------------------------------------------------
@@ -68,7 +68,7 @@ check_versions_security() {
 }
 
 # ---------------------------------------------------------------------------
-# T0: ADR files <-> index (docs/adr/README.md)
+# Tier 0: ADR files <-> index (docs/adr/README.md)
 # ---------------------------------------------------------------------------
 check_adr_index() {
   local ok=1 f n
@@ -85,7 +85,7 @@ check_adr_index() {
 }
 
 # ---------------------------------------------------------------------------
-# T0: hadolint via local binary when present (CI gate: lint-dockerfile.yml;
+# Tier 0: hadolint via local binary when present (CI gate: lint-dockerfile.yml;
 # --full runs the pinned container instead)
 # ---------------------------------------------------------------------------
 check_hadolint_local() {
@@ -107,7 +107,7 @@ run_fast() {
 }
 
 # ---------------------------------------------------------------------------
-# T1 (--full): hadolint + single-platform build + container-structure-test.
+# Tier 1 (--full): hadolint + single-platform build + container-structure-test.
 # Tool images stay pinned.
 # ---------------------------------------------------------------------------
 host_platform() {
@@ -128,7 +128,7 @@ run_full() {
   platform="$(host_platform)"
 
   run_fast
-  [ "$FAIL" = 0 ] || { printf 'validate: T0 failed, not building\n' >&2; exit 1; }
+  [ "$FAIL" = 0 ] || { printf 'validate: structural checks failed, not building\n' >&2; exit 1; }
 
   printf 'Linting Dockerfile (%s)...\n' "$HADOLINT_IMAGE"
   docker container run --rm \
