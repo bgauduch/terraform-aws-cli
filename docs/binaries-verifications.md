@@ -22,6 +22,8 @@ They can be downloaded locally using this command:
 # Export target aws cli version
 export AWS_CLI_VERSION=2.12.5
 
-# Download signature file
-curl -o security/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip.sig https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip.sig
+# Download signature files, one per image architecture
+for arch in x86_64 aarch64; do
+  curl -o security/awscli-exe-linux-${arch}-${AWS_CLI_VERSION}.zip.sig https://awscli.amazonaws.com/awscli-exe-linux-${arch}-${AWS_CLI_VERSION}.zip.sig
+done
 ```

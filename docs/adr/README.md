@@ -88,3 +88,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0014](0014-work-intake-and-triage-process.md) | Work intake and triage process (features, fixes, contributions) | Accepted |
 | [0015](0015-version-support-follows-upstream-eol.md) | Version support follows upstream EOL (sunset policy) | Accepted |
 | [0016](0016-single-verification-oracle.md) | A single verification oracle shared by human, agent and CI | Accepted |
+| [0017](0017-arch-native-aws-cli-bundle.md) | Install the arch-native AWS CLI bundle per target platform | Accepted |

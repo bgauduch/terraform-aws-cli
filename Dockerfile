@@ -25,6 +25,7 @@ RUN unzip -j terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 
 # Install AWS CLI version 2
 FROM debian:${DEBIAN_VERSION} as aws-cli
+ARG TARGETARCH
 ARG AWS_CLI_VERSION
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends ca-certificates=20250419
@@ -34,12 +35,15 @@ RUN apt-get install -y --no-install-recommends unzip=6.0-29
 RUN apt-get install -y --no-install-recommends git=1:2.47.3-0+deb13u1
 RUN apt-get install -y --no-install-recommends jq=1.7.1-6+deb13u2
 WORKDIR /workspace
+# AWS names bundle arches x86_64/aarch64, not amd64/arm64; arches without an
+# upstream bundle keep x86_64 (unchanged behaviour)
+RUN case "${TARGETARCH}" in arm64) echo aarch64 ;; *) echo x86_64 ;; esac > .aws-arch
 # plain --retry does not cover connection resets (curl exit 35), --retry-all-errors does
-RUN curl --show-error --fail --retry 5 --retry-delay 2 --retry-all-errors --output "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip"
+RUN curl --show-error --fail --retry 5 --retry-delay 2 --retry-all-errors --output "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-$(cat .aws-arch)-${AWS_CLI_VERSION}.zip"
 COPY security/awscliv2.asc ./
-COPY security/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip.sig ./awscliv2.sig
+COPY security/awscli-exe-linux-*-${AWS_CLI_VERSION}.zip.sig ./
 RUN gpg --import awscliv2.asc
-RUN gpg --verify awscliv2.sig awscliv2.zip
+RUN gpg --verify "awscli-exe-linux-$(cat .aws-arch)-${AWS_CLI_VERSION}.zip.sig" awscliv2.zip
 RUN unzip -u awscliv2.zip
 RUN ./aws/install --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin
 
