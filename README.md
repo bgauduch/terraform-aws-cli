@@ -76,17 +76,18 @@ docker container run -it --rm -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" -e "AW
 
 ### ⚙️ Build the image
 
-The image can be built locally directly from the Dockerfiles, using the build script.
+The image can be built and verified locally with the validation script.
 
 It will :
 
+* Run the structural checks on the repository;
 * Lint the Dockerfile with [Hadolint](https://github.com/hadolint/hadolint);
-* Build and tag the image `bgauduch/terraform-aws-cli:dev`;
+* Build and tag the image `bgauduch/terraform-aws-cli:dev` for your platform;
 * Execute [container structure tests](https://github.com/GoogleContainerTools/container-structure-test) on the image.
 
 ```bash
-# launch build script
-./dev.sh
+# build and verify with the latest supported versions
+./scripts/validate.sh --full
 ```
 
 Optionally, it is possible to choose the tools desired versions :
@@ -96,8 +97,8 @@ Optionally, it is possible to choose the tools desired versions :
 AWS_CLI_VERSION=2.12.6
 TERRAFORM_VERSION=1.5.2
 
-# launch the build script with parameters
-./dev.sh $AWS_CLI_VERSION $TERRAFORM_VERSION
+# build and verify these versions
+./scripts/validate.sh --full $AWS_CLI_VERSION $TERRAFORM_VERSION
 ```
 
 ## 🙏 Contributions

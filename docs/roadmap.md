@@ -65,6 +65,7 @@ to green; the human owns the merge).
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` — superseded by the sunset policy | ADR-0004 |
 | Version sunset | Support follows upstream EOL: latest three minor lines (two HashiCorp-patched + one grace); retired versions stay on immutable tags (#157) | ADR-0015 |
+| Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
@@ -98,7 +99,7 @@ new home.
 
 ### Phase 0 — Cleanup *(P0)*
 Pure hygiene, no new tooling.
-- This roadmap document (replaces the former `claude-framework-roadmap.md`)
+- This roadmap document
 - Fix `push-latest.yml` (`supported_platforms.json` inexistent ref, wrong `hashicorp.asc` path → `security/**`)
 - Fix `build-test.yml` (wrong `hashicorp.asc` path → `security/**`)
 - Fix `dockerhub-description-update.yml` (wrong watched path filter)
@@ -149,7 +150,7 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Add `concurrency:` to every workflow (cancel stale runs) *(#103)*
 - Harmonise buildx `cache-from` / `cache-to` across workflows *(#103)*
 - Restrict multi-arch build (`amd64,arm64,arm/v7,386`) to publish workflows only *(#103)*
-- `dev.sh`: `getopts` parsing, semver validation, fix `PLATEFORM`→`PLATFORM` typo, `set -euo pipefail` *(#104)*
+- `scripts/validate.sh`: argument parsing, semver validation, correct platform string, `set -euo pipefail` *(#104)*
 - Extend `container-structure-tests.yml.template`: negative tests (non-root user), binaries-in-`PATH` checks *(#104)*
 
 ### Phase 5 — Supply chain security *(P1)* — folds in #99
@@ -187,9 +188,16 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 - Rename the default branch `master` → `main` (GitHub UI)
 - Update workflow refs across `.github/workflows/**` (`branches: [master]`, `!master`, base-branch assumptions)
 - Re-point branch protection + squash/auto-delete settings to `main`
-- Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs, `dev.sh` if needed)
+- Update docs that hard-code `master` (this roadmap's hard rules, README badges/links, ADRs)
 - Update external links pointing at `master` (Docker Hub description, badges)
 - Record the rename in an ADR when executed
+
+### Harness track — pre-push verification & agent execution layer
+Cross-cutting track from the #152 study (staged `go 1–2`, 2026-07-31): fast
+validation oracle (ADR-0016), representative PR build matrix, then — behind a
+second gate — session guardrails, version/pin automation scripts, and agent
+skills. The qualified spec, sequencing and acceptance criteria live in #152
+(single home).
 
 ---
 
@@ -223,7 +231,7 @@ was preserved or retired. Live disposition is tracked in #106.
 - Custom MCP servers
 - `audit-agent-framework` as an agent skill (replaced by CI)
 - Generic pre-commit framework (Python dependency)
-- Pre-push git hooks (covered by `/preflight` + CI)
+- Pre-push git hooks (covered by `scripts/validate.sh` + CI)
 - PostToolUse hook for ADR nudge (unless the agent is observed forgetting in practice)
 - Retroactive backfill of ADRs
 - Image variants (alpine, slim)

@@ -15,15 +15,15 @@ section.
 2. **Branch** off `master` — naming: [branching conventions](docs/conventions.md#branching).
 3. **Commit** — [commit conventions](docs/conventions.md#commits): Conventional
    Commits, enforced by commitlint on every commit **and** the PR title.
-4. **Test locally**:
+4. **Test locally** — one script, same checks as CI (ADR-0016):
 
    ```bash
-   ./dev.sh                                        # latest supported versions
-   ./dev.sh <AWS_CLI_VERSION> <TERRAFORM_VERSION>  # specific versions
+   ./scripts/validate.sh --fast                                        # structural checks, no Docker, seconds
+   ./scripts/validate.sh --full                                        # + lint, image build, structure tests
+   ./scripts/validate.sh --full <AWS_CLI_VERSION> <TERRAFORM_VERSION>  # specific versions
    ```
 
-   The script lints the Dockerfile (hadolint), builds the image, and runs the
-   container-structure tests. Adding a new tool version also requires its
+   Adding a new tool version also requires its
    signature files under `security/` — see
    [`docs/binaries-verifications.md`](docs/binaries-verifications.md) and
    [`docs/dependencies-upgrades.md`](docs/dependencies-upgrades.md).

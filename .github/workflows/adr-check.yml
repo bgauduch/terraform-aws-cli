@@ -45,7 +45,7 @@ jobs:
           echo "Changed files:"; echo "$changed"
 
           # Paths considered structural.
-          structural_re='^(Dockerfile|\.github/workflows/|supported_versions\.json|renovate\.json|\.releaserc|release-please|\.commitlintrc|\.claude/|\.github/dependabot\.yml)'
+          structural_re='^(Dockerfile|\.github/workflows/|supported_versions\.json|renovate\.json|\.releaserc|release-please|\.commitlintrc|\.claude/|\.github/dependabot\.yml|scripts/)'
 
           needs_adr=false
           if printf '%s' "$LABELS" | grep -qw 'needs-adr'; then
