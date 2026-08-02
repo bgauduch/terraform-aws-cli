@@ -1,7 +1,7 @@
 name: push-edge
 
 # Publishes the `edge` tag: the latest supported combination, built from
-# master. `latest` belongs to the release workflow (ADR-0017), so this one
+# master. `latest` belongs to the release workflow (ADR-0018), so this one
 # never writes it.
 # Triggered by pushes to master that touch the image.
 on:

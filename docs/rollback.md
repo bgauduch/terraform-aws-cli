@@ -1,7 +1,7 @@
 # Rollback
 
 This image follows the publication matrix in
-[ADR-0017](adr/0017-single-owner-publication-matrix.md). Most tags **float**
+[ADR-0018](adr/0018-single-owner-publication-matrix.md). Most tags **float**
 (their meaning moves over time) and one form is **immutable** (it never changes
 meaning). That distinction is what makes rollback safe and predictable.
 

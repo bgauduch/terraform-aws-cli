@@ -1,4 +1,4 @@
-# 0017 — One publisher per tag: `latest` follows releases, `edge` follows master
+# 0018 — One publisher per tag: `latest` follows releases, `edge` follows master
 
 - Status: Accepted
 - Date: 2026-08-01

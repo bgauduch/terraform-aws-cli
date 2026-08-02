@@ -1,9 +1,9 @@
 name: release-please
 
-# Single release workflow (ADR-0002, ADR-0017).
+# Single release workflow (ADR-0002, ADR-0018).
 #
 # Sole publisher of latest, vX.Y, vX.Y.Z and the pinned combination tags; the
-# master-push workflow owns edge and never writes latest (ADR-0017).
+# master-push workflow owns edge and never writes latest (ADR-0018).
 #
 # On every push to master, release-please maintains a "Release PR" that bumps
 # the project version (from Conventional Commits) and updates CHANGELOG.md.
@@ -81,7 +81,7 @@ jobs:
           else
             echo "IS_LATEST=false" >> $GITHUB_ENV
           fi
-          # vX.Y floating alias, derived from the release tag (ADR-0017)
+          # vX.Y floating alias, derived from the release tag (ADR-0018)
           echo "MINOR_TAG=${RELEASE_VERSION%.*}" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry

@@ -55,8 +55,8 @@ to green; the human owns the merge).
 | Topic | Decision | ADR |
 |---|---|---|
 | Roadmap structure | Phases backbone; the former epics #98–#105 are folded in as phase content | this doc |
-| Image versioning | Repo semver `vX.Y.Z`; image tags derived from the release version | ADR-0017 |
-| Publication matrix | One publisher per tag: `latest` and the version tags from releases, `edge` from `master`, fully-pinned `vX.Y.Z_tf-A.B.C_aws-D.E.F` immutable | ADR-0017 (supersedes ADR-0003) |
+| Image versioning | Repo semver `vX.Y.Z`; image tags derived from the release version | ADR-0018 |
+| Publication matrix | One publisher per tag: `latest` and the version tags from releases, `edge` from `master`, fully-pinned `vX.Y.Z_tf-A.B.C_aws-D.E.F` immutable | ADR-0018 (supersedes ADR-0003) |
 | Commit convention | Conventional Commits, **strict** from day one (commit history **and** PR titles) | ADR-0002 |
 | Merge strategy | **Squash-merge** (one PR = one commit on `master`); PR title becomes the squash subject and feeds the changelog | ADR-0002 |
 | Release automation | **release-please** (Google), Release-PR workflow | ADR-0002 |
@@ -66,6 +66,7 @@ to green; the human owns the merge).
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` — superseded by the sunset policy | ADR-0004 |
 | Version sunset | Support follows upstream EOL: latest three minor lines (two HashiCorp-patched + one grace); retired versions stay on immutable tags (#157) | ADR-0015 |
 | Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
+| AWS CLI bundle arch | Arch-native bundle selected from buildx `TARGETARCH` (`x86_64` / `aarch64`), per-arch `.sig` in `security/` | ADR-0017 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |

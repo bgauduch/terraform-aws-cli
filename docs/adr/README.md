@@ -74,7 +74,7 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 |---|---|---|
 | [0001](0001-adopt-unified-roadmap-and-agent-framework.md) | Adopt a single reconciled roadmap and the agent development framework as SSOT | Accepted |
 | [0002](0002-contribution-and-release-workflow.md) | Contribution & release workflow (Conventional Commits, squash, release-please, Renovate) | Accepted |
-| [0003](0003-image-versioning-and-tag-strategy.md) | Image versioning and Docker tag strategy | Superseded by ADR-0017 |
+| [0003](0003-image-versioning-and-tag-strategy.md) | Image versioning and Docker tag strategy | Superseded by ADR-0018 |
 | [0004](0004-deprecate-terraform-below-1.0.md) | Deprecate Terraform versions below 1.0 | Superseded by ADR-0015 |
 | [0005](0005-use-madr-format-for-adrs.md) | Use the MADR format for ADRs | Accepted |
 | [0006](0006-agent-orchestration-strategy.md) | Generic, config-driven agent orchestration strategy | Accepted |
@@ -88,4 +88,5 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0014](0014-work-intake-and-triage-process.md) | Work intake and triage process (features, fixes, contributions) | Accepted |
 | [0015](0015-version-support-follows-upstream-eol.md) | Version support follows upstream EOL (sunset policy) | Accepted |
 | [0016](0016-single-verification-oracle.md) | A single verification oracle shared by human, agent and CI | Accepted |
-| [0017](0017-single-owner-publication-matrix.md) | One publisher per tag: `latest` follows releases, `edge` follows master | Accepted |
+| [0017](0017-arch-native-aws-cli-bundle.md) | Install the arch-native AWS CLI bundle per target platform | Accepted |
+| [0018](0018-single-owner-publication-matrix.md) | One publisher per tag: `latest` follows releases, `edge` follows master | Accepted |

@@ -5,12 +5,12 @@ How the images reach the registry. This page is the single home for the
 model** and the **publication reliability model**. The same tags are described
 for users, by what they point at rather than by who writes them, in the
 [README](../README.md#-supported-tags-and-respective-dockerfile-links); the
-decision behind the matrix is [ADR-0017](adr/0017-single-owner-publication-matrix.md).
+decision behind the matrix is [ADR-0018](adr/0018-single-owner-publication-matrix.md).
 
 ## Publication matrix
 
 Two git events publish images, and **each tag has exactly one publisher** — a
-mutable tag with two writers has no defined content (ADR-0017).
+mutable tag with two writers has no defined content (ADR-0018).
 
 ```mermaid
 flowchart LR
