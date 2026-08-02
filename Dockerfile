@@ -5,7 +5,7 @@ ARG DEBIAN_VERSION=trixie-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac9
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Download Terraform binary
-FROM debian:${DEBIAN_VERSION} as terraform
+FROM debian:${DEBIAN_VERSION} AS terraform
 ARG TARGETARCH
 ARG TERRAFORM_VERSION
 RUN apt-get update
@@ -24,7 +24,7 @@ RUN sha256sum --check --strict --ignore-missing terraform_${TERRAFORM_VERSION}_S
 RUN unzip -j terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
 
 # Install AWS CLI version 2
-FROM debian:${DEBIAN_VERSION} as aws-cli
+FROM debian:${DEBIAN_VERSION} AS aws-cli
 ARG TARGETARCH
 ARG AWS_CLI_VERSION
 RUN apt-get update
@@ -48,7 +48,7 @@ RUN unzip -u awscliv2.zip
 RUN ./aws/install --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin
 
 # Build final image
-FROM debian:${DEBIAN_VERSION} as build
+FROM debian:${DEBIAN_VERSION} AS build
 LABEL maintainer="bgauduch@github"
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
