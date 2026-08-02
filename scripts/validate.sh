@@ -49,8 +49,10 @@ check_versions_security() {
     done
   done
   for v in $(jq -r '.awscli_versions[]' supported_versions.json); do
-    f="security/awscli-exe-linux-x86_64-${v}.zip.sig"
-    [ -f "$f" ] || { fail "missing ${f} for supported AWS CLI ${v}"; ok=0; }
+    for a in x86_64 aarch64; do
+      f="security/awscli-exe-linux-${a}-${v}.zip.sig"
+      [ -f "$f" ] || { fail "missing ${f} for supported AWS CLI ${v}"; ok=0; }
+    done
   done
   for f in security/terraform_*_SHA256SUMS; do
     [ -e "$f" ] || continue
@@ -58,9 +60,9 @@ check_versions_security() {
     jq -e --arg v "$v" '.tf_versions | index($v)' supported_versions.json >/dev/null \
       || { fail "orphan ${f}: Terraform ${v} is not in supported_versions.json"; ok=0; }
   done
-  for f in security/awscli-exe-linux-x86_64-*.zip.sig; do
+  for f in security/awscli-exe-linux-*.zip.sig; do
     [ -e "$f" ] || continue
-    v="${f#security/awscli-exe-linux-x86_64-}"; v="${v%.zip.sig}"
+    v="${f#security/awscli-exe-linux-}"; v="${v#*-}"; v="${v%.zip.sig}"
     jq -e --arg v "$v" '.awscli_versions | index($v)' supported_versions.json >/dev/null \
       || { fail "orphan ${f}: AWS CLI ${v} is not in supported_versions.json"; ok=0; }
   done
