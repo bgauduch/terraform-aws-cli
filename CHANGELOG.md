@@ -1,5 +1,16 @@
 # Changelog
 
+## [10.0.0](https://github.com/bgauduch/terraform-aws-cli/compare/v9.0.0...v10.0.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ci:** publish only the platforms upstream supports ([#164](https://github.com/bgauduch/terraform-aws-cli/issues/164))
+
+### Features
+
+* **ci:** publish only the platforms upstream supports ([#164](https://github.com/bgauduch/terraform-aws-cli/issues/164)) ([73e2af9](https://github.com/bgauduch/terraform-aws-cli/commit/73e2af9979cb2a02276f35091bdf3e9e5d180ca3))
+
 ## [9.0.0](https://github.com/bgauduch/terraform-aws-cli/compare/v8.2.0...v9.0.0) (2026-08-03)
 
 
