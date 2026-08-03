@@ -90,3 +90,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0016](0016-single-verification-oracle.md) | A single verification oracle shared by human, agent and CI | Accepted |
 | [0017](0017-arch-native-aws-cli-bundle.md) | Install the arch-native AWS CLI bundle per target platform | Accepted |
 | [0018](0018-single-owner-publication-matrix.md) | One publisher per tag: `latest` follows releases, `edge` follows master | Accepted |
+| [0019](0019-platform-support-follows-upstream.md) | Published platforms follow upstream AWS CLI availability | Accepted |

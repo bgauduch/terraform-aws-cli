@@ -47,5 +47,9 @@ their prior behaviour — pending a decision on the published platform list.
 
 ## More information
 
+> **Amended 2026-08-03** — the follow-up above is answered by
+> [ADR-0019](0019-platform-support-follows-upstream.md): `arm/v7` and `386`
+> leave the published platform set.
+
 - [AWS CLI v2 for Linux ARM announcement](https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/)
 - ADR-0016 (single verification oracle) — the failure that surfaced this.

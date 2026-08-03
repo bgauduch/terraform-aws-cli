@@ -49,6 +49,12 @@ Retiring a version stops **new builds only**: every previously published
 fully-pinned tag (`vX.Y.Z_tf-A.B.C_aws-D.E.F`) is immutable and stays pullable
 forever — pin one of those to keep using an older combination.
 
+**Platform support policy:** images are published for **`linux/amd64` and
+`linux/arm64`**, the platforms AWS distributes a Linux CLI v2 bundle for
+(see [ADR-0019](docs/adr/0019-platform-support-follows-upstream.md)). As with
+versions, dropping a platform stops new builds only: tags published earlier
+keep the manifests they were pushed with.
+
 ## 💡 Motivation
 
 The goal is to create a **minimalist** and **lightweight** image with these tools in order to reduce network and storage impact.

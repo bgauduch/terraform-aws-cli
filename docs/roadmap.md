@@ -67,6 +67,7 @@ to green; the human owns the merge).
 | Version sunset | Support follows upstream EOL: latest three minor lines (two HashiCorp-patched + one grace); retired versions stay on immutable tags (#157) | ADR-0015 |
 | Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
 | AWS CLI bundle arch | Arch-native bundle selected from buildx `TARGETARCH` (`x86_64` / `aarch64`), per-arch `.sig` in `security/` | ADR-0017 |
+| Published platforms | Follow upstream AWS CLI availability: `linux/amd64` + `linux/arm64`; `arm/v7` and `386` retired (#161) | ADR-0019 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
@@ -150,7 +151,7 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Add `pull_request` trigger to `lint-dockerfile` and `build-test` — ADR-0013 *(#103, closes #46)*
 - Add `concurrency:` to every workflow (cancel stale runs) *(#103)*
 - Harmonise buildx `cache-from` / `cache-to` across workflows *(#103)*
-- Restrict multi-arch build (`amd64,arm64,arm/v7,386`) to publish workflows only *(#103)*
+- Restrict the multi-arch build (`amd64,arm64` — ADR-0019) to publish workflows only *(#103)*
 - `scripts/validate.sh`: argument parsing, semver validation, correct platform string, `set -euo pipefail` *(#104)*
 - Extend `container-structure-tests.yml.template`: negative tests (non-root user), binaries-in-`PATH` checks *(#104)*
 
