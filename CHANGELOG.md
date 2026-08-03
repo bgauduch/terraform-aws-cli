@@ -1,5 +1,24 @@
 # Changelog
 
+## [9.0.0](https://github.com/bgauduch/terraform-aws-cli/compare/v8.2.0...v9.0.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ci:** one publisher per tag, edge from master and latest from releases ([#163](https://github.com/bgauduch/terraform-aws-cli/issues/163))
+* **versions:** support follows upstream EOL, retire minors below 1.13 ([#158](https://github.com/bgauduch/terraform-aws-cli/issues/158))
+
+### Features
+
+* **ci:** one publisher per tag, edge from master and latest from releases ([#163](https://github.com/bgauduch/terraform-aws-cli/issues/163)) ([c766a9a](https://github.com/bgauduch/terraform-aws-cli/commit/c766a9ad2669bdaa0fee2eca9e74c95b7b67a004))
+* **ci:** single validation oracle shared by human, agent and CI ([#160](https://github.com/bgauduch/terraform-aws-cli/issues/160)) ([45a9f0c](https://github.com/bgauduch/terraform-aws-cli/commit/45a9f0c662d1d6ebef51f99b5dc4d3950a038021))
+* **versions:** support follows upstream EOL, retire minors below 1.13 ([#158](https://github.com/bgauduch/terraform-aws-cli/issues/158)) ([7bcff8e](https://github.com/bgauduch/terraform-aws-cli/commit/7bcff8e753153abf67b11a48853bbfc1fd001163))
+
+
+### Bug Fixes
+
+* **docker:** install the arch-native aws cli bundle ([#162](https://github.com/bgauduch/terraform-aws-cli/issues/162)) ([a4d090b](https://github.com/bgauduch/terraform-aws-cli/commit/a4d090b11d9e0a24f19e6d91af38027388ac320d))
+
 ## [8.2.0](https://github.com/bgauduch/terraform-aws-cli/compare/v8.1.1...v8.2.0) (2026-07-24)
 
 
