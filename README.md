@@ -1,6 +1,6 @@
 [![lint-dockerfile](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/lint-dockerfile.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/lint-dockerfile.yml)
 [![build-test](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml)
-[![push-latest](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-latest.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-latest.yml)
+[![push-edge](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-edge.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-edge.yml)
 [![release-please](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/release-please.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/release-please.yml)
 
 [![dockerhub-description-update](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml)
@@ -25,9 +25,17 @@ Supported versions are listed in the [`supported_versions.json`](https://github.
 
 The following image tag strategy is applied:
 
-* `bgauduch/terraform-aws-cli:latest` — built from master, with the latest versions in [`supported_versions.json`](https://github.com/bgauduch/terraform-aws-cli/blob/master/supported_versions.json).
-* `bgauduch/terraform-aws-cli:vX.Y.Z` — a release, with its latest Terraform and AWS CLI versions.
-* `bgauduch/terraform-aws-cli:vX.Y.Z_tf-A.B.C_aws-D.E.F` — a release, fully pinned to a Terraform (`A.B.C`) and AWS CLI (`D.E.F`) version combination.
+| Tag | What it points at | Moves |
+|---|---|---|
+| `bgauduch/terraform-aws-cli:latest` | the newest release, with the latest versions in [`supported_versions.json`](https://github.com/bgauduch/terraform-aws-cli/blob/master/supported_versions.json) | on every release |
+| `bgauduch/terraform-aws-cli:edge` | the tip of `master`, same version selection | on every image change merged to `master` |
+| `bgauduch/terraform-aws-cli:vX.Y` | the latest patch of that minor line | on every release of that line |
+| `bgauduch/terraform-aws-cli:vX.Y.Z` | that release, with its latest Terraform and AWS CLI versions | never |
+| `bgauduch/terraform-aws-cli:vX.Y.Z_tf-A.B.C_aws-D.E.F` | that release, fully pinned to a Terraform (`A.B.C`) and AWS CLI (`D.E.F`) combination | **never** — pin this one for reproducibility |
+
+Which one to use: `vX.Y.Z_tf-A.B.C_aws-D.E.F` when a build must never change
+under you, `latest` or `vX.Y` for everyday use, `edge` only to try what is
+merged but not released.
 
 Please report to the [releases page](https://github.com/bgauduch/terraform-aws-cli/releases) for the changelogs.
 

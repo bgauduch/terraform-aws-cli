@@ -1,7 +1,7 @@
 # Rollback
 
-This image follows the tag strategy in
-[ADR-0003](adr/0003-image-versioning-and-tag-strategy.md). Some tags **float**
+This image follows the publication matrix in
+[ADR-0018](adr/0018-single-owner-publication-matrix.md). Most tags **float**
 (their meaning moves over time) and one form is **immutable** (it never changes
 meaning). That distinction is what makes rollback safe and predictable.
 
@@ -9,12 +9,14 @@ meaning). That distinction is what makes rollback safe and predictable.
 
 | Tag form | Example | Stability |
 |---|---|---|
-| `latest` | `latest` | **Floating** — the latest supported tool versions, built from `master` |
-| `vX.Y.Z` | `v8.1.0` | **Floating** project version — resolves to the latest bundled tool versions for that line |
+| `edge` | `edge` | **Floating** — the tip of `master` |
+| `latest` | `latest` | **Floating** — the newest release, latest supported tool versions |
+| `vX.Y` | `v8.1` | **Floating** — the latest patch of that minor line |
+| `vX.Y.Z` | `v8.1.0` | Fixed release, resolving to the latest bundled tool versions of that release |
 | `vX.Y.Z_tf-A.B.C_aws-D.E.F` | `v8.1.0_tf-1.6.5_aws-2.14.5` | **Immutable** — one fixed Terraform + AWS CLI combination, never re-pushed |
 
-> Additional floating tags (`edge`, `vX.Y`) and a second registry (GHCR) arrive
-> with roadmap Phase 3 — see [ADR-0003](adr/0003-image-versioning-and-tag-strategy.md).
+> A second registry (GHCR) arrives with roadmap Phase 3 (#100). Who publishes
+> each tag above: [`docs/publishing.md`](publishing.md).
 
 ## Policy
 

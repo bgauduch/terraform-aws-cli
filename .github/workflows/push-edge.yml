@@ -1,14 +1,16 @@
-name: push-latest
+name: push-edge
 
-# trigger on push to master
-# only on Dockerfile related modifications
+# Publishes the `edge` tag: the latest supported combination, built from
+# master. `latest` belongs to the release workflow (ADR-0018), so this one
+# never writes it.
+# Triggered by pushes to master that touch the image.
 on:
   push:
     branches:
       - "master"
     paths:
       - ".dockerignore"
-      - ".github/workflows/push-latest.yml"
+      - ".github/workflows/push-edge.yml"
       - "Dockerfile"
       - "hadolint.yaml"
       - "security/**"
@@ -16,14 +18,14 @@ on:
       - "tests/**"
 
 jobs:
-  build_push_latest:
+  build_push_edge:
     runs-on: ubuntu-22.04
 
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Retrieve latest suported versions
+      - name: Retrieve latest supported versions
         run: |
           echo "TF_VERSION=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
           echo "AWS_VERSION=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
@@ -46,7 +48,7 @@ jobs:
           build-args: |
             TERRAFORM_VERSION=${{ env.TF_VERSION }}
             AWS_CLI_VERSION=${{ env.AWS_VERSION }}
-          tags: bgauduch/terraform-aws-cli:latest
+          tags: bgauduch/terraform-aws-cli:edge
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
