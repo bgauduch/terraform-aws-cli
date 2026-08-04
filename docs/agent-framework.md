@@ -49,7 +49,9 @@ CA trusted system-wide) so the checks below need no manual setup.
 
 ### Stays in CI (authoritative gate)
 
-The full multi-arch build (`amd64,arm64`) + end-to-end
-`container-structure-test` run on GitHub Actions — the final say. The local harness
-covers lint, base pull, pin install and assertion values (the fast checks that
-catch most breakage); it does not reproduce the multi-arch build.
+On a pull request, `build-test` runs each supported version once on `amd64` with
+`container-structure-test`, plus one multi-arch canary (ADR-0020). The full
+matrix on every published platform runs at release time and has the final say.
+The local harness covers lint, base pull, pin install and assertion values (the
+fast checks that catch most breakage); it does not reproduce the multi-arch
+build.

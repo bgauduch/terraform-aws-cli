@@ -27,13 +27,23 @@ usage() {
   cat >&2 <<'USAGE'
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
+       validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
 
-  --fast   structural checks only, no Docker required (tier 0)
-  --full   the fast checks, then hadolint, single-platform image build and
-           container-structure-test (tier 1). Versions default to the latest
-           in supported_versions.json; the tag defaults to "dev".
+  --fast          structural checks only, no Docker required (tier 0)
+  --full          the fast checks, then hadolint, single-platform image build
+                  and container-structure-test (tier 1). Versions default to
+                  the latest in supported_versions.json; the tag defaults to
+                  "dev".
+  --render-tests  render tests/container-structure-tests.yml from its template
+                  and exit; called by --full and by build-test.yml.
 USAGE
   exit 2
+}
+
+# Latest version of an axis in supported_versions.json, semver-sorted.
+latest_version() {
+  jq -r --arg axis "$1" \
+    '.[$axis] | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json
 }
 
 # ---------------------------------------------------------------------------
@@ -109,6 +119,29 @@ run_fast() {
 }
 
 # ---------------------------------------------------------------------------
+# Shared logic, called by --full and by build-test.yml: the test config is
+# rendered here so the two callers cannot render it differently (ADR-0016).
+# ---------------------------------------------------------------------------
+render_tests() {
+  local aws_version tf_version
+  aws_version="${1:-$(latest_version awscli_versions)}"
+  tf_version="${2:-$(latest_version tf_versions)}"
+  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
+  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
+
+  # sed, not envsubst: gettext is absent from some contributor and agent
+  # environments, and the template has exactly two placeholders
+  sed -e "s/\${AWS_VERSION}/${aws_version}/g" \
+      -e "s/\${TF_VERSION}/${tf_version}/g" \
+      tests/container-structure-tests.yml.template \
+      > tests/container-structure-tests.yml
+  if grep -q '\${' tests/container-structure-tests.yml; then
+    die "unsubstituted placeholder left in tests/container-structure-tests.yml: $(grep -o '\${[^}]*}' tests/container-structure-tests.yml | sort -u | tr '\n' ' ')"
+  fi
+  pass "rendered tests/container-structure-tests.yml (AWS CLI ${aws_version}, Terraform ${tf_version})"
+}
+
+# ---------------------------------------------------------------------------
 # Tier 1 (--full): hadolint + single-platform build + container-structure-test.
 # Tool images stay pinned.
 # ---------------------------------------------------------------------------
@@ -122,8 +155,8 @@ host_platform() {
 
 run_full() {
   local aws_version tf_version image_tag platform
-  aws_version="${1:-$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)}"
-  tf_version="${2:-$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)}"
+  aws_version="${1:-$(latest_version awscli_versions)}"
+  tf_version="${2:-$(latest_version tf_versions)}"
   image_tag="${3:-dev}"
   [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
   [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
@@ -152,10 +185,7 @@ run_full() {
   pass "image build"
 
   printf 'Running container-structure-test (%s)...\n' "$CST_IMAGE"
-  AWS_VERSION="$aws_version" TF_VERSION="$tf_version" \
-    envsubst '${AWS_VERSION},${TF_VERSION}' \
-    < tests/container-structure-tests.yml.template \
-    > tests/container-structure-tests.yml
+  render_tests "$aws_version" "$tf_version"
   # container-structure-test ships amd64-only; request it explicitly so
   # arm64 hosts emulate silently
   docker container run --rm \
@@ -178,6 +208,11 @@ case "$MODE" in
     shift
     [ "$#" -le 3 ] || usage
     run_full "$@"
+    ;;
+  --render-tests)
+    shift
+    [ "$#" -le 2 ] || usage
+    render_tests "$@"
     ;;
   *)
     usage
