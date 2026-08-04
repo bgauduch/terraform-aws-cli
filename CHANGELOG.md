@@ -5,7 +5,7 @@
 
 ### ⚠ BREAKING CHANGES
 
-* **ci:** publish only the platforms upstream supports ([#164](https://github.com/bgauduch/terraform-aws-cli/issues/164))
+* **ci:** `linux/arm/v7` and `linux/386` are no longer published — remaining platforms are `linux/amd64` and `linux/arm64`. Existing tags keep their manifests. ([#164](https://github.com/bgauduch/terraform-aws-cli/issues/164))
 
 ### Features
 
@@ -16,8 +16,8 @@
 
 ### ⚠ BREAKING CHANGES
 
-* **ci:** one publisher per tag, edge from master and latest from releases ([#163](https://github.com/bgauduch/terraform-aws-cli/issues/163))
-* **versions:** support follows upstream EOL, retire minors below 1.13 ([#158](https://github.com/bgauduch/terraform-aws-cli/issues/158))
+* **ci:** `latest` now moves only on release — use `edge` for the tip of `master`. ([#163](https://github.com/bgauduch/terraform-aws-cli/issues/163))
+* **versions:** Terraform lines below 1.13 are no longer built — supported: 1.13, 1.14, 1.15. Existing tags stay pullable. ([#158](https://github.com/bgauduch/terraform-aws-cli/issues/158))
 
 ### Features
 
