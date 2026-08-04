@@ -75,6 +75,10 @@ multi-arch build once**.
 
 - Good: 9 platform builds become 5 on the current matrix, and one emulated
   `arm64` build instead of three — the expensive axis is paid once per PR.
+- Neutral, worth stating so it is not mistaken for a regression: **the gate does
+  not get faster**. The canary is the critical path and takes about as long as
+  one of the old jobs, which ran their multi-arch builds in parallel. What falls
+  is compute and cache pressure (the concern #150 opened on), not latency.
 - Good: the gate no longer grows with the product of the two axes. Adding a
   second AWS CLI line would have doubled it to 6 jobs; it now adds none.
 - Bad: a green `build-test` no longer means every published combination builds.
