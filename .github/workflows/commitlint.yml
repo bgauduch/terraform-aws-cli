@@ -1,9 +1,11 @@
 name: commitlint
 
 # Validate Conventional Commits (ADR-0002) with commitlint as the SINGLE engine,
-# on both the PR commits and the PR title (the squash-merge subject that feeds
-# release-please). Only official actions/* + the @commitlint/* packages — no
-# third-party actions (supply-chain hardening; Phase 4/5 orientation).
+# on both the PR commits and the squash-merge message. The latter is the PR
+# title AND description, because that is the commit release-please parses and
+# the only place a `BREAKING CHANGE:` footer can reach it (conventions C4).
+# Only official actions/* + the @commitlint/* packages — no third-party
+# actions (supply-chain hardening; Phase 4/5 orientation).
 
 on:
   pull_request:
@@ -47,7 +49,10 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: npx commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
 
-      - name: Lint PR title
+      - name: Lint squash-merge message (PR title + description)
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
-        run: printf '%s' "$PR_TITLE" | npx commitlint --verbose
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s\n\n%s\n' "$PR_TITLE" "$PR_BODY" \
+            | npx commitlint --config commitlint.squash.config.mjs --verbose

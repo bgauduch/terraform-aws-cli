@@ -37,6 +37,10 @@ Agent-session rules (authorization boundaries, roles) live in
 - **C2 — One commit per logical change.**
 - **C3 — `NEVER` bypass hooks** (no `--no-verify`, no `--no-gpg-sign`) — a
   failing hook is a signal; fix the cause.
+- **C4 — A `!` subject ships with a `BREAKING CHANGE:` footer** stating what a
+  consumer must change, at the end of the PR description. `NEVER` restate the
+  subject: release-please copies the footer into the release notes and the
+  changelog, and falls back to the subject when it is absent.
 
 ## Delivery
 

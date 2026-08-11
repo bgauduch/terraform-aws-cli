@@ -67,3 +67,13 @@ Tag strategy is decided separately in ADR-0003.
 > (tags pushed by `GITHUB_TOKEN` do not trigger other workflows) and fits the
 > low-friction driver. Mechanism clarification; the decision (release-please,
 > Release-PR trigger) is unchanged.
+>
+> **Amended 2026-08-03** — the `BREAKING CHANGE:` footer this ADR relies on is
+> now required and linted, not merely available: commitlint validates the
+> composed squash-merge message (PR title + description) against
+> `commitlint.squash.config.mjs`, which fails a `!` subject carrying no footer
+> or one that repeats the subject. The obligation is [conventions
+> C4](../conventions.md#commits); v9.0.0 and v10.0.0 shipped before it and
+> announced breaks without stating them. Enforcement of an existing mechanism;
+> the decision (Conventional Commits, squash-merge, release-please) is
+> unchanged.
