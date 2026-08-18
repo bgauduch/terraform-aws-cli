@@ -1,8 +1,8 @@
 name: build-test
 
-# Pull-request build gate (ADR-0020): a representative subset of the supported
-# matrix on amd64 with the structure tests, plus one multi-arch canary. The
-# full matrix on every platform belongs to the release workflow.
+# Pull-request build gate (ADR-0020): every supported combination is built and
+# structure-tested on every published platform, one job per pair. Publication
+# and the manifest it assembles belong to the release workflows (ADR-0018).
 #
 # Runs on pull requests (tests the merge result; covers fork contributions).
 # Fork PRs get no secrets and a read-only token by design: this workflow must
@@ -35,35 +35,27 @@ jobs:
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      canary_tf: ${{ steps.set-matrix.outputs.canary_tf }}
-      canary_aws: ${{ steps.set-matrix.outputs.canary_aws }}
 
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Compute the representative subset
+      - name: Cross the supported versions with the published platforms
         id: set-matrix
-        # Each supported version appears in one job; the axes are not paired
-        # exhaustively (ADR-0020). Sorted oldest to newest, the shorter axis
-        # repeats its newest entry, so the last pair is the newest combination
-        # and becomes the canary.
+        # Platform set per ADR-0019; it must stay identical to the `platforms:`
+        # lines of the publishing workflows.
         run: |
           set -euo pipefail
           MATRIX=$(jq -c '
-            def semver: sort_by(split(".") | map(tonumber));
-            (.tf_versions | semver) as $tf
-            | (.awscli_versions | semver) as $aws
-            | ([($tf | length), ($aws | length)] | max) as $jobs
-            | { include: [ range($jobs) as $i
-                | { tf_versions:     $tf[[$i, ($tf | length) - 1] | min],
-                    awscli_versions: $aws[[$i, ($aws | length) - 1] | min] } ] }
+            ["linux/amd64", "linux/arm64"] as $platforms
+            | { include: [ .tf_versions[] as $tf
+                | .awscli_versions[] as $aws
+                | $platforms[] as $platform
+                | { tf_versions: $tf, awscli_versions: $aws, platform: $platform } ] }
           ' supported_versions.json)
           echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
-          echo "canary_tf=$(echo "${MATRIX}" | jq -r '.include[-1].tf_versions')" >> "$GITHUB_OUTPUT"
-          echo "canary_aws=$(echo "${MATRIX}" | jq -r '.include[-1].awscli_versions')" >> "$GITHUB_OUTPUT"
           {
-            echo '### build-test subset (ADR-0020)'
+            echo '### build-test matrix (ADR-0020)'
             echo '```json'
             echo "${MATRIX}" | jq '.include'
             echo '```'
@@ -85,7 +77,16 @@ jobs:
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Build and save image tag
-        run: echo "IMAGE_TAG=${BRANCH}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}" >> $GITHUB_ENV
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        # a tag cannot carry the slash of "linux/arm64"
+        run: echo "IMAGE_TAG=${BRANCH}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}_${PLATFORM#linux/}" >> $GITHUB_ENV
+
+      - name: Set up QEMU
+        # binfmt for the emulated platforms: it also lets container-structure-test
+        # execute its assertions inside the built image
+        if: matrix.platform != 'linux/amd64'
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
@@ -94,7 +95,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           build-args: |
             TERRAFORM_VERSION=${{ matrix.tf_versions }}
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
@@ -112,34 +113,3 @@ jobs:
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           config: tests/container-structure-tests.yml
-
-  multi-arch-canary:
-    # The newest combination, the one `edge` and `latest` carry, on the full
-    # published platform set (ADR-0019). It proves the multi-arch build still
-    # resolves; the structure tests run on amd64 above (the tool image is
-    # amd64-only).
-    runs-on: ubuntu-22.04
-    needs: pr_matrix
-
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build container image for all published platforms
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          build-args: |
-            TERRAFORM_VERSION=${{ needs.pr_matrix.outputs.canary_tf }}
-            AWS_CLI_VERSION=${{ needs.pr_matrix.outputs.canary_aws }}
-          tags: ${{ env.IMAGE_NAME }}:canary
-          push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

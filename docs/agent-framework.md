@@ -49,9 +49,8 @@ CA trusted system-wide) so the checks below need no manual setup.
 
 ### Stays in CI (authoritative gate)
 
-On a pull request, `build-test` runs each supported version once on `amd64` with
-`container-structure-test`, plus one multi-arch canary (ADR-0020). The full
-matrix on every published platform runs at release time and has the final say.
-The local harness covers lint, base pull, pin install and assertion values (the
-fast checks that catch most breakage); it does not reproduce the multi-arch
-build.
+On a pull request, `build-test` builds and runs `container-structure-test` on
+every supported combination on every published platform, `arm64` under emulation
+(ADR-0020). The release workflow publishes and has the final say. The local
+harness covers lint, base pull, pin install and assertion values (the fast checks
+that catch most breakage); it does not reproduce the emulated builds.

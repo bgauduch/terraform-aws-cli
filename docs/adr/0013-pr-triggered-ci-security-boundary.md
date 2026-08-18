@@ -51,15 +51,8 @@ The security boundary, binding for all future workflow changes:
 
 ### Consequences
 
-- Good: every PR — including forks — is lint- and build-verified, with no
-  secret exposure by construction.
-
-  > **Amended 2026-08-04** — this consequence read "across the full version
-  > matrix and all platforms", the coverage at decision time.
-  > [ADR-0020](0020-representative-pull-request-build-matrix.md) narrowed the
-  > pull-request gate to a representative subset plus a multi-arch canary. The
-  > security boundary this ADR decides is untouched: what changed is how much
-  > the secret-free workflow builds, not which workflows may hold secrets.
+- Good: every PR — including forks — is lint- and build-verified across the
+  full version matrix and all platforms; no secret exposure by construction.
 
 - Cost: a branch pushed without a PR no longer runs build CI (open the PR to
   get CI — the normal flow); full-coverage fork runs cost compute, gated by

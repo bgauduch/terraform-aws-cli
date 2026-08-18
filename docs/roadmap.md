@@ -68,7 +68,7 @@ to green; the human owns the merge).
 | Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
 | AWS CLI bundle arch | Arch-native bundle selected from buildx `TARGETARCH` (`x86_64` / `aarch64`), per-arch `.sig` in `security/` | ADR-0017 |
 | Published platforms | Follow upstream AWS CLI availability: `linux/amd64` + `linux/arm64`; `arm/v7` and `386` retired (#161) | ADR-0019 |
-| PR build gate | Representative subset: each supported version once on `amd64` with the structure tests, plus one multi-arch canary on the newest combination; the full matrix stays with the release (#152) | ADR-0020 |
+| PR build gate | Every supported combination built **and** structure-tested on every published platform, one job per pair; `arm64` runs under emulation (#152) | ADR-0020 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
