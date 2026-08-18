@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.0.1](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.0...v10.0.1) (2026-08-18)
+
+
+### Bug Fixes
+
+* **docker:** refresh the superseded jq and unzip apt pins ([#168](https://github.com/bgauduch/terraform-aws-cli/issues/168)) ([196e9c0](https://github.com/bgauduch/terraform-aws-cli/commit/196e9c0f20811b851178a781b7a85592d9510777))
+
 ## [10.0.0](https://github.com/bgauduch/terraform-aws-cli/compare/v9.0.0...v10.0.0) (2026-08-03)
 
 
