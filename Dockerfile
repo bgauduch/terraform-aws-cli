@@ -12,7 +12,7 @@ RUN apt-get update
 RUN apt-get install --no-install-recommends -y ca-certificates=20250419
 RUN apt-get install --no-install-recommends -y curl=8.14.1-2+deb13u4
 RUN apt-get install --no-install-recommends -y gnupg=2.4.7-21+deb13u1
-RUN apt-get install --no-install-recommends -y unzip=6.0-29
+RUN apt-get install --no-install-recommends -y unzip=6.0-29+deb13u1
 WORKDIR /workspace
 # plain --retry does not cover connection resets (curl exit 35), --retry-all-errors does
 RUN curl --silent --show-error --fail --retry 5 --retry-delay 2 --retry-all-errors --remote-name https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip
@@ -31,9 +31,9 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends ca-certificates=20250419
 RUN apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u4
 RUN apt-get install -y --no-install-recommends gnupg=2.4.7-21+deb13u1
-RUN apt-get install -y --no-install-recommends unzip=6.0-29
+RUN apt-get install -y --no-install-recommends unzip=6.0-29+deb13u1
 RUN apt-get install -y --no-install-recommends git=1:2.47.3-0+deb13u1
-RUN apt-get install -y --no-install-recommends jq=1.7.1-6+deb13u2
+RUN apt-get install -y --no-install-recommends jq=1.7.1-6+deb13u3
 WORKDIR /workspace
 # AWS names bundle arches x86_64/aarch64, not amd64/arm64; arches without an
 # upstream bundle keep x86_64 (unchanged behaviour)
@@ -54,7 +54,7 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates=20250419 \
     git=1:2.47.3-0+deb13u1 \
-    jq=1.7.1-6+deb13u2 \
+    jq=1.7.1-6+deb13u3 \
     openssh-client=1:10.0p1-7+deb13u4 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
