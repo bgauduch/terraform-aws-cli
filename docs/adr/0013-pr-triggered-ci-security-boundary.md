@@ -53,7 +53,6 @@ The security boundary, binding for all future workflow changes:
 
 - Good: every PR — including forks — is lint- and build-verified across the
   full version matrix and all platforms; no secret exposure by construction.
-
 - Cost: a branch pushed without a PR no longer runs build CI (open the PR to
   get CI — the normal flow); full-coverage fork runs cost compute, gated by
   the approval setting.
