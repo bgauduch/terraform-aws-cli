@@ -40,24 +40,19 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Cross the supported versions with the published platforms
+      - name: Add the published architectures to the supported versions
         id: set-matrix
-        # Platform set per ADR-0019; it must stay identical to the `platforms:`
-        # lines of the publishing workflows.
+        # Architectures per ADR-0019; the jobs build `linux/<arch>`, so this list
+        # must stay in step with the `platforms:` lines of the publishing
+        # workflows. The crossing itself is left to `strategy.matrix`.
         run: |
           set -euo pipefail
-          MATRIX=$(jq -c '
-            ["linux/amd64", "linux/arm64"] as $platforms
-            | { include: [ .tf_versions[] as $tf
-                | .awscli_versions[] as $aws
-                | $platforms[] as $platform
-                | { tf_versions: $tf, awscli_versions: $aws, platform: $platform } ] }
-          ' supported_versions.json)
+          MATRIX=$(jq -c '. + {arch: ["amd64", "arm64"]}' supported_versions.json)
           echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
           {
             echo '### build-test matrix (ADR-0020)'
             echo '```json'
-            echo "${MATRIX}" | jq '.include'
+            echo "${MATRIX}" | jq .
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -77,15 +72,12 @@ jobs:
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Build and save image tag
-        env:
-          PLATFORM: ${{ matrix.platform }}
-        # a tag cannot carry the slash of "linux/arm64"
-        run: echo "IMAGE_TAG=${BRANCH}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}_${PLATFORM#linux/}" >> $GITHUB_ENV
+        run: echo "IMAGE_TAG=${BRANCH}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}_${{ matrix.arch }}" >> $GITHUB_ENV
 
       - name: Set up QEMU
-        # binfmt for the emulated platforms: it also lets container-structure-test
-        # execute its assertions inside the built image
-        if: matrix.platform != 'linux/amd64'
+        # emulation for the non-native architectures; the structure tests need it
+        # too, to run their assertions inside a foreign-architecture image
+        if: matrix.arch != 'amd64'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Buildx
@@ -95,7 +87,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: ${{ matrix.platform }}
+          platforms: linux/${{ matrix.arch }}
           build-args: |
             TERRAFORM_VERSION=${{ matrix.tf_versions }}
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}

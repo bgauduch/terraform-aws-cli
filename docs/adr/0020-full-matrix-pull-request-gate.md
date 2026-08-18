@@ -55,16 +55,19 @@ both axes, and asserts behaviour rather than assembly**.
   each performing a single-platform build loaded into the runner's daemon
   followed by one container-structure-test run. At the current matrix that is
   six jobs, all parallel.
-- **`arm64` jobs run under emulation**: `setup-qemu-action` installs binfmt, the
-  build targets `linux/arm64`, and container-structure-test — an `amd64` tool
-  driving the Docker daemon — executes its assertions inside the emulated image.
-  The same test template serves both architectures: every assertion it makes is
+- **`arm64` jobs run under emulation** (`docker/setup-qemu-action`): the build
+  targets `linux/arm64`, and container-structure-test — an `amd64` tool driving
+  the Docker daemon — executes its assertions inside the emulated image. The
+  same test template serves both architectures: every assertion it makes is
   architecture-independent.
 - **The separate multi-arch build step disappears.** Both architectures are now
   built individually, so what remained was the assembly of a manifest from cache.
   The manifest that matters is the published one, and the publishing workflows
   own it (ADR-0018).
-- The platform set is **inherited from ADR-0019**, not declared here.
+- The platform set is **inherited from ADR-0019**, not declared here. The gate
+  carries it as bare architectures and composes `linux/<arch>` where a build
+  needs it, so a check comparing the `platforms:` lines across workflows has one
+  composed form to account for.
 - **This decision is bounded by the matrix that makes it affordable.** A second
   AWS CLI line would take the gate to twelve jobs and roughly forty
   runner-minutes. That is the trigger to revisit this ADR — deliberately, not by

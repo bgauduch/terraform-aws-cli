@@ -179,7 +179,6 @@ Subagents & slash commands:
 - `ossf/scorecard-action` (OpenSSF score) *(#105)*
 - `actions/stale` for PRs/issues
 - "Last reviewed" section in `AGENTS.md`
-- Multi-arch container-structure-tests (at least `linux/arm64`)
 - Image-size regression guard
 - Integration smoke test (`terraform init`)
 - `wagoodman/dive` image analysis in CI *(#25)*
@@ -197,9 +196,9 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 
 ### Harness track — pre-push verification & agent execution layer
 Cross-cutting track from the #152 study (staged `go 1–2`, 2026-07-31): fast
-validation oracle (ADR-0016), representative PR build matrix, then — behind a
-second gate — session guardrails, version/pin automation scripts, and agent
-skills. The qualified spec, sequencing and acceptance criteria live in #152
+validation oracle (ADR-0016), full-matrix pull-request gate (ADR-0020), then —
+behind a second gate — session guardrails, version/pin automation scripts, and
+agent skills. The qualified spec, sequencing and acceptance criteria live in #152
 (single home).
 
 ---

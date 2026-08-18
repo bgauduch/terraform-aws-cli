@@ -64,8 +64,15 @@ Chosen option: **published platforms follow upstream AWS CLI availability**.
   working `aws` on those platforms, so the promise being withdrawn was never
   kept — but the withdrawal is user-visible, hence the breaking-change marker
   on the delivering commit.
-- The representative CI matrix (#152) and any future multi-arch structure tests
+- The pull-request build matrix (#152) and any future multi-arch structure tests
   inherit this set rather than defining their own.
+
+  > **Amended 2026-08-18** — this consequence read "the representative CI matrix",
+  > the shape #152 proposed at the time. That proposal was rejected in review:
+  > [ADR-0020](0020-full-matrix-pull-request-gate.md) has the gate build **and**
+  > structure-test every combination on every platform of this set, so the
+  > multi-arch structure tests named here now exist. The set itself, and the way
+  > it is inherited rather than redeclared, is unchanged.
 
 ## More information
 

@@ -75,7 +75,15 @@ Chosen option: **support follows upstream EOL, with a one-release grace**.
 - Follow-ups: the version-bump automation gains a retire-on-EOL step alongside
   add-on-release (#152, #20); a fast-check asserting "no out-of-policy version
   in the matrix" joins the validation oracle when it lands (#152); the
-  representative CI subset (#152) is computed against the sunset matrix.
+  pull-request build matrix (#152) is computed from the sunset matrix.
+
+  > **Amended 2026-08-18** — the last item read "the representative CI subset
+  > (#152) is computed against the sunset matrix". That subset was rejected in
+  > review: [ADR-0020](0020-full-matrix-pull-request-gate.md) builds and tests
+  > the matrix in full. The dependency it records is unchanged and is now
+  > tighter — the gate reads `supported_versions.json` directly, so this window
+  > sizes it, and ADR-0020 names a second AWS CLI line as the point at which
+  > that cost is revisited.
 
 ## More information
 
