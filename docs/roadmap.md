@@ -68,6 +68,7 @@ to green; the human owns the merge).
 | Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
 | AWS CLI bundle arch | Arch-native bundle selected from buildx `TARGETARCH` (`x86_64` / `aarch64`), per-arch `.sig` in `security/` | ADR-0017 |
 | Published platforms | Follow upstream AWS CLI availability: `linux/amd64` + `linux/arm64`; `arm/v7` and `386` retired (#161) | ADR-0019 |
+| PR build gate | Every supported combination built **and** structure-tested on every published platform, one job per pair; `arm64` runs under emulation (#152) | ADR-0020 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
@@ -178,7 +179,6 @@ Subagents & slash commands:
 - `ossf/scorecard-action` (OpenSSF score) *(#105)*
 - `actions/stale` for PRs/issues
 - "Last reviewed" section in `AGENTS.md`
-- Multi-arch container-structure-tests (at least `linux/arm64`)
 - Image-size regression guard
 - Integration smoke test (`terraform init`)
 - `wagoodman/dive` image analysis in CI *(#25)*
@@ -196,9 +196,9 @@ Low-priority hygiene; cross-cutting, so delivered as its own phase.
 
 ### Harness track — pre-push verification & agent execution layer
 Cross-cutting track from the #152 study (staged `go 1–2`, 2026-07-31): fast
-validation oracle (ADR-0016), representative PR build matrix, then — behind a
-second gate — session guardrails, version/pin automation scripts, and agent
-skills. The qualified spec, sequencing and acceptance criteria live in #152
+validation oracle (ADR-0016), full-matrix pull-request gate (ADR-0020), then —
+behind a second gate — session guardrails, version/pin automation scripts, and
+agent skills. The qualified spec, sequencing and acceptance criteria live in #152
 (single home).
 
 ---

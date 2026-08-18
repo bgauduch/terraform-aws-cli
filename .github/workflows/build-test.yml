@@ -1,5 +1,9 @@
 name: build-test
 
+# Pull-request build gate (ADR-0020): every supported combination is built and
+# structure-tested on every published platform, one job per pair. Publication
+# and the manifest it assembles belong to the release workflows (ADR-0018).
+#
 # Runs on pull requests (tests the merge result; covers fork contributions).
 # Fork PRs get no secrets and a read-only token by design: this workflow must
 # stay secret-free, and pull_request_target is banned. See ADR-0013.
@@ -12,6 +16,7 @@ on:
       - "tests/*"
       - ".dockerignore"
       - "hadolint.yaml"
+      - "scripts/validate.sh"
       - ".github/workflows/build-test.yml"
 
 permissions:
@@ -25,7 +30,7 @@ env:
   IMAGE_NAME: "terraform-aws-cli"
 
 jobs:
-  load_supported_versions:
+  pr_matrix:
     runs-on: ubuntu-22.04
 
     outputs:
@@ -35,19 +40,29 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Save supported versions as output
+      - name: Add the published architectures to the supported versions
         id: set-matrix
+        # Architectures per ADR-0019; the jobs build `linux/<arch>`, so this list
+        # must stay in step with the `platforms:` lines of the publishing
+        # workflows. The crossing itself is left to `strategy.matrix`.
         run: |
-          VERSIONS=$(cat ./supported_versions.json | jq -c)
-          echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          MATRIX=$(jq -c '. + {arch: ["amd64", "arm64"]}' supported_versions.json)
+          echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+          {
+            echo '### build-test matrix (ADR-0020)'
+            echo '```json'
+            echo "${MATRIX}" | jq .
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   build-test:
     runs-on: ubuntu-22.04
-    needs: load_supported_versions
+    needs: pr_matrix
     strategy:
       # a failed combo must not cancel the independent sibling builds
       fail-fast: false
-      matrix: ${{ fromJSON(needs.load_supported_versions.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.pr_matrix.outputs.matrix) }}
 
     steps:
       - name: Check out the repo
@@ -57,9 +72,12 @@ jobs:
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Build and save image tag
-        run: echo "IMAGE_TAG=${BRANCH}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}" >> $GITHUB_ENV
+        run: echo "IMAGE_TAG=${BRANCH}_terraform-${{ matrix.tf_versions }}_awscli-${{ matrix.awscli_versions }}_${{ matrix.arch }}" >> $GITHUB_ENV
 
       - name: Set up QEMU
+        # emulation for the non-native architectures; the structure tests need it
+        # too, to run their assertions inside a foreign-architecture image
+        if: matrix.arch != 'amd64'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Buildx
@@ -69,7 +87,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          platforms: linux/${{ matrix.arch }}
           build-args: |
             TERRAFORM_VERSION=${{ matrix.tf_versions }}
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
@@ -80,26 +98,10 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Generate test config
-        run: |
-          export TF_VERSION=${{ matrix.tf_versions }}
-          export AWS_VERSION=${{ matrix.awscli_versions }}
-          envsubst '${TF_VERSION},${AWS_VERSION}' < tests/container-structure-tests.yml.template > tests/container-structure-tests.yml
+        run: ./scripts/validate.sh --render-tests "${{ matrix.awscli_versions }}" "${{ matrix.tf_versions }}"
 
       - name: run structure tests
         uses: plexsystems/container-structure-test-action@v0.3.0
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           config: tests/container-structure-tests.yml
-
-      - name: Build container image for all platforms
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          build-args: |
-            TERRAFORM_VERSION=${{ matrix.tf_versions }}
-            AWS_CLI_VERSION=${{ matrix.awscli_versions }}
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
