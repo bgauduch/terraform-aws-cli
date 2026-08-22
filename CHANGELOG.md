@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.0.2](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.1...v10.0.2) (2026-08-22)
+
+
+### Bug Fixes
+
+* **release:** assert published tag digests, not tag existence ([#172](https://github.com/bgauduch/terraform-aws-cli/issues/172)) ([7384efa](https://github.com/bgauduch/terraform-aws-cli/commit/7384efaa5764d8120b73b4486e0ff99872c2cd89))
+
 ## [10.0.1](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.0...v10.0.1) (2026-08-18)
 
 
