@@ -16,6 +16,8 @@ HADOLINT_IMAGE="hadolint/hadolint:2.12.0-alpine"
 CST_IMAGE="gcr.io/gcp-runtimes/container-structure-test:v1.16.0"
 IMAGE_NAME="bgauduch/terraform-aws-cli"
 SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+$'
+RELEASE_RE='^v[0-9]+\.[0-9]+\.[0-9]+$'
+HUB_API="https://hub.docker.com/v2/repositories/${IMAGE_NAME}"
 
 FAIL=0
 pass() { printf 'PASS %s\n' "$*"; }
@@ -28,6 +30,7 @@ usage() {
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
        validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
+       validate.sh --published RELEASE_VERSION
 
   --fast          structural checks only, no Docker required (tier 0)
   --full          the fast checks, then hadolint, single-platform image build
@@ -36,6 +39,10 @@ usage: validate.sh --fast
                   "dev".
   --render-tests  render tests/container-structure-tests.yml from its template
                   and exit; called by --full and by build-test.yml.
+  --published     assert what the registry serves for the newest release
+                  (vX.Y.Z): network only, no Docker and no credentials. Called
+                  by release-please.yml; run it by hand to re-check a release
+                  that has just been published.
 USAGE
   exit 2
 }
@@ -198,6 +205,106 @@ run_full() {
   pass "container-structure-test"
 }
 
+# ---------------------------------------------------------------------------
+# Tier 2 (--published): what the registry serves for a release.
+# Network only: the Docker Hub API is public, so this runs from a laptop, an
+# agent session or CI with no Docker and no registry credentials.
+# ---------------------------------------------------------------------------
+hub_get() {
+  curl --silent --fail --retry 5 --retry-delay 2 --retry-all-errors "$1"
+}
+
+# Digest a tag resolves to; empty when the tag does not exist.
+tag_digest() {
+  hub_get "${HUB_API}/tags/$1" | jq -r '.digest // empty' || true
+}
+
+tag_is_immutable() {
+  local tag="$1" rules="$2" rule
+  while IFS= read -r rule; do
+    [ -n "$rule" ] || continue
+    printf '%s' "$tag" | grep -Eq "$rule" && return 0
+  done <<< "$rules"
+  return 1
+}
+
+# The registry enforces immutability alongside the workflow, so its rules are
+# part of ADR-0018: a rule covering a floating form denies the push that moves
+# it.
+check_registry_immutability() {
+  local rules ok=1 entry tag want got
+  rules="$(hub_get "${HUB_API}/" | jq -r '.immutable_tags_settings | select(.enabled) | .rules[]')" || true
+
+  # one sample per tag form, with the mutability ADR-0018 declares for it
+  local samples=(
+    "v0.0.0:immutable"
+    "v0.0.0_tf-0.0.0_aws-0.0.0:immutable"
+    "v0.0:mutable"
+    "latest:mutable"
+    "edge:mutable"
+  )
+  for entry in "${samples[@]}"; do
+    tag="${entry%:*}"; want="${entry#*:}"
+    if tag_is_immutable "$tag" "$rules"; then got=immutable; else got=mutable; fi
+    [ "$got" = "$want" ] \
+      || { fail "registry treats ${tag} as ${got}, ADR-0018 declares its form ${want}"; ok=0; }
+  done
+  [ "$ok" = 1 ] && pass "registry immutability rules match the publication matrix"
+}
+
+# The version this repository currently declares as released.
+current_release() {
+  jq -r '.["."]' .release-please-manifest.json
+}
+
+check_published_tags() {
+  local version="$1" ok=1 tf aws tag reference expected actual
+  reference="${version}_tf-$(latest_version tf_versions)_aws-$(latest_version awscli_versions)"
+
+  for tf in $(jq -r '.tf_versions[]' supported_versions.json); do
+    for aws in $(jq -r '.awscli_versions[]' supported_versions.json); do
+      tag="${version}_tf-${tf}_aws-${aws}"
+      [ -n "$(tag_digest "$tag")" ] \
+        || { fail "pinned tag ${tag} is missing from the registry"; ok=0; }
+    done
+  done
+
+  expected="$(tag_digest "$reference")"
+  if [ -z "$expected" ]; then
+    fail "reference tag ${reference} is missing, the floating tags cannot be verified"
+    return
+  fi
+
+  # `latest` and `vX.Y` belong to the current release (ADR-0018), so they carry
+  # no expectation for any other. At release time the checked-out tree is the
+  # release commit, so CI always takes the branch below.
+  if [ "${version#v}" != "$(current_release)" ]; then
+    skip "floating tags: ${version} is not the current release (v$(current_release)), which is what latest and ${version%.*} track"
+    [ "$ok" = 1 ] && pass "every ${version} pinned tag is live"
+    return
+  fi
+
+  # A floating tag can exist and still resolve to the previous release, so
+  # presence is not publication.
+  for tag in "$version" "${version%.*}" latest; do
+    actual="$(tag_digest "$tag")"
+    if [ -z "$actual" ]; then
+      fail "floating tag ${tag} is missing from the registry"; ok=0
+    elif [ "$actual" != "$expected" ]; then
+      fail "floating tag ${tag} resolves to ${actual}, expected ${expected} (${reference})"; ok=0
+    fi
+  done
+  [ "$ok" = 1 ] && pass "every ${version} tag resolves to ${expected}"
+}
+
+run_published() {
+  local version="${1:-}"
+  [ -n "$version" ] || usage
+  [[ "$version" =~ $RELEASE_RE ]] || die "release version '${version}' is not a vX.Y.Z tag"
+  check_registry_immutability
+  check_published_tags "$version"
+}
+
 MODE="${1:-}"
 case "$MODE" in
   --fast)
@@ -213,6 +320,11 @@ case "$MODE" in
     shift
     [ "$#" -le 2 ] || usage
     render_tests "$@"
+    ;;
+  --published)
+    shift
+    [ "$#" -eq 1 ] || usage
+    run_published "$@"
     ;;
   *)
     usage
