@@ -195,6 +195,11 @@ check_registry_immutability() {
   [ "$ok" = 1 ] && pass "registry immutability rules match the publication matrix"
 }
 
+# The version this repository currently declares as released.
+current_release() {
+  jq -r '.["."]' .release-please-manifest.json
+}
+
 check_published_tags() {
   local version="$1" ok=1 tf aws tag reference expected actual
   reference="${version}_tf-$(latest_version tf_versions)_aws-$(latest_version awscli_versions)"
@@ -213,9 +218,18 @@ check_published_tags() {
     return
   fi
 
+  # `latest` and `vX.Y` belong to the current release (ADR-0018), so they carry
+  # no expectation for an older one: asserting them there reports the next
+  # release as this one's failure. At release time the checked-out tree is the
+  # release commit, so CI always takes the branch below.
+  if [ "${version#v}" != "$(current_release)" ]; then
+    skip "floating tags: ${version} is not the current release (v$(current_release)), which is what latest and ${version%.*} track"
+    [ "$ok" = 1 ] && pass "every ${version} pinned tag is live"
+    return
+  fi
+
   # A floating tag that exists but still resolves to the previous release is an
-  # incomplete publication that an existence check reports as healthy. Only the
-  # newest release owns these tags, so an older version fails here by design.
+  # incomplete publication that an existence check reports as healthy.
   for tag in "$version" "${version%.*}" latest; do
     actual="$(tag_digest "$tag")"
     if [ -z "$actual" ]; then
