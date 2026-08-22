@@ -19,6 +19,9 @@ One home per fact: reference these, never copy them.
   wait when a fix is ambiguous, architecturally significant, or beyond the PR's
   declared scope.
 - **`NEVER` delete a branch, tag, or remote ref** without explicit approval.
+- **`ALWAYS` put a decision that is the maintainer's through the session's
+  question tool** — a question trailing a message is not a pending decision, it
+  is lost scrollback. Batch the open ones rather than asking one per message.
 - **Net-new work enters through the intake pipeline** (ADR-0014,
   [`docs/work-intake-and-triage.md`](docs/work-intake-and-triage.md)): dedupe
   and get a human `go` before creating an issue or starting delivery. Trivial
