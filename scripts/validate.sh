@@ -206,7 +206,7 @@ run_full() {
 }
 
 # ---------------------------------------------------------------------------
-# Tier 2 (--published): what the registry actually serves for a release.
+# Tier 2 (--published): what the registry serves for a release.
 # Network only: the Docker Hub API is public, so this runs from a laptop, an
 # agent session or CI with no Docker and no registry credentials.
 # ---------------------------------------------------------------------------
@@ -230,7 +230,7 @@ tag_is_immutable() {
 
 # The registry enforces immutability alongside the workflow, so its rules are
 # part of ADR-0018: a rule covering a floating form denies the push that moves
-# it, and the release publishes half a tag set.
+# it.
 check_registry_immutability() {
   local rules ok=1 entry tag want got
   rules="$(hub_get "${HUB_API}/" | jq -r '.immutable_tags_settings | select(.enabled) | .rules[]')" || true
@@ -276,8 +276,7 @@ check_published_tags() {
   fi
 
   # `latest` and `vX.Y` belong to the current release (ADR-0018), so they carry
-  # no expectation for an older one: asserting them there reports the next
-  # release as this one's failure. At release time the checked-out tree is the
+  # no expectation for any other. At release time the checked-out tree is the
   # release commit, so CI always takes the branch below.
   if [ "${version#v}" != "$(current_release)" ]; then
     skip "floating tags: ${version} is not the current release (v$(current_release)), which is what latest and ${version%.*} track"
@@ -285,8 +284,8 @@ check_published_tags() {
     return
   fi
 
-  # A floating tag that exists but still resolves to the previous release is an
-  # incomplete publication that an existence check reports as healthy.
+  # A floating tag can exist and still resolve to the previous release, so
+  # presence is not publication.
   for tag in "$version" "${version%.*}" latest; do
     actual="$(tag_digest "$tag")"
     if [ -z "$actual" ]; then

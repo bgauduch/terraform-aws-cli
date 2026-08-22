@@ -128,7 +128,7 @@ jobs:
 
   verify_release:
     needs: [release-please, build_push_release]
-    # runs on partial matrix failure too and reports the missing tags
+    # runs on partial matrix failure too, to report what is missing or stale
     if: ${{ !cancelled() && needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-22.04
 
