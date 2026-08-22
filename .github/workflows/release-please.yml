@@ -12,9 +12,9 @@ name: release-please
 # images. No separate release.yml and no Personal Access Token are needed: the
 # build is wired in-workflow on the `release_created` output, so the default
 # GITHUB_TOKEN (plus the existing DockerHub secrets) is enough. A final
-# verify_release job asserts every expected tag is live on the registry, that
-# the floating ones resolve to the published image, and opens an issue when the
-# publication is incomplete.
+# verify_release job calls the verification oracle (ADR-0016) to assert what the
+# registry serves for the release, and opens an issue when the publication is
+# incomplete.
 
 on:
   push:
@@ -133,88 +133,14 @@ jobs:
     runs-on: ubuntu-22.04
 
     env:
-      ORGANIZATION: "bgauduch"
-      IMAGE_NAME: "terraform-aws-cli"
       RELEASE_VERSION: ${{ needs.release-please.outputs.tag_name }}
 
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Assert the registry immutability rules match the published matrix
-        run: |
-          set -euo pipefail
-          # A rule covering a floating tag makes the release unpublishable:
-          # the push is denied and the tag keeps serving the previous release.
-          rules=$(curl --silent --fail --retry 5 --retry-delay 2 --retry-all-errors \
-            "https://hub.docker.com/v2/repositories/${ORGANIZATION}/${IMAGE_NAME}/" \
-            | jq -r '.immutable_tags_settings | select(.enabled) | .rules[]')
-          covered () {
-            local rule
-            while IFS= read -r rule; do
-              [ -z "${rule}" ] && continue
-              printf '%s' "$1" | grep -Eq "${rule}" && return 0
-            done <<< "${rules}"
-            return 1
-          }
-          policy=0
-          for tag in v0.0.0 v0.0.0_tf-0.0.0_aws-0.0.0; do
-            covered "${tag}" || { echo "::error::no registry rule makes ${tag} immutable"; policy=1; }
-          done
-          for tag in latest edge v0.0; do
-            if covered "${tag}"; then
-              echo "::error::a registry rule makes ${tag} immutable, it must stay mutable"
-              policy=1
-            fi
-          done
-          exit "${policy}"
-
-      - name: Assert every expected tag is live and points at this release
-        run: |
-          set -euo pipefail
-          api="https://hub.docker.com/v2/repositories/${ORGANIZATION}/${IMAGE_NAME}"
-          digest_of () {
-            curl --silent --fail --retry 5 --retry-delay 2 --retry-all-errors \
-              "${api}/tags/$1" | jq -r '.digest // empty'
-          }
-          missing=0
-          for tf in $(jq -r '.tf_versions[]' supported_versions.json); do
-            for aws in $(jq -r '.awscli_versions[]' supported_versions.json); do
-              tag="${RELEASE_VERSION}_tf-${tf}_aws-${aws}"
-              if [ -n "$(digest_of "${tag}" || true)" ]; then
-                echo "OK       ${tag}"
-              else
-                echo "MISSING  ${tag}"
-                missing=1
-              fi
-            done
-          done
-          LATEST_TF=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)
-          LATEST_AWS=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)
-          reference="${RELEASE_VERSION}_tf-${LATEST_TF}_aws-${LATEST_AWS}"
-          expected=$(digest_of "${reference}" || true)
-          if [ -z "${expected}" ]; then
-            echo "::error::reference tag ${reference} is missing, the floating tags cannot be verified."
-            exit 1
-          fi
-          # A floating tag that exists but still resolves to the previous
-          # release is an incomplete publication an existence check cannot see.
-          for tag in "${RELEASE_VERSION}" "${RELEASE_VERSION%.*}" latest; do
-            actual=$(digest_of "${tag}" || true)
-            if [ "${actual}" = "${expected}" ]; then
-              echo "OK       ${tag} -> ${expected}"
-            elif [ -z "${actual}" ]; then
-              echo "MISSING  ${tag}"
-              missing=1
-            else
-              echo "STALE    ${tag} -> ${actual}, expected ${expected}"
-              missing=1
-            fi
-          done
-          if [ "$missing" -ne 0 ]; then
-            echo "::error::Release ${RELEASE_VERSION} publication is incomplete, image tags are missing or stale on the registry."
-            exit 1
-          fi
+      - name: Assert the release is fully published
+        run: ./scripts/validate.sh --published "${RELEASE_VERSION}"
 
       - name: Open an issue when the publication is incomplete
         if: failure()
