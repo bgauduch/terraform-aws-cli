@@ -10,3 +10,5 @@ Code settings (adapter layer). Keep instructions in `AGENTS.md`, not here.
 @docs/conventions.md
 
 @docs/adr/README.md
+
+@docs/work-intake-and-triage.md

@@ -19,6 +19,12 @@
 > previously invisible to agents. The core/adapter split is unchanged; another
 > tool's adapter would use its own equivalent loading mechanism.
 
+> **Amended 2026-08-22** — `docs/work-intake-and-triage.md` joins the imports
+> above. Two sessions skipped the same intake phase while the checklist was
+> merely linked from `AGENTS.md`, which is the failure the 2026-07-23 amendment
+> already recorded for the conventions. This is an immediate measure, not a
+> criterion: what an agent must hold in context is #170's to settle.
+
 ## Context and problem statement
 
 The framework was authored around "Claude" — naming ("Claude Code framework",

@@ -4,7 +4,8 @@ Operational checklist for the five-phase intake pipeline decided in
 [ADR-0014](adr/0014-work-intake-and-triage-process.md). The *why* and the phase
 definitions live there; this file is the *how*. It binds net-new features,
 structural changes, and external contributions — trivial hygiene (typos, pure
-version bumps, one-line fixes) skips to phase 5.
+version bumps, one-line fixes) skips to phase 5, and an incident fix skips
+phase 3 alone.
 
 ## The pipeline
 
@@ -27,6 +28,11 @@ version bumps, one-line fixes) skips to phase 5.
 - [ ] `go` → create the issue: it is the **qualified spec** and its single home.
 
 ### 3. Prioritisation
+
+> **Incident lane** — a fix for a defect already affecting users skips this
+> phase: there is no ranking to arbitrate. The delivering pull request carries
+> the roadmap entry instead.
+
 - [ ] Rank against current work (phase/priority in `docs/roadmap.md`).
 - [ ] Identify dependencies and blockers; link them.
 - [ ] Add to the roadmap (phase line; Decisions table when a decision is taken).

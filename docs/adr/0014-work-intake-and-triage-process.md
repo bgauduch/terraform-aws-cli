@@ -76,6 +76,15 @@ behind it.
 straight to realisation — the pipeline binds *net-new features, structural
 changes, and external contributions*, not trivial hygiene.
 
+> **Amended 2026-08-22 — the incident lane.** A fix for a defect already
+> affecting users is a structural change, so phases 1, 2, 4 and 5 bind it as
+> written. **Phase 3 does not:** ranking against current work has no meaning for
+> something being done because production is broken, and the pipeline had no
+> lane for it. The trace is deferred, not waived — the delivering pull request
+> carries the roadmap entry. Recorded because #171 reached delivery without it
+> and nothing was wrong: an exemption that is never written down is
+> indistinguishable from an omission, and gets repeated.
+
 ### Consequences
 
 - Good: scope stops leaking (closing integrity); duplicates are caught before
