@@ -66,6 +66,16 @@ Chosen option: **one publisher per tag**. The published set:
   exists: `vX.Y.Z_tf-A.B.C_aws-D.E.F` is never re-pushed, so rollback is a
   consumer re-pinning an older tag ([`docs/rollback.md`](../rollback.md)).
 
+> **Amended 2026-08-22** — the immutability policy is enforced by the registry
+> as well as by the workflow, so the registry's rules are part of this decision:
+> they must cover the two pinned forms and **exclude** the floating ones. A rule
+> matching every `v`-prefixed tag made `vX.Y` immutable, and the first patch
+> release under this ADR (`v10.0.1`) could not move it. The push was denied and
+> `latest`, queued behind it, was never pushed at all, so both aliases kept
+> serving the previous release. `verify_release` called the run healthy because
+> it asserted that each tag existed, not what it resolved to; it now compares
+> digests and asserts the registry's rules against the table above (#171).
+
 ### Consequences
 
 - Good: `latest` has one writer, so its content is defined at all times. The

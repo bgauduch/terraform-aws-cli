@@ -38,9 +38,10 @@ flowchart LR
 | `vX.Y.Z` | `release-please.yml` | release created | no | that release, latest supported combination |
 | `vX.Y.Z_tf-A.B.C_aws-D.E.F` | `release-please.yml` | release created | **no** | one fixed combination, never re-pushed |
 
-Every tag in this table except `edge` is asserted live on the registry by
-`verify_release` after each release; `edge` is not part of a release and is
-reproduced by the next `master` push. Rollback semantics for the immutable
+Every tag in this table except `edge` is asserted by `verify_release` after
+each release: the pinned tags must exist, and the floating ones must resolve to
+the same digest as the release's pinned tag. `edge` is not part of a release and
+is reproduced by the next `master` push. Rollback semantics for the immutable
 form: [`docs/rollback.md`](rollback.md).
 
 ## Registry credentials (least privilege)
@@ -66,10 +67,14 @@ registry. Three guards enforce this, all defined in the workflows:
    connection resets.
 2. The publish and test matrices do not fail fast: matrix jobs produce
    independent immutable tags, so a failed combo never cancels its siblings.
-3. The `verify_release` job asserts each expected tag on the registry after
-   the builds and **opens an issue** when the publication is incomplete, even
-   on partial matrix failure.
+3. The `verify_release` job asserts each expected tag **and the digest it
+   resolves to** after the builds, checks that the registry's immutability
+   rules match the **Mutable** column above, and **opens an issue** when the
+   publication is incomplete, even on partial matrix failure.
 
 Rationale: two releases once shipped with zero images because a single
 transient download failure cancelled the whole publish matrix, and the red
-runs went unnoticed (incident record: #106, fix: #149).
+runs went unnoticed (incident record: #106, fix: #149). A later release left
+`latest` and `vX.Y` serving the previous image while the gate stayed green,
+because asserting that a tag exists says nothing about what it points at
+(incident record: #171).
