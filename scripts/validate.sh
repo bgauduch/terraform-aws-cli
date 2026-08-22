@@ -149,6 +149,63 @@ render_tests() {
 }
 
 # ---------------------------------------------------------------------------
+# Tier 1 (--full): hadolint + single-platform build + container-structure-test.
+# Tool images stay pinned.
+# ---------------------------------------------------------------------------
+host_platform() {
+  case "$(uname -m)" in
+    x86_64)          printf 'linux/amd64' ;;
+    aarch64 | arm64) printf 'linux/arm64' ;;
+    *) die "unsupported host architecture: $(uname -m)" ;;
+  esac
+}
+
+run_full() {
+  local aws_version tf_version image_tag platform
+  aws_version="${1:-$(latest_version awscli_versions)}"
+  tf_version="${2:-$(latest_version tf_versions)}"
+  image_tag="${3:-dev}"
+  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
+  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
+  platform="$(host_platform)"
+
+  run_fast
+  [ "$FAIL" = 0 ] || { printf 'validate: structural checks failed, not building\n' >&2; exit 1; }
+
+  printf 'Linting Dockerfile (%s)...\n' "$HADOLINT_IMAGE"
+  docker container run --rm \
+    --volume "${PWD}":/data:ro \
+    --workdir /data \
+    "$HADOLINT_IMAGE" /bin/hadolint \
+    --config hadolint.yaml Dockerfile
+  pass "hadolint (containerized)"
+
+  printf 'Building %s:%s (AWS CLI %s, Terraform %s, %s)...\n' \
+    "$IMAGE_NAME" "$image_tag" "$aws_version" "$tf_version" "$platform"
+  docker buildx build \
+    --progress plain \
+    --platform "$platform" \
+    --build-arg AWS_CLI_VERSION="$aws_version" \
+    --build-arg TERRAFORM_VERSION="$tf_version" \
+    --tag "${IMAGE_NAME}:${image_tag}" \
+    --load .
+  pass "image build"
+
+  printf 'Running container-structure-test (%s)...\n' "$CST_IMAGE"
+  render_tests "$aws_version" "$tf_version"
+  # container-structure-test ships amd64-only; request it explicitly so
+  # arm64 hosts emulate silently
+  docker container run --rm \
+    --platform linux/amd64 \
+    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+    "$CST_IMAGE" test \
+    --image "${IMAGE_NAME}:${image_tag}" \
+    --config /tests.yml
+  pass "container-structure-test"
+}
+
+# ---------------------------------------------------------------------------
 # Tier 2 (--published): what the registry actually serves for a release.
 # Network only: the Docker Hub API is public, so this runs from a laptop, an
 # agent session or CI with no Docker and no registry credentials.
@@ -247,63 +304,6 @@ run_published() {
   [[ "$version" =~ $RELEASE_RE ]] || die "release version '${version}' is not a vX.Y.Z tag"
   check_registry_immutability
   check_published_tags "$version"
-}
-
-# ---------------------------------------------------------------------------
-# Tier 1 (--full): hadolint + single-platform build + container-structure-test.
-# Tool images stay pinned.
-# ---------------------------------------------------------------------------
-host_platform() {
-  case "$(uname -m)" in
-    x86_64)          printf 'linux/amd64' ;;
-    aarch64 | arm64) printf 'linux/arm64' ;;
-    *) die "unsupported host architecture: $(uname -m)" ;;
-  esac
-}
-
-run_full() {
-  local aws_version tf_version image_tag platform
-  aws_version="${1:-$(latest_version awscli_versions)}"
-  tf_version="${2:-$(latest_version tf_versions)}"
-  image_tag="${3:-dev}"
-  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
-  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
-  platform="$(host_platform)"
-
-  run_fast
-  [ "$FAIL" = 0 ] || { printf 'validate: structural checks failed, not building\n' >&2; exit 1; }
-
-  printf 'Linting Dockerfile (%s)...\n' "$HADOLINT_IMAGE"
-  docker container run --rm \
-    --volume "${PWD}":/data:ro \
-    --workdir /data \
-    "$HADOLINT_IMAGE" /bin/hadolint \
-    --config hadolint.yaml Dockerfile
-  pass "hadolint (containerized)"
-
-  printf 'Building %s:%s (AWS CLI %s, Terraform %s, %s)...\n' \
-    "$IMAGE_NAME" "$image_tag" "$aws_version" "$tf_version" "$platform"
-  docker buildx build \
-    --progress plain \
-    --platform "$platform" \
-    --build-arg AWS_CLI_VERSION="$aws_version" \
-    --build-arg TERRAFORM_VERSION="$tf_version" \
-    --tag "${IMAGE_NAME}:${image_tag}" \
-    --load .
-  pass "image build"
-
-  printf 'Running container-structure-test (%s)...\n' "$CST_IMAGE"
-  render_tests "$aws_version" "$tf_version"
-  # container-structure-test ships amd64-only; request it explicitly so
-  # arm64 hosts emulate silently
-  docker container run --rm \
-    --platform linux/amd64 \
-    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
-    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
-    "$CST_IMAGE" test \
-    --image "${IMAGE_NAME}:${image_tag}" \
-    --config /tests.yml
-  pass "container-structure-test"
 }
 
 MODE="${1:-}"
