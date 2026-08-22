@@ -147,6 +147,9 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - Replace `echo | docker login` with `docker/login-action` (DockerHub + GHCR) *(#100, closes #60)*
 - Implement full tag strategy: `latest`, `edge`, `vX.Y.Z`, `vX.Y`, fully-pinned `vX.Y.Z_tf-A.B.C_aws-D.E.F` *(#100)*
 - Enable Docker Scout CVE monitoring *(#100)*
+- Assert the published tag set by digest, and keep the registry's immutability
+  rules in step with the publication matrix — the floating `vX.Y` was immutable
+  at the registry, so `v10.0.1` published half its tags *(#171)*
 
 ### Phase 4 — CI/CD hardening & code quality *(P1)* — folds in #103, #104
 - Add `pull_request` trigger to `lint-dockerfile` and `build-test` — ADR-0013 *(#103, closes #46)*
