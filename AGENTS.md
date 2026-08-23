@@ -5,7 +5,7 @@ Entry point for any agent working `terraform-aws-cli`. Claude Code adapter:
 
 ## Sources of truth (read in order)
 
-1. **Tracking issue [#106](https://github.com/bgauduch/terraform-aws-cli/issues/106)** — live status (open PRs/issues, next actions). Its **body is the status SSOT**, edited in place. Keep it current when state changes.
+1. **Tracking issue [#106](https://github.com/bgauduch/terraform-aws-cli/issues/106)** — what is next, and the work in progress GitHub cannot answer for. Its **body is the status SSOT**, edited in place; anything a GitHub query returns is never restated there (ADR-0001). Get the live state from `list_pull_requests` / `list_issues` / `list_branches`.
 2. **[`docs/conventions.md`](docs/conventions.md)** — the working conventions binding every contributor (branching, commits, delivery, ADRs, docs/language).
 3. **[`docs/roadmap.md`](docs/roadmap.md)** — the plan (phases + Decisions table).
 4. **[`docs/adr/`](docs/adr/)** — the decisions and their rationale.

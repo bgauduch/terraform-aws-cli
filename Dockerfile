@@ -4,6 +4,10 @@ ARG TERRAFORM_VERSION
 ARG DEBIAN_VERSION=trixie-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd
 ARG DEBIAN_FRONTEND=noninteractive
 
+# One RUN per package in the throwaway stages (hadolint DL3059 is ignored
+# repo-wide): only artifacts are COPY-ed out, so merging them shrinks nothing
+# and makes a single pin bump re-run every install. The final stage merges its
+# RUN, because that one ships.
 # Download Terraform binary
 FROM debian:${DEBIAN_VERSION} AS terraform
 ARG TARGETARCH
