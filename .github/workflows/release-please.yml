@@ -26,6 +26,15 @@ permissions:
   pull-requests: write
   issues: write
 
+# Serialise the publishing runs: two merges landing close together would
+# otherwise race, and the run that finishes last wins rather than the commit
+# that landed last. Unlike the other publishers this one queues instead of
+# cancelling: a run interrupted between the GitHub release and the image pushes
+# leaves the half-published state of #171 (ADR-0018).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release-please:
     runs-on: ubuntu-22.04

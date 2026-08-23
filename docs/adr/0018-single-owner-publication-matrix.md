@@ -76,6 +76,16 @@ Chosen option: **one publisher per tag**. The published set:
 > it asserted that each tag existed, not what it resolved to; it now compares
 > digests and asserts the registry's rules against the table above (#171).
 
+> **Amended 2026-08-23** — one publisher per tag also means one publishing run
+> at a time: a workflow that overlaps itself is the two-writer race with a
+> single name on it, and the winner is the run that finishes last rather than
+> the commit that landed last. Each publisher therefore declares a
+> `concurrency` group, and the cancel policy follows what the run owns:
+> `push-edge` and `dockerhub-description-update` republish the current state of
+> `master`, so a superseded run is cancelled; `release-please` queues, because
+> cancelling it between the GitHub release and the image pushes produces the
+> half-published state above (#173).
+
 ### Consequences
 
 - Good: `latest` has one writer, so its content is defined at all times. The
