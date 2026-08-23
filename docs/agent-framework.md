@@ -15,14 +15,15 @@ AGENTS.md ─────────────► agent entry point + session
 CLAUDE.md ─────────────► thin Claude Code adapter — imports AGENTS.md,
   │                       docs/conventions.md and docs/adr/README.md into the
   │                       session context at start (ADR-0009, amended)
-  └─ .claude/{settings.json, README.md}   hook wiring + role→model map + perms
+  └─ .claude/{settings.json, README.md}   hook wiring + perms
 
 scripts/agent-session-start.sh ► agnostic bootstrap (reused by the adapter)
 ```
 
-Work is organised by **role** (`orchestrator`/`executor`/`reviewer`, ADR-0006);
-the model per role lives only in `.claude/settings.json`. Another agent adds its
-own adapter and reuses the core unchanged.
+Work is organised by **role** (`orchestrator`/`executor`/`reviewer`, ADR-0006).
+The model per role is declared in `.claude/settings.json` and no mechanism reads
+it; wiring it is #152. Another agent adds its own adapter and reuses the core
+unchanged.
 
 ## The local verify harness
 

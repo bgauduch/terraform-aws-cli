@@ -6,7 +6,7 @@ what Claude Code reads by name.
 
 | Path | Purpose |
 |---|---|
-| `settings.json` | SessionStart hook wiring (→ `scripts/agent-session-start.sh`), the role→model mapping (ADR-0006), and a verify-workflow permission allow-list. |
+| `settings.json` | SessionStart hook wiring (→ `scripts/agent-session-start.sh`), a verify-workflow permission allow-list, and a role→model mapping nothing reads yet (#152). |
 | `settings.local.json` | Personal overrides. **Git-ignored** — never committed. |
 
 The bootstrap the hook runs lives in

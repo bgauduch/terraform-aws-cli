@@ -29,8 +29,10 @@ One home per fact: reference these, never copy them.
 - **Roles (ADR-0006):** `orchestrator` (planning, diff review before push, ADR
   drafting), `executor` (scoped implementation), `reviewer` (diff/lint/security
   passes). Executor output is diff-reviewed by the orchestrator before push.
-  The role→model mapping lives only in `.claude/settings.json`. Phase briefs are
-  ephemeral (conversation only) — reconstructable from the roadmap + ADRs.
+  The role→model mapping is declared in `.claude/settings.json`, but nothing
+  reads it yet (#152): the roles bind as a discipline, not as a mechanism.
+  Phase briefs are ephemeral (conversation only) — reconstructable from the
+  roadmap + ADRs.
 - **Session commits end with the session trailer** — the git trailers appended
   to the commit body identifying the agent and linking the session (e.g.
   `Co-Authored-By: …` + the session URL). Traceability: commit → session.
