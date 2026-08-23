@@ -127,7 +127,7 @@ Agnostic core + a thin Claude Code adapter (ADR-0009).
 - `AGENTS.md` at repo root — agnostic SSOT (sources of truth, ADR rule, no hard-coded values); thin `CLAUDE.md` adapter pointing to it (Claude Code reads `CLAUDE.md`)
 - `docs/agent-framework.md` (architecture, walkthrough, token-cost notes) + `docs/conventions.md` (the working conventions, extracted from this file)
 - `.claude/README.md` (Claude adapter map)
-- `.claude/settings.json` — permissions allowlist **+ the role→model mapping** (`orchestrator`/`executor`/`reviewer`) per ADR-0006; no PostToolUse hook yet
+- `.claude/settings.json` — permissions allowlist + the role→model mapping (`orchestrator`/`executor`/`reviewer`) per ADR-0006, inert until #152 wires it; no PostToolUse hook yet
 - `.gitignore`: `.claude/settings.local.json` *(done early)*
 - `scripts/agent-session-start.sh` (SessionStart hook)
 - Reconcile with Entire-generated `.claude/settings.json` if Entire is activated (ADR-0007 / `docs/entire-setup.md`)
