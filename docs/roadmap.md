@@ -75,7 +75,7 @@ to green; the human owns the merge).
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types); no tool names | ADR-0008 |
 | Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
-| Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`), model mapping in `.claude/settings.json` (generic, drift-free) | ADR-0006 |
+| Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`); the role→model vehicle is not wired — the declared mapping is inert (#152) | ADR-0006 |
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
 | PR-triggered CI | `pull_request` on secret-free CI only; no secrets in PR-triggered workflows; `pull_request_target` banned | ADR-0013 |
 | Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `docs/conventions.md` |
@@ -153,11 +153,12 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 
 ### Phase 4 — CI/CD hardening & code quality *(P1)* — folds in #103, #104
 - Add `pull_request` trigger to `lint-dockerfile` and `build-test` — ADR-0013 *(#103, closes #46)*
-- Add `concurrency:` to every workflow (cancel stale runs) *(#103)*
+- Add `concurrency:` to every workflow; the publishers keep their own cancel policy (ADR-0018) *(#103)*
 - Harmonise buildx `cache-from` / `cache-to` across workflows *(#103)*
 - Restrict the multi-arch build (`amd64,arm64` — ADR-0019) to publish workflows only *(#103)*
 - `scripts/validate.sh`: argument parsing, semver validation, correct platform string, `set -euo pipefail` *(#104)*
 - Extend `container-structure-tests.yml.template`: negative tests (non-root user), binaries-in-`PATH` checks *(#104)*
+- Scope the `DL3059` hadolint ignore to the build stages that need it, instead of the repo-wide ignore in `hadolint.yaml` *(#104)*
 
 ### Phase 5 — Supply chain security *(P1)* — folds in #99
 - `aquasecurity/trivy-action` in `build-test.yml` — fail on critical, non-patchable *(#99)*
@@ -165,12 +166,11 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 - SLSA provenance attestation (`--attest=type=provenance,mode=max`) *(#99)*
 - cosign keyless signing (OIDC GitHub Actions) of published images *(#99)*
 - Explicit least-privilege `permissions:` on every job *(#99)*
-- `validate-supported-versions.yml` (matrix check `supported_versions.json` ↔ `security/`)
 
 ### Phase 6 — Agent skills & subagents *(P1)* — Track B
 Skills (auto-discovered via `SKILL.md` descriptions):
 - `bump-terraform-version`, `bump-awscli-version`, `bump-debian-base`
-- `propose-adr`, `validate-supported-versions`
+- `propose-adr`
 - `.githooks/commit-msg` local hook (Docker-based, opt-in; documented in `CONTRIBUTING.md`)
 
 Subagents & slash commands:
