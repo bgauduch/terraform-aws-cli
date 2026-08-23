@@ -53,10 +53,10 @@ Agent-session rules (authorization boundaries, roles) live in
 - **D4 — A PR's title and description track its current content.** When new
   commits change what the PR delivers, update both in the same pass (the
   title's downstream role: C1).
-- **D5 — A state change ships with its status update.** Opening, merging or
-  closing a PR — or completing a tracked task — edits the tracking issue (#106)
-  body in the same gesture; epic/phase checklists are ticked when the
-  delivering PR merges.
+- **D5 — A state change ships with its status update.** Completing a tracked
+  task, or changing what happens next, edits the tracking issue (#106) body in
+  the same gesture. What a GitHub query returns — a PR, its state, the issues
+  it closes — is `NEVER` restated there (ADR-0001, amended).
 - **D6 — Close an issue or epic `completed` only when its declared scope is
   delivered.** Undelivered scope is re-homed to a tracked issue with the
   pointer in place before closing, or the item stays open. See ADR-0014

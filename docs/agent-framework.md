@@ -47,6 +47,25 @@ CA trusted system-wide) so the checks below need no manual setup.
 > (`--network=host`, `https_proxy`, sources switched to `https://` + the CA
 > bundle) — the proxy only tunnels HTTPS/CONNECT; plain HTTP returns 405.
 
+### What a hosted session cannot do
+
+Facts about the environment, not about the code — they change what a session
+can promise, and none of them is discoverable from the repository:
+
+- **`--full` cannot complete in a hosted agent session.** The egress proxy
+  terminates TLS and the build containers do not trust its CA, so the image
+  build inside `--full` fails on certificate verification. `--fast` and
+  `--published` are unaffected: the first needs no network, the second is
+  network-only and goes through the proxy like any other HTTPS call. A `--full`
+  verdict has to come from real hardware.
+- **A bot-authored pull request does not run CI on its own.** Its workflow runs
+  wait for a maintainer's approval, so a green tick can be absent because
+  nobody clicked, not because something failed.
+- **A session cannot delete a remote ref**, and does not need to: branches
+  merged through the pull-request flow are deleted by the repository setting.
+- **Parallel work uses one designated branch per session**; any further branch
+  it opens follows [B1](conventions.md#branching), like a human's.
+
 ### Stays in CI (authoritative gate)
 
 On a pull request, `build-test` builds and runs `container-structure-test` on
