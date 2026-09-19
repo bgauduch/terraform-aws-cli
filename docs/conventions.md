@@ -63,6 +63,11 @@ Agent-session rules (authorization boundaries, roles) live in
   delivered.** Undelivered scope is re-homed to a tracked issue with the
   pointer in place before closing, or the item stays open. See ADR-0014
   (closing integrity).
+- **D7 — A change of scope or decision ships with its trace.** When a PR's
+  declared scope, or the decision behind it, changes mid-flight, the same push
+  updates the study body that qualified it (ADR-0014) and the tracking issue
+  (#106). D3 protects the scope, D4 the PR text, D5 the status; D7 keeps the
+  upstream spec true.
 
 ## ADRs
 
@@ -88,3 +93,9 @@ Agent-session rules (authorization boundaries, roles) live in
   records a constraint or non-obvious behaviour, tersely; incident context,
   versions and narration belong in commits, PRs and docs. `NEVER` em or en
   dashes in code comments.
+- **L6 — Write for a reader who was not there.** A change removes every
+  mention of what it removes (a file, a command, a rejected proposal); a label
+  or jargon that only reads inside its home document is expanded where it
+  travels; rationale is pointed to, `NEVER` restated (L2). The binary test:
+  does each sentence still make sense, and each name still resolve, for
+  someone who never saw the previous version?
