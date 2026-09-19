@@ -90,7 +90,8 @@ Chosen option: **one publisher per tag**. The published set:
   pushes), which is build cache reuse rather than new builds.
 - Follow-ups: a check asserting that each declared tag has exactly one
   publisher belongs to the verification oracle (ADR-0016) and is tracked in
-  #152; GHCR as a second registry stays with epic #100.
+  #152; GHCR as a second registry stays with roadmap Phase 3 (epic #100, closed
+  2026-08-23 with its tasks re-homed there).
 
 ## More information
 
