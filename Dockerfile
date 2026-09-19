@@ -14,7 +14,7 @@ ARG TARGETARCH
 ARG TERRAFORM_VERSION
 RUN apt-get update
 RUN apt-get install --no-install-recommends -y ca-certificates=20250419
-RUN apt-get install --no-install-recommends -y curl=8.14.1-2+deb13u4
+RUN apt-get install --no-install-recommends -y curl=8.14.1-2+deb13u5
 RUN apt-get install --no-install-recommends -y gnupg=2.4.7-21+deb13u1
 RUN apt-get install --no-install-recommends -y unzip=6.0-29+deb13u1
 WORKDIR /workspace
@@ -33,7 +33,7 @@ ARG TARGETARCH
 ARG AWS_CLI_VERSION
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends ca-certificates=20250419
-RUN apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u4
+RUN apt-get install -y --no-install-recommends curl=8.14.1-2+deb13u5
 RUN apt-get install -y --no-install-recommends gnupg=2.4.7-21+deb13u1
 RUN apt-get install -y --no-install-recommends unzip=6.0-29+deb13u1
 RUN apt-get install -y --no-install-recommends git=1:2.47.3-0+deb13u1
