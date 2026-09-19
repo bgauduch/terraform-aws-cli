@@ -9,6 +9,13 @@ on:
     paths:
       - README.md
       - .github/workflows/dockerhub-description-update.yml
+
+# The description is a republish of the current README, so a superseded run has
+# nothing left to contribute.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   dockerHubDescription:
     runs-on: ubuntu-22.04

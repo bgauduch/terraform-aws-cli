@@ -17,6 +17,12 @@ on:
       - "supported_versions.json"
       - "tests/**"
 
+# `edge` is a republish of the current state of master, so a superseded run has
+# nothing left to contribute. The release publisher queues instead (ADR-0018).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_push_edge:
     runs-on: ubuntu-22.04
