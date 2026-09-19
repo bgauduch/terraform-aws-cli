@@ -4,8 +4,9 @@ Operational checklist for the five-phase intake pipeline decided in
 [ADR-0014](adr/0014-work-intake-and-triage-process.md). The *why* and the phase
 definitions live there; this file is the *how*. It binds net-new features,
 structural changes, and external contributions — trivial hygiene (typos, pure
-version bumps, one-line fixes) skips to phase 5, and an incident fix skips
-phase 3 alone.
+version bumps, one-line fixes) skips to phase 5, an incident fix skips phase 3
+alone, and a defect meeting the fix-forward criteria skips the pipeline
+entirely.
 
 ## The pipeline
 
@@ -50,6 +51,14 @@ phase 3 alone.
     forward pointer).
   - Clarifies or adds a detail/consequence → **amend in place** (dated note).
   - Reversible convention or style → `docs/conventions.md`, not an ADR.
+
+> **Fix-forward lane** — a defect found while delivering something else is
+> fixed in that pull request, with no study, no issue and no `go`, when all
+> three hold: a tool decides it (the oracle or a CI gate fails, or the target
+> no longer exists) · it is within the declared scope or a line that scope
+> touches · fixing it needs no choice between two defensible options. State it
+> in the PR description (D3). Fail any one of the three and the five phases
+> apply.
 
 ### 5. Realisation
 - [ ] Deliver as one focused PR — delivery conventions D1–D6.

@@ -49,7 +49,9 @@ Agent-session rules (authorization boundaries, roles) live in
   split only when a single PR would be too large to review.
 - **D3 — A PR touches only its declared scope.** Drift discovered mid-work is
   captured as a follow-up (PR description, issue, or ADR), `NEVER` silently
-  included; out-of-scope items return only with a decision update.
+  included; out-of-scope items return only with a decision update. A defect
+  meeting the fix-forward criteria (ADR-0014, amended) is fixed in place and
+  stated in the description — captured, not filed.
 - **D4 — A PR's title and description track its current content.** When new
   commits change what the PR delivers, update both in the same pass (the
   title's downstream role: C1).

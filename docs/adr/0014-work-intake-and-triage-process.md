@@ -85,6 +85,29 @@ changes, and external contributions*, not trivial hygiene.
 > and nothing was wrong: an exemption that is never written down is
 > indistinguishable from an omission, and gets repeated.
 
+> **Amended 2026-08-23 — the fix-forward lane.** The pipeline had one exit for
+> a defect noticed while delivering something else: file it. Conventions D3
+> makes that binding (*"drift discovered mid-work is captured as a follow-up,
+> `NEVER` silently included"*), so a one-line mechanical fault costs a study, an
+> issue, a `go` and a pull request of its own. The backlog therefore grows
+> faster than it is worked, which is the reason for this amendment rather than
+> any single incident.
+>
+> A defect that meets **all three** of these is corrected inside the pull
+> request that found it, with no study, no issue and no `go`:
+>
+> 1. a tool decides it — `scripts/validate.sh` or a CI gate fails on it, or it
+>    is a reference to something that no longer exists;
+> 2. it is inside the PR's declared scope, or in a line that scope already
+>    touches;
+> 3. fixing it needs no choice between two defensible options.
+>
+> Anything else keeps the five phases. The trace is not waived: the pull
+> request description states what was fixed along the way, which is what D3
+> asks for minus the detour through an issue. Criterion 3 is the load-bearing
+> one — the moment a fix has options, it is a decision, and decisions are the
+> maintainer's (this ADR, phase 2).
+
 ### Consequences
 
 - Good: scope stops leaking (closing integrity); duplicates are caught before
