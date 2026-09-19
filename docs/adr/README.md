@@ -53,6 +53,11 @@ Copy the template, take the next free number, fill it in, and reference it from
 the [roadmap](../roadmap.md) Decisions table. A planned `propose-adr` skill will
 scaffold this automatically.
 
+**A number is claimed at merge, not at authoring.** Two open pull requests may
+both hold "the next" number; the one that merges second renumbers. Check the
+index on the base branch before pushing a rename, not when the draft is
+written.
+
 ## Amending vs superseding
 
 The **decision** an ADR records is immutable. To change the repository's history

@@ -77,3 +77,12 @@ Tag strategy is decided separately in ADR-0003.
 > announced breaks without stating them. Enforcement of an existing mechanism;
 > the decision (Conventional Commits, squash-merge, release-please) is
 > unchanged.
+>
+> **Amended 2026-08-23** — a consequence of the Release-PR trigger worth
+> stating, because it cost a major version: the release train carries what is
+> on `master`, and an unmerged pull request is not on `master`. Merging a
+> Release PR while a breaking change is still in review ships the release
+> without it, and that change then needs a major of its own — v9.0.0 and
+> v10.0.0 on 2026-08-03. Sequencing is the author's call, not the tool's:
+> hold the Release PR, or accept the second major. Implementation specific;
+> the decision is unchanged.

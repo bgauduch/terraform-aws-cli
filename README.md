@@ -6,6 +6,8 @@
 [![dockerhub-description-update](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/dockerhub-description-update.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Docker Pulls](https://img.shields.io/docker/pulls/bgauduch/terraform-aws-cli.svg?label=pulls)](https://hub.docker.com/r/bgauduch/terraform-aws-cli/)
+<!-- The legacy zenika pull count is kept on purpose: it is this image's
+     history, and the tags it counts are the ones #137 will migrate. -->
 [![Docker Pulls (legacy zenika)](https://img.shields.io/docker/pulls/zenika/terraform-aws-cli.svg?label=pulls%20%28legacy%20zenika%29&color=inactive)](https://hub.docker.com/r/zenika/terraform-aws-cli/)
 
 # Terraform and AWS CLI Docker image
