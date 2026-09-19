@@ -13,7 +13,7 @@ on:
       - "Dockerfile"
       - "supported_versions.json"
       - "security/**"
-      - "tests/*"
+      - "tests/**"
       - ".dockerignore"
       - "hadolint.yaml"
       - "scripts/validate.sh"
@@ -42,12 +42,12 @@ jobs:
 
       - name: Add the published architectures to the supported versions
         id: set-matrix
-        # Architectures per ADR-0019; the jobs build `linux/<arch>`, so this list
-        # must stay in step with the `platforms:` lines of the publishing
-        # workflows. The crossing itself is left to `strategy.matrix`.
+        # Architectures per ADR-0019, owned by the oracle; check_platform_lines
+        # asserts the publishing workflows' literal lines agree with its list.
+        # The crossing itself is left to `strategy.matrix`.
         run: |
           set -euo pipefail
-          MATRIX=$(jq -c '. + {arch: ["amd64", "arm64"]}' supported_versions.json)
+          MATRIX=$(./scripts/validate.sh --matrix --with-arch)
           echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
           {
             echo '### build-test matrix (ADR-0020)'
