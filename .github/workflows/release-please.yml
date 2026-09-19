@@ -11,10 +11,11 @@ name: release-please
 # (vX.Y.Z); the build/push jobs below are gated on that release and publish the
 # images. No separate release.yml and no Personal Access Token are needed: the
 # build is wired in-workflow on the `release_created` output, so the default
-# GITHUB_TOKEN (plus the existing DockerHub secrets) is enough. A final
-# verify_release job calls the verification oracle (ADR-0016) to assert what the
-# registry serves for the release, and opens an issue when the publication is
-# incomplete.
+# GITHUB_TOKEN (plus the existing DockerHub secrets) is enough. Each image is
+# pushed by digest, asserted per architecture, and only then tagged: no tag
+# ever points at an unasserted image (ADR-0022). A final verify_release job
+# calls the verification oracle (ADR-0016) to assert what the registry serves
+# for the release, and opens an issue when the publication is incomplete.
 
 on:
   push:
@@ -104,7 +105,8 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push image
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -112,10 +114,20 @@ jobs:
           build-args: |
             TERRAFORM_VERSION=${{ matrix.tf_versions }}
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
-          tags: ${{ env.TAGS }}
-          push: true
+          # no tags yet: the digest is asserted first (ADR-0022)
+          outputs: type=image,name=${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Assert the pushed artefact before tagging
+        run: ./scripts/validate.sh --assert-image "${ORGANIZATION}/${IMAGE_NAME}@${{ steps.build.outputs.digest }}" "${{ matrix.awscli_versions }}" "${{ matrix.tf_versions }}"
+
+      - name: Move the tags onto the asserted manifest
+        run: |
+          args=""
+          IFS=',' read -ra tags <<< "${TAGS}"
+          for t in "${tags[@]}"; do args="${args} --tag ${t}"; done
+          docker buildx imagetools create ${args} "${ORGANIZATION}/${IMAGE_NAME}@${{ steps.build.outputs.digest }}"
 
   verify_release:
     needs: [release-please, build_push_release]
