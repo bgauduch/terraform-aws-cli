@@ -1,9 +1,9 @@
 # ⬆️ Dependencies upgrades checklist
 
 * Supported tools versions:
-  * [Report to the doc](https://github.com/bgauduch/terraform-aws-cli/tree/master/docs/binaries-verifications.md) to add required security files (stored under `security/`, e.g. `security/hashicorp.asc`) when adding a new supported versions
+  * bump with `scripts/bump-version.sh <terraform|awscli> X.Y.Z` (ADR-0021): it fetches and GPG-verifies the `security/` material and updates `supported_versions.json` within the ADR-0015 window; [`docs/binaries-verifications.md`](binaries-verifications.md) is the manual fallback
   * check available **AWS CLI** version on the [project release page](https://github.com/aws/aws-cli/tags)
-  * check available **Terraform CLI** version (keep one patch per minor, from 1.0 — see ADR-0004) on the [project release page](https://github.com/hashicorp/terraform/releases)
+  * check available **Terraform CLI** version (version window: ADR-0015) on the [project release page](https://github.com/hashicorp/terraform/releases)
 * Dockerfile:
   * check **base image** version [on DockerHub](https://hub.docker.com/_/debian?tab=tags&page=1&name=trixie)
   * check OS package versions on Debian package repository
@@ -16,13 +16,7 @@
     * Available **curl** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=trixie&arch=any&searchon=names&keywords=curl)
     * Available **gnupg** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=trixie&arch=any&searchon=names&keywords=gnupg)
     * Available **unzip** versions on the [Debian Packages repository](https://packages.debian.org/search?suite=trixie&arch=any&searchon=names&keywords=unzip)
-  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — refresh **all** pins to the current candidates, then update the Dockerfile **and** the matching version assertions in [`tests/container-structure-tests.yml.template`](../tests/container-structure-tests.yml.template) (e.g. the git/jq/openssh versions):
-
-    ```bash
-    docker run --rm debian:trixie-slim bash -c \
-      'apt-get update -qq && for p in ca-certificates curl gnupg unzip git jq openssh-client; do \
-         printf "%s=%s\n" "$p" "$(apt-cache policy "$p" | awk "/Candidate:/{print \$2}")"; done'
-    ```
+  * OS packages are **pinned to exact versions** in the Dockerfile (see ADR-0010). When a build fails with `apt-get ... exit code 100`, a pin was superseded by Debian — run `scripts/refresh-apt-pins.sh` (ADR-0021): it refreshes every pin to the current candidates and syncs the version assertions in [`tests/container-structure-tests.yml.template`](../tests/container-structure-tests.yml.template) in the same write.
 * Dockerfile tests : update version according to changes in Dockerfile in [tests/container-structure-tests.yml.template](../tests/container-structure-tests.yml.template)
 * Github actions:
   * check [runner version](https://github.com/actions/virtual-environments#available-environments)
