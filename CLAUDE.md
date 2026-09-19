@@ -1,14 +1,10 @@
 # CLAUDE.md
 
-Claude Code adapter (ADR-0009). The imports below load the binding docs into
-every session's context before any edit — `AGENTS.md` and the docs it points to
-stay the single homes (nothing is restated here). `.claude/` holds the Claude
-Code settings (adapter layer). Keep instructions in `AGENTS.md`, not here.
+Fallback shim (ADR-0009, amended 2026-09-19). Claude Code reads `AGENTS.md`
+natively from v2.1.277 — but only when no `CLAUDE.md` exists, and older or
+managed clients (Bedrock/Vertex) read only this file. Everything lives in
+`AGENTS.md`, whose own imports load the binding docs; this file must stay a
+single import so both loading paths carry identical context. Delete it once
+every client in use reads `AGENTS.md` natively.
 
 @AGENTS.md
-
-@docs/conventions.md
-
-@docs/adr/README.md
-
-@docs/work-intake-and-triage.md

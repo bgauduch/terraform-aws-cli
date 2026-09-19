@@ -1,7 +1,10 @@
 # AGENTS.md — instructions for agents working this repository
 
-Entry point for any agent working `terraform-aws-cli`. Claude Code adapter:
-`CLAUDE.md` (ADR-0009); another tool adds its own thin adapter.
+Entry point for any agent working `terraform-aws-cli`, read natively by
+Claude Code (v2.1.277+) and any AGENTS.md-aware tool; the imports at the end
+of this file load the binding docs into the session context (ADR-0009,
+amended). `CLAUDE.md` is a fallback shim for clients that read only it;
+another tool adds its own thin adapter.
 
 ## Sources of truth (read in order)
 
@@ -46,3 +49,16 @@ structural checks (seconds, no Docker), `--full` to also lint, build and run
 the `container-structure-test` assertions; pin/version data for base bumps
 comes from [`docs/dependencies-upgrades.md`](docs/dependencies-upgrades.md).
 CI is the authoritative (multi-arch) gate.
+
+## Context loading
+
+The `@` lines below are expanded by Claude Code, and by any tool that
+processes imports in `AGENTS.md`, loading the binding docs into the session
+context before any edit (ADR-0009, amended); an agent whose tool does not
+expand them reads the same files by path.
+
+@docs/conventions.md
+
+@docs/adr/README.md
+
+@docs/work-intake-and-triage.md
