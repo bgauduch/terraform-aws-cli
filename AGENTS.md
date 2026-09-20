@@ -51,10 +51,8 @@ CI is the authoritative (multi-arch) gate.
 
 ## Context loading
 
-The `@` lines below are expanded by Claude Code, and by any tool that
-processes imports in `AGENTS.md`, loading the binding docs into the session
-context before any edit (ADR-0009, amended); an agent whose tool does not
-expand them reads the same files by path.
+Import-aware tools expand the `@` lines below into the session context
+(ADR-0009, amended); other agents read the same files by path.
 
 @docs/conventions.md
 

@@ -74,7 +74,7 @@ to green; the human owns the merge).
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types); no tool names | ADR-0008 |
-| Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` is the Claude Code **adapter** layer — `AGENTS.md` is read natively, the former `CLAUDE.md` shim retired | ADR-0009 |
+| Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `AGENTS.md` read natively, `.claude/` is the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`); the role→model vehicle is not wired — the declared mapping is inert (#152) | ADR-0006 |
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
 | PR-triggered CI | `pull_request` on secret-free CI only; no secrets in PR-triggered workflows; `pull_request_target` banned | ADR-0013 |
