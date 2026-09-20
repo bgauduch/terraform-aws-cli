@@ -9,7 +9,7 @@ amended). Another tool adds its own thin adapter.
 
 1. **Tracking issue [#106](https://github.com/bgauduch/terraform-aws-cli/issues/106)** — what is next, and the work in progress GitHub cannot answer for. Its **body is the status SSOT**, edited in place; anything a GitHub query returns is never restated there (ADR-0001). Get the live state from `list_pull_requests` / `list_issues` / `list_branches`.
 2. **[`docs/conventions.md`](docs/conventions.md)** — the working conventions binding every contributor (branching, commits, delivery, ADRs, docs/language).
-3. **[`docs/roadmap.md`](docs/roadmap.md)** — the plan (phases + Decisions table).
+3. **[`docs/roadmap.md`](docs/roadmap.md)** — the plan (phases).
 4. **[`docs/adr/`](docs/adr/)** — the decisions and their rationale.
 
 One home per fact: reference these, never copy them.
