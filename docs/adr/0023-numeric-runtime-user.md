@@ -7,10 +7,12 @@
 ## Context and problem statement
 
 The final stage creates `nonroot` (uid/gid 1001) and declared `USER nonroot`.
-A name in `USER` resolves only from the image's own `/etc/passwd`, which an
-orchestrator does not read before starting the container: Kubernetes cannot
-satisfy a `runAsNonRoot` security context against a named user and refuses the
-pod. hadolint states the same finding as `DL3066`.
+A name in `USER` resolves only from the image's own `/etc/passwd`, which the
+scheduler starting the container cannot read. A CI runner that schedules this
+image as a pod (GitLab Runner's Kubernetes executor, Actions Runner Controller,
+Tekton) under `runAsNonRoot` — mandatory on the `restricted` Pod Security
+Standard — is refused with `image has non-numeric user (nonroot), cannot verify
+user is non-root`. hadolint states the same finding as `DL3066`.
 
 ## Decision drivers
 
