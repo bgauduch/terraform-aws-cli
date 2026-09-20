@@ -11,12 +11,11 @@ or AWS CLI bump writes `supported_versions.json` and the matching GPG material
 under `security/` (ADR-0015 also retires a line in the same gesture), and an
 apt-pin refresh writes the `Dockerfile` pins and the tool assertions in
 `tests/container-structure-tests.yml.template` (ADR-0010). Both have been done
-by hand, by humans and by agent sessions, and the drift class has a live cost
-record: #168 (a withdrawn `jq` pin left `master` unbuildable) and the
-2026-09-19 `push-edge` failure (a superseded `curl` pin), each repaired by a
-hand-written fix. The #152 study qualified this as its PR 4: detection can be
-a bot's job (#20), but no bot can *materialise* these writes — a bump of
-`supported_versions.json` alone fails the oracle on three counts.
+by hand, with a live cost record: #168 (a withdrawn `jq` pin left `master`
+unbuildable) and the 2026-09-19 `push-edge` failure (a superseded `curl`
+pin). Qualified as #152 PR 4: detection can be a bot's job (#20), but no bot
+can *materialise* these writes — a bump of `supported_versions.json` alone
+fails the oracle.
 
 ## Decision drivers
 
