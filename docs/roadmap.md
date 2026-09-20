@@ -44,7 +44,7 @@ The binding conventions live in their single authoritative homes, split by
 audience: **[`docs/conventions.md`](conventions.md)** (shared working
 conventions — branching, commits, delivery, ADRs, docs/language) and
 **`AGENTS.md`** (agent-session rules: authorization boundaries, roles;
-Claude Code adapter `CLAUDE.md`, ADR-0009). Durable records reference rules by
+read natively by agent tools, ADR-0009). Durable records reference rules by
 concept; PR autonomy is governed by ADR-0012 (the agent opens PRs and drives CI
 to green; the human owns the merge).
 
@@ -74,7 +74,7 @@ to green; the human owns the merge).
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types); no tool names | ADR-0008 |
-| Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
+| Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `AGENTS.md` read natively, `.claude/` is the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`); the role→model vehicle is not wired — the declared mapping is inert (#152) | ADR-0006 |
 | PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
 | PR-triggered CI | `pull_request` on secret-free CI only; no secrets in PR-triggered workflows; `pull_request_target` banned | ADR-0013 |
@@ -124,7 +124,7 @@ The contribution + release machinery. May split into 1a (governance docs) and
 
 ### Phase 2 — Agent foundations *(P0)* — Track B
 Agnostic core + a thin Claude Code adapter (ADR-0009).
-- `AGENTS.md` at repo root — agnostic SSOT (sources of truth, ADR rule, no hard-coded values); thin `CLAUDE.md` adapter pointing to it (Claude Code reads `CLAUDE.md`)
+- `AGENTS.md` at repo root — agnostic SSOT (sources of truth, ADR rule, no hard-coded values); shipped with a thin `CLAUDE.md` adapter, retired once Claude Code read `AGENTS.md` natively (ADR-0009, amended)
 - `docs/agent-framework.md` (architecture, walkthrough, token-cost notes) + `docs/conventions.md` (the working conventions, extracted from this file)
 - `.claude/README.md` (Claude adapter map)
 - `.claude/settings.json` — permissions allowlist + the role→model mapping (`orchestrator`/`executor`/`reviewer`) per ADR-0006, inert until #152 wires it; no PostToolUse hook yet
@@ -250,5 +250,5 @@ was preserved or retired. Live disposition is tracked in #106.
   `propose-adr` skill is planned (Phase 6).
 - Every phase delivery is a single PR; the PR description references the phase
   block above.
-- Agent instructions (`AGENTS.md`/`CLAUDE.md`) and skill files reference sources
+- Agent instructions (`AGENTS.md`) and skill files reference sources
   of truth (JSON files, ADRs) rather than embedding values that drift.

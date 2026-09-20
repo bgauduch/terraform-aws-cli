@@ -7,15 +7,15 @@ agent entry point and session rules: [`AGENTS.md`](../AGENTS.md).
 ## Architecture: agnostic core + tool adapter (ADR-0009)
 
 ```
-AGENTS.md ─────────────► agent entry point + session rules (any agent reads this)
+AGENTS.md ───────────────► agent entry point + session rules, read natively by
+  │                       Claude Code (v2.1.277+) and any AGENTS.md-aware
+  │                       tool; its own @ imports load the binding docs into
+  │                       the session context at start (ADR-0009, amended)
   ├─ docs/conventions.md         the shared working conventions
   ├─ docs/roadmap.md             the plan
   └─ docs/adr/                   the decisions + rationale
 
-CLAUDE.md ─────────────► thin Claude Code adapter — imports AGENTS.md,
-  │                       docs/conventions.md and docs/adr/README.md into the
-  │                       session context at start (ADR-0009, amended)
-  └─ .claude/{settings.json, README.md}   hook wiring + perms
+.claude/{settings.json, README.md} ► Claude Code adapter: hook wiring + perms
 
 scripts/agent-session-start.sh ► agnostic bootstrap (reused by the adapter)
 ```
