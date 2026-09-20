@@ -12,6 +12,17 @@
       }
     ]
   },
+  "env": {
+    "GIT_AUTHOR_NAME": "bgauduch",
+    "GIT_AUTHOR_EMAIL": "bgauduch@users.noreply.github.com",
+    "GIT_COMMITTER_NAME": "bgauduch",
+    "GIT_COMMITTER_EMAIL": "bgauduch@users.noreply.github.com"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "agentRoles": {
     "orchestrator": {
       "model": "opus",
