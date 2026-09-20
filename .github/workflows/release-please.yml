@@ -40,7 +40,7 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - id: release
-        uses: googleapis/release-please-action@v5
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
@@ -53,7 +53,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Save supported versions as output
         id: set-matrix
@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Compose the tags this combination publishes
         # tags per ADR-0018; the oracle owns the semver sort (ADR-0016)
@@ -96,14 +96,14 @@ jobs:
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
 
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       - name: Build and push by digest
         id: build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -135,7 +135,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Assert the release is fully published
         run: ./scripts/validate.sh --published "${RELEASE_VERSION}"
