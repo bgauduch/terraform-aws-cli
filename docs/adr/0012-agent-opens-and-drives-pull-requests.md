@@ -4,13 +4,17 @@
 - Date: 2026-07-20
 - Deciders: @bgauduch
 
-> **Amended 2026-09-20** — the merge this ADR reserves for the human is now
-> machine-gated: `master` requires green status checks before any merge,
+> **Amended 2026-09-20** — two changes to merge ownership, decided together.
+> The merge is now machine-gated: `master` requires green status checks,
 > scoped to the checks that run on every pull request (path-filtered and
-> matrix checks stay out until an always-run aggregate job exists). The
-> required set and the toggle live in the GitHub branch-protection config
-> (L3); this note records only that the gate exists and that it binds the
-> human too.
+> matrix checks join once an always-run aggregate job exists); the required
+> set and the toggle live in the GitHub branch-protection config (L3). And
+> the human's ownership gains one standing delegation: Renovate merges its
+> own minor, patch, pin and digest updates once every check on the PR is
+> green (`automerge` in `renovate.json`); majors and every non-bot PR stay
+> human-merged. Renovate also labels its PRs `adr-not-needed` — its scope is
+> version-only by construction, the case the ADR requirement exempts — so
+> the `adr-check` gate passes without a manual label.
 
 ## Context and problem statement
 
