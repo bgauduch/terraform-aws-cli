@@ -18,13 +18,13 @@ concurrency:
 
 jobs:
   dockerHubDescription:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Update Docker Hub Description
         # Dedicated Read/Write/Delete token — registry auth model: docs/publishing.md.
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_DESCRIPTION_PAT }}

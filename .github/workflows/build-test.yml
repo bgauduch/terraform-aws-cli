@@ -31,14 +31,14 @@ env:
 
 jobs:
   pr_matrix:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Add the published architectures to the supported versions
         id: set-matrix
@@ -56,7 +56,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   build-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     needs: pr_matrix
     strategy:
       # a failed combo must not cancel the independent sibling builds
@@ -65,7 +65,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Save branch name as env var
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
@@ -77,13 +77,13 @@ jobs:
         # emulation for the non-native architectures; the structure tests need it
         # too, to run their assertions inside a foreign-architecture image
         if: matrix.arch != 'amd64'
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build and export container image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/${{ matrix.arch }}
