@@ -21,6 +21,16 @@
       "description": "Auto-merge when CI is green; majors stay human-merged (ADR-0012, amended)",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "description": "A version bump alters no policy: declare the ADR gate's exemption (docs/adr/README.md)",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest", "bump"],
+      "addLabels": ["adr-not-needed"]
+    },
+    {
+      "description": "A major bump is a decision: the ADR gate must see it even off a structural path",
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["needs-adr"]
     }
   ]
 }

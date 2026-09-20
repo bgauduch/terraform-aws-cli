@@ -71,6 +71,7 @@ RUN groupadd --gid 1001 nonroot \
   # user needs a home folder to store aws credentials
   && useradd --gid nonroot --create-home --uid 1001 nonroot \
   && chown nonroot:nonroot /workspace
-USER nonroot
+# numeric so runAsNonRoot resolves the uid without the image passwd db
+USER 1001:1001
 
 CMD ["bash"]
