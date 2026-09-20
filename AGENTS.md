@@ -9,7 +9,7 @@ amended). Another tool adds its own thin adapter.
 
 1. **Tracking issue [#106](https://github.com/bgauduch/terraform-aws-cli/issues/106)** — what is next, and the work in progress GitHub cannot answer for. Its **body is the status SSOT**, edited in place; anything a GitHub query returns is never restated there (ADR-0001). Get the live state from `list_pull_requests` / `list_issues` / `list_branches`.
 2. **[`docs/conventions.md`](docs/conventions.md)** — the working conventions binding every contributor (branching, commits, delivery, ADRs, docs/language).
-3. **[`docs/roadmap.md`](docs/roadmap.md)** — the plan (phases + Decisions table).
+3. **[`docs/roadmap.md`](docs/roadmap.md)** — the plan (phases).
 4. **[`docs/adr/`](docs/adr/)** — the decisions and their rationale.
 
 One home per fact: reference these, never copy them.
@@ -35,9 +35,9 @@ One home per fact: reference these, never copy them.
   reads it yet (#152): the roles bind as a discipline, not as a mechanism.
   Phase briefs are ephemeral (conversation only) — reconstructable from the
   roadmap + ADRs.
-- **Session commits end with the session trailer** — the git trailers appended
-  to the commit body identifying the agent and linking the session (e.g.
-  `Co-Authored-By: …` + the session URL). Traceability: commit → session.
+- **`NEVER` sign the repository** (conventions L8) — the `attribution` and git
+  identity keys in `.claude/settings.json` hold it off; strip it by hand if a
+  tool adds one anyway.
 - The [working conventions](docs/conventions.md) bind agents too.
 
 ## Verifying before you push

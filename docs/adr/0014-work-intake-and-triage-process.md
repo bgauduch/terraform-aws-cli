@@ -4,6 +4,9 @@
 - Date: 2026-07-24
 - Deciders: @bgauduch
 
+> **Amended 2026-09-20** — the roadmap's Decisions table was removed as a
+> duplicate of the ADR index; phase 3 adds the phase line only.
+
 ## Context and problem statement
 
 Work enters the repository from several doors — a maintainer idea, a bug, an
@@ -48,7 +51,7 @@ work flows through. The phases are the decision; the operational checklist is
    (the same ownership split as the merge, ADR-0012). A `go` creates the issue
    (the qualified spec); a `nogo` is recorded and closed `not planned`.
 3. **Prioritisation** — rank against other work, identify dependencies, and add
-   it to `docs/roadmap.md` (phase + Decisions table when a decision is made).
+   it to `docs/roadmap.md` (phase line).
 4. **Planning** — validate the plan; surface edge cases and cross-cutting impact
    on behaviour, docs and process; record the plan in the **issue body** (the
    issue is the single home for its own spec + plan); resolve the **ADR
