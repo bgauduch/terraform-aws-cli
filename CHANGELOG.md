@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.0.3](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.2...v10.0.3) (2026-09-20)
+
+
+### Bug Fixes
+
+* **docker:** refresh the superseded curl apt pin ([#184](https://github.com/bgauduch/terraform-aws-cli/issues/184)) ([526b6ba](https://github.com/bgauduch/terraform-aws-cli/commit/526b6baadd4f613062d7c1ec38842a3edf5c8a7c))
+
 ## [10.0.2](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.1...v10.0.2) (2026-08-22)
 
 
