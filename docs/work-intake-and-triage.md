@@ -36,7 +36,7 @@ entirely.
 
 - [ ] Rank against current work (phase/priority in `docs/roadmap.md`).
 - [ ] Identify dependencies and blockers; link them.
-- [ ] Add to the roadmap (phase line; Decisions table when a decision is taken).
+- [ ] Add to the roadmap (phase line).
 
 ### 4. Planning
 - [ ] Validate the plan (orchestrator review — ADR-0006 roles).
