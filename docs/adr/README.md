@@ -49,9 +49,8 @@ ADRs use the [MADR](https://adr.github.io/madr/) format — see
 
 ## Creating one
 
-Copy the template, take the next free number, fill it in, and reference it from
-the [roadmap](../roadmap.md) Decisions table. A planned `propose-adr` skill will
-scaffold this automatically.
+Copy the template, take the next free number, fill it in, and add it to the
+index below. A planned `propose-adr` skill will scaffold this automatically.
 
 **A number is claimed at merge, not at authoring.** Two open pull requests may
 both hold "the next" number; the one that merges second renumbers. Check the
