@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Add the published architectures to the supported versions
         id: set-matrix
@@ -65,7 +65,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Save branch name as env var
         run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
@@ -77,13 +77,13 @@ jobs:
         # emulation for the non-native architectures; the structure tests need it
         # too, to run their assertions inside a foreign-architecture image
         if: matrix.arch != 'amd64'
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
 
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       - name: Build and export container image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: .
           platforms: linux/${{ matrix.arch }}

@@ -128,7 +128,6 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 Skills (auto-discovered via `SKILL.md` descriptions):
 - `bump-terraform-version`, `bump-awscli-version`, `bump-debian-base`
 - `propose-adr`
-- `.githooks/commit-msg` local hook (Docker-based, opt-in; documented in `CONTRIBUTING.md`)
 
 Subagents & slash commands:
 - Downstream `/preflight`: `dockerfile-reviewer`, `security-reviewer` (hadolint + Trivy + GPG chain), `ci-doctor` (workflow paths ↔ files coherence), `commit-message-validator`
