@@ -48,8 +48,7 @@ Checks, by what they verify and what they cost:
                   it by hand to re-check a release that has just been
                   published.
 
-Machine outputs, not checks (the workflow decides when, this script decides
-what):
+Machine outputs (ADR-0016):
   --render-tests  render tests/container-structure-tests.yml from its
                   template; called by --full and by build-test.yml.
   --latest        print the newest version of AXIS (tf_versions or
@@ -153,10 +152,8 @@ check_hadolint_local() {
 
 # ---------------------------------------------------------------------------
 # Structural check: the platform declarations agree (ADR-0019).
-# The publishing workflows carry the composed literal per line; build-test
-# composes linux/<arch> per job from --matrix --with-arch, so its lines carry
-# an expression and are skipped. Centralising was weighed and declined: this
-# is the recorded answer, an assertion instead of a shared constant.
+# Lines carrying an expression (build-test composes linux/<arch> per job)
+# are skipped. An assertion, not a shared constant (#174).
 # ---------------------------------------------------------------------------
 check_platform_lines() {
   local expected line f ok=1 found=0

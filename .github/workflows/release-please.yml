@@ -57,8 +57,7 @@ jobs:
 
       - name: Save supported versions as output
         id: set-matrix
-        # the oracle renders the matrix (ADR-0016); the PR gate reads the same
-        # source with --with-arch
+        # the oracle renders the matrix (ADR-0016)
         run: |
           VERSIONS=$(./scripts/validate.sh --matrix)
           echo "matrix=${VERSIONS}" >> $GITHUB_OUTPUT
@@ -82,9 +81,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compose the tags this combination publishes
-        # every combination pushes its pinned tag; the latest combination also
-        # carries the release, vX.Y and latest aliases (ADR-0018). The oracle
-        # owns the semver sort (ADR-0016).
+        # tags per ADR-0018; the oracle owns the semver sort (ADR-0016)
         run: |
           LATEST_TF=$(./scripts/validate.sh --latest tf_versions)
           LATEST_AWS=$(./scripts/validate.sh --latest awscli_versions)

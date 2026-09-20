@@ -42,9 +42,8 @@ jobs:
 
       - name: Add the published architectures to the supported versions
         id: set-matrix
-        # Architectures per ADR-0019, owned by the oracle; check_platform_lines
-        # asserts the publishing workflows' literal lines agree with its list.
-        # The crossing itself is left to `strategy.matrix`.
+        # architectures per ADR-0019, owned by the oracle; the crossing is
+        # left to strategy.matrix
         run: |
           set -euo pipefail
           MATRIX=$(./scripts/validate.sh --matrix --with-arch)
