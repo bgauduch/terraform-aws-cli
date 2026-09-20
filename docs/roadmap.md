@@ -74,6 +74,7 @@ to green; the human owns the merge).
 | Publication assertions | Publishers push by digest, assert each architecture with the gate's structure tests, then move the tags; no tag points at an unasserted image (#183) | ADR-0022 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Runtime user | Declared as numeric `1001:1001` so an orchestrator resolves it without the image passwd database (`runAsNonRoot`) | ADR-0023 |
+| Image contents | Terraform + AWS CLI plus the CI baseline only; a runtime extra is the consumer's own layer, a separate CI job, or a future monorepo image (#131) | ADR-0025 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | ADR exemption for bumps | Renovate labels by update type: non-major `adr-not-needed`, major `needs-adr` | ADR-0024 |
@@ -244,7 +245,8 @@ was preserved or retired. Live disposition is tracked in #106.
 - PostToolUse hook for ADR nudge (unless the agent is observed forgetting in practice)
 - Retroactive backfill of ADRs
 - Image variants (alpine, slim)
-- Bundling python3 in the image (revisit #80/#88/#92 only if demand is strong; document the workaround instead)
+- Bundling any runtime extra (python3, git-lfs, providers): the consumer derives
+  an image, splits the CI job, or a dedicated image joins the monorepo (ADR-0025)
 
 ## Conventions for evolution
 

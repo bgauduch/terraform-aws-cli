@@ -101,3 +101,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0022](0022-publication-asserts-before-tagging.md) | Publication asserts the artefact before any tag moves | Accepted |
 | [0023](0023-numeric-runtime-user.md) | Declare the runtime user by numeric UID and GID | Accepted |
 | [0024](0024-dependency-bot-declares-the-adr-exemption.md) | The dependency bot declares the ADR gate's exemption | Accepted |
+| [0025](0025-runtime-extras-are-the-consumers-responsibility.md) | The image ships its named tools; runtime extras are the consumer's `FROM` | Accepted |
