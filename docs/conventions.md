@@ -99,3 +99,8 @@ Agent-session rules (authorization boundaries, roles) live in
   travels; rationale is pointed to, `NEVER` restated (L2). The binary test:
   does each sentence still make sense, and each name still resolve, for
   someone who never saw the previous version?
+- **L7 — Repo-facing text is minimal and factual.** PR and issue bodies,
+  comments, commit messages and generated prose carry facts, decisions and
+  pointers; `NEVER` recap what a diff, a query or a linked home already
+  shows. The binary test: delete the sentence — if the reader loses nothing
+  they need, it does not ship.
