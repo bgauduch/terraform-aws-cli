@@ -10,8 +10,7 @@ The final stage creates `nonroot` (uid/gid 1001) and declared `USER nonroot`.
 A name in `USER` resolves only from the image's own `/etc/passwd`, which an
 orchestrator does not read before starting the container: Kubernetes cannot
 satisfy a `runAsNonRoot` security context against a named user and refuses the
-pod. hadolint states the same finding as `DL3066`, which surfaced this when the
-lint action was bumped from a bundled hadolint 2.12.0 to 2.15.1.
+pod. hadolint states the same finding as `DL3066`.
 
 ## Decision drivers
 
@@ -19,7 +18,6 @@ lint action was bumped from a bundled hadolint 2.12.0 to 2.15.1.
   supplying `runAsUser`.
 - The account, its home (where the AWS CLI writes credentials) and `/workspace`
   ownership do not change.
-- The lint gate runs at `failure-threshold: info`, so `DL3066` blocks it.
 
 ## Considered options
 

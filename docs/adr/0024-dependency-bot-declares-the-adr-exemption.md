@@ -43,10 +43,8 @@ whose path-versus-intent gap is the defect being fixed.
 - Cost: on a bot pull request `adr-not-needed` is a bot's declaration rather
   than a reviewer's, carried in the pull request's label history and revocable
   by removing it.
-- Cost: a permanently red gate was incidentally blocking the `automerge` rule.
-  Removing it does not settle that rule's standing against ADR-0012; the merge
-  gate and the checks it requires are decided there and configured in GitHub,
-  not restated here.
+- Good: Renovate's `automerge` rule (ADR-0012, amended) can complete on a bot
+  pull request, which a permanently red gate prevented.
 - Follow-ups: an update type Renovate does not classify (`replacement`,
   `rollback`) carries no label, so the gate demands an ADR. That is the intended
   default.
