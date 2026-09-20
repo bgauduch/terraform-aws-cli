@@ -106,3 +106,6 @@ Agent-session rules (authorization boundaries, roles) live in
   (an intro or section that adds no information is deleted). The binary
   test: delete the sentence — if the reader loses nothing they need now, it
   does not ship.
+- **L8 — `NEVER` vendor or tool attribution in repo-facing text.** No
+  co-author trailer, generated-by line or session link in commits, PR/issue
+  text, docs or code, whichever tool wrote them.
