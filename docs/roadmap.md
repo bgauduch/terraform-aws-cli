@@ -60,7 +60,6 @@ to green; the human owns the merge).
 | Commit convention | Conventional Commits, **strict** from day one (commit history **and** PR titles) | ADR-0002 |
 | Merge strategy | **Squash-merge** (one PR = one commit on `master`); PR title becomes the squash subject and feeds the changelog | ADR-0002 |
 | Release automation | **release-please** (Google), Release-PR workflow | ADR-0002 |
-| Local commit-msg hook | Standalone `.githooks/commit-msg` running commitlint in Docker, opt-in | ADR-0002 |
 | Dependency bot | **Renovate only** (Dependabot retired) | ADR-0002 |
 | ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
 | Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` — superseded by the sunset policy | ADR-0004 |
@@ -175,7 +174,6 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 Skills (auto-discovered via `SKILL.md` descriptions):
 - `bump-terraform-version`, `bump-awscli-version`, `bump-debian-base`
 - `propose-adr`
-- `.githooks/commit-msg` local hook (Docker-based, opt-in; documented in `CONTRIBUTING.md`)
 
 Subagents & slash commands:
 - Downstream `/preflight`: `dockerfile-reviewer`, `security-reviewer` (hadolint + Trivy + GPG chain), `ci-doctor` (workflow paths ↔ files coherence), `commit-message-validator`
