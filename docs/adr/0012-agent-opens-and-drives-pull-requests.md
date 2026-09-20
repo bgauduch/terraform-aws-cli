@@ -4,6 +4,14 @@
 - Date: 2026-07-20
 - Deciders: @bgauduch
 
+> **Amended 2026-09-20** — the merge this ADR reserves for the human is now
+> machine-gated: `master` requires green status checks before any merge,
+> scoped to the checks that run on every pull request (path-filtered and
+> matrix checks stay out until an always-run aggregate job exists). The
+> required set and the toggle live in the GitHub branch-protection config
+> (L3); this note records only that the gate exists and that it binds the
+> human too.
+
 ## Context and problem statement
 
 The agent authorization rules (home: `AGENTS.md`, § Session rules; formerly
