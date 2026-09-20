@@ -23,8 +23,8 @@ one authority so that the **roadmap is clear**, the **process is documented and
 validated**, and the **framework is single-source-of-truth**.
 
 It freezes the agreed plan, survives context loss, and onboards future
-contributors (human or AI). Decisions are summarised in the Decisions table and
-detailed in their ADRs (`docs/adr/`).
+contributors (human or AI). Decisions are recorded in their ADRs
+(`docs/adr/`).
 
 ## Repository profile
 
@@ -47,52 +47,6 @@ conventions — branching, commits, delivery, ADRs, docs/language) and
 read natively by agent tools, ADR-0009). Durable records reference rules by
 concept; PR autonomy is governed by ADR-0012 (the agent opens PRs and drives CI
 to green; the human owns the merge).
-
----
-
-## Decisions
-
-| Topic | Decision | ADR |
-|---|---|---|
-| Roadmap structure | Phases backbone; the former epics #98–#105 are folded in as phase content | this doc |
-| Image versioning | Repo semver `vX.Y.Z`; image tags derived from the release version | ADR-0018 |
-| Publication matrix | One publisher per tag: `latest` and the version tags from releases, `edge` from `master`, fully-pinned `vX.Y.Z_tf-A.B.C_aws-D.E.F` immutable | ADR-0018 (supersedes ADR-0003) |
-| Commit convention | Conventional Commits, **strict** from day one (commit history **and** PR titles) | ADR-0002 |
-| Merge strategy | **Squash-merge** (one PR = one commit on `master`); PR title becomes the squash subject and feeds the changelog | ADR-0002 |
-| Release automation | **release-please** (Google), Release-PR workflow | ADR-0002 |
-| Dependency bot | **Renovate only** (Dependabot retired) | ADR-0002 |
-| ADR format | MADR (Nygard considered, rejected for simplicity) | ADR-0005 |
-| Terraform deprecation | Drop versions `< 1.0` from `supported_versions.json` — superseded by the sunset policy | ADR-0004 |
-| Version sunset | Support follows upstream EOL: latest three minor lines (two HashiCorp-patched + one grace); retired versions stay on immutable tags (#157) | ADR-0015 |
-| Verification oracle | One script, three callers (`scripts/validate.sh`): the same fast structural checks for maintainer, agent and CI; built in passes (#152) | ADR-0016 |
-| AWS CLI bundle arch | Arch-native bundle selected from buildx `TARGETARCH` (`x86_64` / `aarch64`), per-arch `.sig` in `security/` | ADR-0017 |
-| Published platforms | Follow upstream AWS CLI availability: `linux/amd64` + `linux/arm64`; `arm/v7` and `386` retired (#161) | ADR-0019 |
-| PR build gate | Every supported combination built **and** structure-tested on every published platform, one job per pair; `arm64` runs under emulation (#152) | ADR-0020 |
-| APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
-| Structured writes | Deterministic scripts (`bump-version.sh`, `refresh-apt-pins.sh`) own the paired version/pin writes; humans, agents and bot triggers orchestrate (#152) | ADR-0021 |
-| Publication assertions | Publishers push by digest, assert each architecture with the gate's structure tests, then move the tags; no tag points at an unasserted image (#183) | ADR-0022 |
-| Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
-| Runtime user | Declared as numeric `1001:1001` so an orchestrator resolves it without the image passwd database (`runAsNonRoot`) | ADR-0023 |
-| Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
-| ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
-| ADR exemption for bumps | Renovate labels by update type: non-major `adr-not-needed`, major `needs-adr` | ADR-0024 |
-| Branch naming | `type/topic` (Conventional types); no tool names | ADR-0008 |
-| Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `AGENTS.md` read natively, `.claude/` is the Claude Code **adapter** layer | ADR-0009 |
-| Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`); the role→model vehicle is not wired — the declared mapping is inert (#152) | ADR-0006 |
-| PR autonomy | Agent opens PRs & drives CI to green; the human owns the merge | ADR-0012 |
-| PR-triggered CI | `pull_request` on secret-free CI only; no secrets in PR-triggered workflows; `pull_request_target` banned | ADR-0013 |
-| Docs SSOT & concision | Docs point to one home, never restate; prose earns its space | `docs/conventions.md` |
-| Work intake & triage | Five-phase pipeline (dedup → study/go-nogo → prioritise → plan → realise) + closing integrity | ADR-0014 |
-| Agent session capture | Adopt Entire / Checkpoints — scaffold now, activate locally | ADR-0007 |
-| Multi-agent plan validation | Single `tech-architect` agent (no 4-agent panel) | — |
-| End-user persona agents | Two on-demand agents: `end-user-sre-ci`, `end-user-dev-local` | — |
-| Supply chain | Trivy scan, SBOM (SPDX), SLSA provenance, cosign signing | — |
-| PostToolUse ADR nudge hook | Deferred (rely on skill description + agent-instructions rule + PR checkbox) | — |
-| `audit-agent-framework` skill | Replaced by a monthly CI health-check workflow | — |
-| MCP custom servers | Out of scope | — |
-
-Superseded plans: issue #106 and PRs #115 (close) / #116 (its Phase 0 work is
-retained, its roadmap doc is replaced by this file).
 
 ---
 
