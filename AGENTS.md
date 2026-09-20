@@ -3,8 +3,7 @@
 Entry point for any agent working `terraform-aws-cli`, read natively by
 Claude Code (v2.1.277+) and any AGENTS.md-aware tool; the imports at the end
 of this file load the binding docs into the session context (ADR-0009,
-amended). `CLAUDE.md` is a fallback shim for clients that read only it;
-another tool adds its own thin adapter.
+amended). Another tool adds its own thin adapter.
 
 ## Sources of truth (read in order)
 

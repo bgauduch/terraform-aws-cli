@@ -28,14 +28,14 @@
 > **Amended 2026-09-19** — Claude Code reads `AGENTS.md` natively (v2.1.277+),
 > including its `@` imports, but only when no `CLAUDE.md` exists. The imports
 > therefore move from the adapter into `AGENTS.md` itself — the agnostic core
-> is now self-sufficient for any import-aware tool — and `CLAUDE.md` shrinks
-> to the documented fallback shim (a single `@AGENTS.md`) for clients that
-> read only it: pre-2.1.277 CLIs and managed platforms (Bedrock/Vertex),
-> where native `AGENTS.md` loading is unavailable. Both loading paths carry
-> identical context (imports expand recursively), so deleting the shim later
-> is a no-op for up-to-date clients; that deletion waits on the maintainer
-> confirming no such client is in use. The core/adapter split is unchanged —
-> the adapter just got thinner.
+> is now self-sufficient for any import-aware tool — and **`CLAUDE.md` is
+> deleted**: the maintainer confirmed (2026-09-20) that no client in use is
+> pre-2.1.277 or a managed platform (Bedrock/Vertex), the cases where a
+> `CLAUDE.md` fallback shim (a single `@AGENTS.md`) would still be read
+> instead. Should such a client ever appear, recreating that one-line shim
+> restores it losslessly — imports expand recursively, so both loading paths
+> carry identical context. The core/adapter split is unchanged; the adapter
+> is now `.claude/` alone.
 
 ## Context and problem statement
 

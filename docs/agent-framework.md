@@ -15,9 +15,7 @@ AGENTS.md ───────────────► agent entry point + s
   ├─ docs/roadmap.md             the plan
   └─ docs/adr/                   the decisions + rationale
 
-CLAUDE.md ───────────────► fallback shim (a single @AGENTS.md import) for
-  │                       clients that read only CLAUDE.md
-  └─ .claude/{settings.json, README.md}   hook wiring + perms
+.claude/{settings.json, README.md} ► Claude Code adapter: hook wiring + perms
 
 scripts/agent-session-start.sh ► agnostic bootstrap (reused by the adapter)
 ```

@@ -49,13 +49,13 @@ else
 fi
 
 # 2) Resume pointer — stdout, so it lands in the agent's context. The binding
-#    rules themselves are already loaded via the CLAUDE.md imports (AGENTS.md,
-#    docs/conventions.md, docs/adr/README.md) — only point at what imports
-#    cannot cover: the live status and the plan.
+#    rules themselves are already loaded via the AGENTS.md imports
+#    (docs/conventions.md, docs/adr/README.md, the intake checklist) — only
+#    point at what imports cannot cover: the live status and the plan.
 cat <<'PTR'
 Resume here — before any change:
   * The session rules, working conventions and the ADR requirement are already
-    in your context (imported by CLAUDE.md). They are binding and take
+    in your context (imported by AGENTS.md). They are binding and take
     precedence over any generic agent default.
   * Tracking issue #106 — live status, open PRs/issues, next actions (status
     SSOT). Read it first; keep its body current when state changes.
