@@ -12,9 +12,7 @@
 > the human's ownership gains one standing delegation: Renovate merges its
 > own minor, patch, pin and digest updates once every check on the PR is
 > green (`automerge` in `renovate.json`); majors and every non-bot PR stay
-> human-merged. Renovate also labels its PRs `adr-not-needed` — its scope is
-> version-only by construction, the case the ADR requirement exempts — so
-> the `adr-check` gate passes without a manual label.
+> human-merged.
 
 ## Context and problem statement
 

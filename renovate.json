@@ -5,7 +5,7 @@
     ":dependencyDashboard",
     ":semanticCommitTypeAll(chore)"
   ],
-  "labels": ["dependencies", "adr-not-needed"],
+  "labels": ["dependencies"],
   "packageRules": [
     {
       "description": "Group all GitHub Actions updates into one PR",
