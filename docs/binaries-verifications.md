@@ -32,4 +32,4 @@ done
 
 Then verify each file against the vendor key before committing, update
 `supported_versions.json` by hand within the ADR-0015 window, and run
-`scripts/validate.sh --fast` — the steps the script performs for you.
+`scripts/validate.sh --fast`.

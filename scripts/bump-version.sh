@@ -2,12 +2,8 @@
 #
 # Materialise a Terraform or AWS CLI version bump (ADR-0021): download and
 # GPG-verify the signature material, then write supported_versions.json and
-# security/ as one unit. Version policy is ADR-0015: one patch per Terraform
-# minor line, the latest three lines kept, a new line retiring the oldest; a
-# single AWS CLI version.
-#
-# Nothing in the repository is touched until every download has verified.
-# Run scripts/validate.sh --full before pushing the result.
+# security/ as one unit, within the ADR-0015 window. Nothing is written
+# until every download has verified. Run validate.sh --full before pushing.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

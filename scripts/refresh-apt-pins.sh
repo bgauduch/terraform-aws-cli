@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 #
-# Refresh every Dockerfile apt pin, and the tool assertions in the
-# container-structure-test template, to what the pinned Debian base currently
-# serves (ADR-0010, ADR-0021). The two files are written together or not at
-# all: the pins and the assertions drift as one unit.
-#
-# Requires Docker and network. Run scripts/validate.sh --full before pushing
-# the result.
+# Refresh every Dockerfile apt pin and the tool assertions in the
+# container-structure-test template to what the pinned Debian base serves
+# (ADR-0010, ADR-0021). Both files are written together or not at all.
+# Requires Docker and network. Run validate.sh --full before pushing.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -28,9 +25,8 @@ base_image() {
   printf 'debian:%s' "$ref"
 }
 
-# One container pass: candidate versions for every pin, then the tool banners
-# the template asserts. Banners are measured, not derived from the package
-# version: the two can differ (Debian's openssh 10.0p1-7 reports OpenSSH_10.0p2).
+# Banners are measured, not derived from the package version: the two can
+# differ (Debian's openssh 10.0p1-7 reports OpenSSH_10.0p2).
 probe() {
   docker container run --rm "$(base_image)" bash -c '
     set -euo pipefail
@@ -86,7 +82,6 @@ main() {
     exit 0
   fi
 
-  # both files land together: the assertions must never lag the pins
   mv "$tmp_dockerfile" "$DOCKERFILE"
   mv "$tmp_template" "$TEMPLATE"
   trap - EXIT
