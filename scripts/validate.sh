@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Single verification oracle (ADR-0016): one entry point for the maintainer,
-# the agent mid-loop and CI. Tiers and arguments: see usage() below.
+# the agent mid-loop and CI. Modes and arguments: see usage() below.
 #
 # Only add a check that no purpose-built tool covers: hadolint,
 # container-structure-test and commitlint own their verdicts, this script
@@ -15,6 +15,9 @@ cd "$REPO_ROOT"
 HADOLINT_IMAGE="hadolint/hadolint:2.12.0-alpine"
 CST_IMAGE="gcr.io/gcp-runtimes/container-structure-test:v1.16.0"
 IMAGE_NAME="bgauduch/terraform-aws-cli"
+# published architectures (ADR-0019); the publishing workflows carry the
+# composed literal, asserted against this list by check_platform_lines
+PLATFORM_ARCHS=(amd64 arm64)
 SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+$'
 RELEASE_RE='^v[0-9]+\.[0-9]+\.[0-9]+$'
 HUB_API="https://hub.docker.com/v2/repositories/${IMAGE_NAME}"
@@ -29,23 +32,38 @@ usage() {
   cat >&2 <<'USAGE'
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
-       validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
        validate.sh --published RELEASE_VERSION
+       validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
+       validate.sh --latest AXIS
+       validate.sh --matrix [--with-arch]
 
-  --fast          structural checks only, no Docker required (tier 0)
-  --full          the fast checks, then hadolint, single-platform image build
-                  and container-structure-test (tier 1). Versions default to
-                  the latest in supported_versions.json; the tag defaults to
-                  "dev".
-  --render-tests  render tests/container-structure-tests.yml from its template
-                  and exit; called by --full and by build-test.yml.
-  --published     assert what the registry serves for the newest release
-                  (vX.Y.Z): network only, no Docker and no credentials. Called
-                  by release-please.yml; run it by hand to re-check a release
-                  that has just been published.
+Checks, by what they verify and what they cost:
+  --fast          the working tree, structurally: no Docker, seconds.
+  --full          the image: the fast checks, then containerized hadolint, a
+                  single-platform build and container-structure-test (Docker,
+                  minutes). Versions default to the latest in
+                  supported_versions.json; the tag defaults to "dev".
+  --published     the registry, for a release (vX.Y.Z): network only, no
+                  Docker and no credentials. Called by release-please.yml; run
+                  it by hand to re-check a release that has just been
+                  published.
+
+Machine outputs (ADR-0016):
+  --render-tests  render tests/container-structure-tests.yml from its
+                  template; called by --full and by build-test.yml.
+  --latest        print the newest version of AXIS (tf_versions or
+                  awscli_versions), semver-sorted; called by the publishing
+                  workflows.
+  --matrix        print supported_versions.json as a compact build matrix;
+                  --with-arch adds the published architectures. Called by
+                  build-test.yml and release-please.yml.
 USAGE
   exit 2
 }
+
+# ---------------------------------------------------------------------------
+# Helpers shared across modes.
+# ---------------------------------------------------------------------------
 
 # Latest version of an axis in supported_versions.json, semver-sorted.
 latest_version() {
@@ -53,8 +71,21 @@ latest_version() {
     '.[$axis] | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json
 }
 
+# The version this repository currently declares as released.
+current_release() {
+  jq -r '.["."]' .release-please-manifest.json
+}
+
+host_platform() {
+  case "$(uname -m)" in
+    x86_64)          printf 'linux/amd64' ;;
+    aarch64 | arm64) printf 'linux/arm64' ;;
+    *) die "unsupported host architecture: $(uname -m)" ;;
+  esac
+}
+
 # ---------------------------------------------------------------------------
-# Tier 0: supported_versions.json <-> security/
+# Structural check: supported_versions.json <-> security/
 # Every supported version has its signature material; no orphan material for
 # versions that are no longer supported (sunset, ADR-0015).
 # ---------------------------------------------------------------------------
@@ -87,7 +118,7 @@ check_versions_security() {
 }
 
 # ---------------------------------------------------------------------------
-# Tier 0: ADR files <-> index (docs/adr/README.md)
+# Structural check: ADR files <-> index (docs/adr/README.md)
 # ---------------------------------------------------------------------------
 check_adr_index() {
   local ok=1 f n
@@ -104,8 +135,8 @@ check_adr_index() {
 }
 
 # ---------------------------------------------------------------------------
-# Tier 0: hadolint via local binary when present (CI gate: lint-dockerfile.yml;
-# --full runs the pinned container instead)
+# Structural check: hadolint via local binary when present (CI gate:
+# lint-dockerfile.yml; --full runs the pinned container instead)
 # ---------------------------------------------------------------------------
 check_hadolint_local() {
   if command -v hadolint >/dev/null 2>&1; then
@@ -119,47 +150,57 @@ check_hadolint_local() {
   fi
 }
 
+# ---------------------------------------------------------------------------
+# Structural check: the platform declarations agree (ADR-0019).
+# Lines carrying an expression (build-test composes linux/<arch> per job)
+# are skipped. An assertion, not a shared constant (#174).
+# ---------------------------------------------------------------------------
+check_platform_lines() {
+  local expected line f ok=1 found=0
+  expected="$(printf 'linux/%s,' "${PLATFORM_ARCHS[@]}")"
+  expected="${expected%,}"
+  for f in .github/workflows/*.yml; do
+    while IFS= read -r line; do
+      case "$line" in *'${{'*) continue ;; esac
+      found=$((found + 1))
+      [ "$line" = "$expected" ] \
+        || { fail "${f} declares platforms '${line}', expected '${expected}'"; ok=0; }
+    done < <(grep -E '^[[:space:]]*platforms:' "$f" | sed -E 's/^[[:space:]]*platforms:[[:space:]]*//')
+  done
+  [ "$found" -gt 0 ] || { fail "no literal platforms: line found under .github/workflows/"; ok=0; }
+  [ "$ok" = 1 ] && pass "platform declarations agree (${found} literal lines = ${expected})"
+}
+
+# ---------------------------------------------------------------------------
+# Structural check: the published image name agrees across its three real
+# registry references (build-test's IMAGE_NAME is a runner-local tag and is
+# deliberately not one of them).
+# ---------------------------------------------------------------------------
+check_image_name() {
+  local ok=1 org name
+  grep -q "tags: ${IMAGE_NAME}:edge" .github/workflows/push-edge.yml \
+    || { fail "push-edge.yml does not push ${IMAGE_NAME}:edge"; ok=0; }
+  grep -q "repository: ${IMAGE_NAME}$" .github/workflows/dockerhub-description-update.yml \
+    || { fail "dockerhub-description-update.yml does not target ${IMAGE_NAME}"; ok=0; }
+  org="$(sed -n 's/^[[:space:]]*ORGANIZATION: "\(.*\)"$/\1/p' .github/workflows/release-please.yml)"
+  name="$(sed -n 's/^[[:space:]]*IMAGE_NAME: "\(.*\)"$/\1/p' .github/workflows/release-please.yml)"
+  [ "${org}/${name}" = "$IMAGE_NAME" ] \
+    || { fail "release-please.yml publishes ${org}/${name}, expected ${IMAGE_NAME}"; ok=0; }
+  [ "$ok" = 1 ] && pass "published image name agrees across the registry references"
+}
+
 run_fast() {
   check_versions_security
   check_adr_index
+  check_platform_lines
+  check_image_name
   check_hadolint_local
 }
 
 # ---------------------------------------------------------------------------
-# Shared logic, called by --full and by build-test.yml: the test config is
-# rendered here so the two callers cannot render it differently (ADR-0016).
+# Image check (--full): the structural checks, then containerized hadolint, a
+# single-platform build and container-structure-test. Tool images stay pinned.
 # ---------------------------------------------------------------------------
-render_tests() {
-  local aws_version tf_version
-  aws_version="${1:-$(latest_version awscli_versions)}"
-  tf_version="${2:-$(latest_version tf_versions)}"
-  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
-  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
-
-  # sed, not envsubst: gettext is absent from some contributor and agent
-  # environments, and the template has exactly two placeholders
-  sed -e "s/\${AWS_VERSION}/${aws_version}/g" \
-      -e "s/\${TF_VERSION}/${tf_version}/g" \
-      tests/container-structure-tests.yml.template \
-      > tests/container-structure-tests.yml
-  if grep -q '\${' tests/container-structure-tests.yml; then
-    die "unsubstituted placeholder left in tests/container-structure-tests.yml: $(grep -o '\${[^}]*}' tests/container-structure-tests.yml | sort -u | tr '\n' ' ')"
-  fi
-  pass "rendered tests/container-structure-tests.yml (AWS CLI ${aws_version}, Terraform ${tf_version})"
-}
-
-# ---------------------------------------------------------------------------
-# Tier 1 (--full): hadolint + single-platform build + container-structure-test.
-# Tool images stay pinned.
-# ---------------------------------------------------------------------------
-host_platform() {
-  case "$(uname -m)" in
-    x86_64)          printf 'linux/amd64' ;;
-    aarch64 | arm64) printf 'linux/arm64' ;;
-    *) die "unsupported host architecture: $(uname -m)" ;;
-  esac
-}
-
 run_full() {
   local aws_version tf_version image_tag platform
   aws_version="${1:-$(latest_version awscli_versions)}"
@@ -206,7 +247,7 @@ run_full() {
 }
 
 # ---------------------------------------------------------------------------
-# Tier 2 (--published): what the registry serves for a release.
+# Registry check (--published): what the registry serves for a release.
 # Network only: the Docker Hub API is public, so this runs from a laptop, an
 # agent session or CI with no Docker and no registry credentials.
 # ---------------------------------------------------------------------------
@@ -250,11 +291,6 @@ check_registry_immutability() {
       || { fail "registry treats ${tag} as ${got}, ADR-0018 declares its form ${want}"; ok=0; }
   done
   [ "$ok" = 1 ] && pass "registry immutability rules match the publication matrix"
-}
-
-# The version this repository currently declares as released.
-current_release() {
-  jq -r '.["."]' .release-please-manifest.json
 }
 
 check_published_tags() {
@@ -305,6 +341,54 @@ run_published() {
   check_published_tags "$version"
 }
 
+# ---------------------------------------------------------------------------
+# Machine outputs, not checks: the workflow decides when, this script decides
+# what (ADR-0016). The test config is rendered here so its callers (--full and
+# build-test.yml) cannot render it differently; --latest and --matrix are read
+# by the publishing workflows and print a single value.
+# ---------------------------------------------------------------------------
+render_tests() {
+  local aws_version tf_version
+  aws_version="${1:-$(latest_version awscli_versions)}"
+  tf_version="${2:-$(latest_version tf_versions)}"
+  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
+  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
+
+  # sed, not envsubst: gettext is absent from some contributor and agent
+  # environments, and the template has exactly two placeholders
+  sed -e "s/\${AWS_VERSION}/${aws_version}/g" \
+      -e "s/\${TF_VERSION}/${tf_version}/g" \
+      tests/container-structure-tests.yml.template \
+      > tests/container-structure-tests.yml
+  if grep -q '\${' tests/container-structure-tests.yml; then
+    die "unsubstituted placeholder left in tests/container-structure-tests.yml: $(grep -o '\${[^}]*}' tests/container-structure-tests.yml | sort -u | tr '\n' ' ')"
+  fi
+  pass "rendered tests/container-structure-tests.yml (AWS CLI ${aws_version}, Terraform ${tf_version})"
+}
+
+print_latest() {
+  case "$1" in
+    tf_versions | awscli_versions) latest_version "$1" ;;
+    *) die "unknown axis '$1' (tf_versions or awscli_versions)" ;;
+  esac
+}
+
+print_matrix() {
+  local archs
+  case "${1:-}" in
+    --with-arch)
+      archs="$(printf '%s\n' "${PLATFORM_ARCHS[@]}" | jq -R . | jq -sc .)"
+      jq -c --argjson archs "$archs" '. + {arch: $archs}' supported_versions.json
+      ;;
+    '')
+      jq -c . supported_versions.json
+      ;;
+    *)
+      usage
+      ;;
+  esac
+}
+
 MODE="${1:-}"
 case "$MODE" in
   --fast)
@@ -316,15 +400,27 @@ case "$MODE" in
     [ "$#" -le 3 ] || usage
     run_full "$@"
     ;;
+  --published)
+    shift
+    [ "$#" -eq 1 ] || usage
+    run_published "$@"
+    ;;
   --render-tests)
     shift
     [ "$#" -le 2 ] || usage
     render_tests "$@"
     ;;
-  --published)
+  --latest)
     shift
     [ "$#" -eq 1 ] || usage
-    run_published "$@"
+    print_latest "$1"
+    exit 0
+    ;;
+  --matrix)
+    shift
+    [ "$#" -le 1 ] || usage
+    print_matrix "$@"
+    exit 0
     ;;
   *)
     usage

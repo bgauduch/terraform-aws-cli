@@ -13,6 +13,7 @@ on:
       - ".github/workflows/push-edge.yml"
       - "Dockerfile"
       - "hadolint.yaml"
+      - "scripts/validate.sh"
       - "security/**"
       - "supported_versions.json"
       - "tests/**"
@@ -32,9 +33,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Retrieve latest supported versions
+        # the oracle owns the semver sort (ADR-0016)
         run: |
-          echo "TF_VERSION=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
-          echo "AWS_VERSION=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
+          echo "TF_VERSION=$(./scripts/validate.sh --latest tf_versions)" >> $GITHUB_ENV
+          echo "AWS_VERSION=$(./scripts/validate.sh --latest awscli_versions)" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
