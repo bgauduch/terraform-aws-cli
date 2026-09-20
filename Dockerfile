@@ -1,7 +1,7 @@
 # Setup build arguments
 ARG AWS_CLI_VERSION
 ARG TERRAFORM_VERSION
-ARG DEBIAN_VERSION=trixie-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd
+ARG DEBIAN_VERSION=trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
 ARG DEBIAN_FRONTEND=noninteractive
 
 # One RUN per package in the throwaway stages (hadolint DL3059 is ignored
