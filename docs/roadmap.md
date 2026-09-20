@@ -74,6 +74,7 @@ to green; the human owns the merge).
 | Runtime user | Declared as numeric `1001:1001` so an orchestrator resolves it without the image passwd database (`runAsNonRoot`) | ADR-0023 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
+| ADR exemption for bumps | Renovate labels by update type: non-major `adr-not-needed`, major `needs-adr` | ADR-0024 |
 | Branch naming | `type/topic` (Conventional types); no tool names | ADR-0008 |
 | Agent-agnostic framework | Generic core (agnostic docs + naming, role/tier orchestration); `.claude/` + `CLAUDE.md` are the Claude Code **adapter** layer | ADR-0009 |
 | Agent orchestration | Role/tier abstraction (`orchestrator`/`executor`/`reviewer`); the role→model vehicle is not wired — the declared mapping is inert (#152) | ADR-0006 |
