@@ -20,7 +20,7 @@ material lives under [`/security`](../security/):
 Manual fetch, when the script is unavailable:
 
 ```shell
-export TF_VERSION=1.15.8 AWS_CLI_VERSION=2.36.6
+export TF_VERSION=1.16.3 AWS_CLI_VERSION=2.36.49
 
 curl -o security/terraform_${TF_VERSION}_SHA256SUMS     https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_SHA256SUMS
 curl -o security/terraform_${TF_VERSION}_SHA256SUMS.sig https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_SHA256SUMS.sig
