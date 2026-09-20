@@ -101,7 +101,8 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push image
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -109,10 +110,19 @@ jobs:
           build-args: |
             TERRAFORM_VERSION=${{ matrix.tf_versions }}
             AWS_CLI_VERSION=${{ matrix.awscli_versions }}
-          tags: ${{ env.TAGS }}
-          push: true
+          outputs: type=image,name=${{ env.ORGANIZATION }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Assert the pushed artefact before tagging
+        run: ./scripts/validate.sh --assert-image "${ORGANIZATION}/${IMAGE_NAME}@${{ steps.build.outputs.digest }}" "${{ matrix.awscli_versions }}" "${{ matrix.tf_versions }}"
+
+      - name: Move the tags onto the asserted manifest
+        run: |
+          args=""
+          IFS=',' read -ra tags <<< "${TAGS}"
+          for t in "${tags[@]}"; do args="${args} --tag ${t}"; done
+          docker buildx imagetools create ${args} "${ORGANIZATION}/${IMAGE_NAME}@${{ steps.build.outputs.digest }}"
 
   verify_release:
     needs: [release-please, build_push_release]

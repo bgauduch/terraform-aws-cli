@@ -32,6 +32,7 @@ usage() {
   cat >&2 <<'USAGE'
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
+       validate.sh --assert-image IMAGE_REF [AWS_CLI_VERSION] [TERRAFORM_VERSION]
        validate.sh --published RELEASE_VERSION
        validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
        validate.sh --latest AXIS
@@ -43,6 +44,10 @@ Checks, by what they verify and what they cost:
                   single-platform build and container-structure-test (Docker,
                   minutes). Versions default to the latest in
                   supported_versions.json; the tag defaults to "dev".
+  --assert-image  the shipped artefact: pull IMAGE_REF (a tag or an untagged
+                  repo@digest) per published architecture and run the
+                  structure tests against it (Docker + QEMU). Run by the
+                  publishers before any tag moves (ADR-0022).
   --published     the registry, for a release (vX.Y.Z): network only, no
                   Docker and no credentials. Called by release-please.yml; run
                   it by hand to re-check a release that has just been
@@ -82,6 +87,18 @@ host_platform() {
     aarch64 | arm64) printf 'linux/arm64' ;;
     *) die "unsupported host architecture: $(uname -m)" ;;
   esac
+}
+
+# container-structure-test ships amd64-only; request it explicitly so
+# arm64 hosts emulate silently
+cst_test() {
+  docker container run --rm \
+    --platform linux/amd64 \
+    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+    "$CST_IMAGE" test \
+    --image "$1" \
+    --config /tests.yml
 }
 
 # ---------------------------------------------------------------------------
@@ -178,8 +195,8 @@ check_platform_lines() {
 # ---------------------------------------------------------------------------
 check_image_name() {
   local ok=1 org name
-  grep -q "tags: ${IMAGE_NAME}:edge" .github/workflows/push-edge.yml \
-    || { fail "push-edge.yml does not push ${IMAGE_NAME}:edge"; ok=0; }
+  grep -q -- "--tag ${IMAGE_NAME}:edge" .github/workflows/push-edge.yml \
+    || { fail "push-edge.yml does not tag ${IMAGE_NAME}:edge"; ok=0; }
   grep -q "repository: ${IMAGE_NAME}$" .github/workflows/dockerhub-description-update.yml \
     || { fail "dockerhub-description-update.yml does not target ${IMAGE_NAME}"; ok=0; }
   org="$(sed -n 's/^[[:space:]]*ORGANIZATION: "\(.*\)"$/\1/p' .github/workflows/release-please.yml)"
@@ -201,6 +218,7 @@ run_fast() {
 # Image check (--full): the structural checks, then containerized hadolint, a
 # single-platform build and container-structure-test. Tool images stay pinned.
 # ---------------------------------------------------------------------------
+
 run_full() {
   local aws_version tf_version image_tag platform
   aws_version="${1:-$(latest_version awscli_versions)}"
@@ -234,16 +252,38 @@ run_full() {
 
   printf 'Running container-structure-test (%s)...\n' "$CST_IMAGE"
   render_tests "$aws_version" "$tf_version"
-  # container-structure-test ships amd64-only; request it explicitly so
-  # arm64 hosts emulate silently
-  docker container run --rm \
-    --platform linux/amd64 \
-    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
-    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
-    "$CST_IMAGE" test \
-    --image "${IMAGE_NAME}:${image_tag}" \
-    --config /tests.yml
+  cst_test "${IMAGE_NAME}:${image_tag}"
   pass "container-structure-test"
+}
+
+# ---------------------------------------------------------------------------
+# Artefact check (--assert-image): the structure tests against a registry
+# image, per published architecture (ADR-0022).
+# ---------------------------------------------------------------------------
+run_assert_image() {
+  local ref="$1" aws_version tf_version arch repo manifest arch_digest
+  aws_version="${2:-$(latest_version awscli_versions)}"
+  tf_version="${3:-$(latest_version tf_versions)}"
+  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
+  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
+
+  # pulling one ref with different platforms does not repoint the local
+  # ref, so each architecture is resolved to its own digest
+  repo="${ref%%@*}"
+  case "${repo##*/}" in *:*) repo="${repo%:*}" ;; esac
+  manifest="$(docker buildx imagetools inspect "$ref" --format '{{json .Manifest}}')"
+
+  render_tests "$aws_version" "$tf_version"
+  for arch in "${PLATFORM_ARCHS[@]}"; do
+    arch_digest="$(printf '%s' "$manifest" | jq -r --arg p "linux/${arch}" \
+      '.manifests[]? | select(.platform.os + "/" + .platform.architecture == $p) | .digest')"
+    [ -n "$arch_digest" ] \
+      || die "the manifest of ${ref} has no linux/${arch} entry (multi-arch reference expected)"
+    printf 'Pulling %s (linux/%s)...\n' "${repo}@${arch_digest}" "$arch"
+    docker pull --quiet "${repo}@${arch_digest}"
+    cst_test "${repo}@${arch_digest}"
+    pass "structure tests against ${ref} (linux/${arch}, ${arch_digest})"
+  done
 }
 
 # ---------------------------------------------------------------------------
@@ -399,6 +439,11 @@ case "$MODE" in
     shift
     [ "$#" -le 3 ] || usage
     run_full "$@"
+    ;;
+  --assert-image)
+    shift
+    { [ "$#" -ge 1 ] && [ "$#" -le 3 ]; } || usage
+    run_assert_image "$@"
     ;;
   --published)
     shift

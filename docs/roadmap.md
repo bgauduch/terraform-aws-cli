@@ -71,6 +71,7 @@ to green; the human owns the merge).
 | PR build gate | Every supported combination built **and** structure-tested on every published platform, one job per pair; `arm64` runs under emulation (#152) | ADR-0020 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Structured writes | Deterministic scripts (`bump-version.sh`, `refresh-apt-pins.sh`) own the paired version/pin writes; humans, agents and bot triggers orchestrate (#152) | ADR-0021 |
+| Publication assertions | Publishers push by digest, assert each architecture with the gate's structure tests, then move the tags; no tag points at an unasserted image (#183) | ADR-0022 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
