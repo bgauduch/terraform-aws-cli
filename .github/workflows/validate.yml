@@ -22,3 +22,6 @@ jobs:
 
       - name: Run the fast validation oracle
         run: ./scripts/validate.sh --fast
+
+      - name: Lint the Dockerfile
+        run: ./scripts/validate.sh --lint
