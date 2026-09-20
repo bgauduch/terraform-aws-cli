@@ -4,6 +4,13 @@
 - Date: 2026-07-20
 - Deciders: @bgauduch
 
+> **Amended 2026-09-20** — `master` requires green status checks (the
+> every-PR checks; path-filtered and matrix checks join once an always-run
+> aggregate job exists; set and toggle in the GitHub config, L3). One
+> standing delegation: Renovate merges its own minor, patch, pin and digest
+> updates when every check on its PR is green (`automerge` in
+> `renovate.json`); majors and non-bot PRs stay human-merged.
+
 ## Context and problem statement
 
 The agent authorization rules (home: `AGENTS.md`, § Session rules; formerly
