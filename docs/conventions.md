@@ -81,8 +81,9 @@ Agent-session rules (authorization boundaries, roles) live in
 - **L1 — English only** for all repo-facing content: code, docs, commits,
   PR/issue text, review comments.
 - **L2 — One home per fact; docs point, `NEVER` restate.** ADRs may repeat
-  content as frozen records. Prose earns its space: intros and sections must
-  add information.
+  content as frozen records. A fact two files need is generated from its home
+  or asserted equal by the oracle (ADR-0016), `NEVER` maintained twice by
+  hand.
 - **L3 — `NEVER` mirror mutable infra/UI settings in prose.** Reference the
   GitHub config; decisions about them live in ADRs, live values in GitHub.
 - **L4 — Learnings graduate to a durable home.** Captured transiently in the
@@ -99,8 +100,9 @@ Agent-session rules (authorization boundaries, roles) live in
   travels; rationale is pointed to, `NEVER` restated (L2). The binary test:
   does each sentence still make sense, and each name still resolve, for
   someone who never saw the previous version?
-- **L7 — Repo-facing text is minimal and factual.** PR and issue bodies,
-  comments, commit messages and generated prose carry facts, decisions and
-  pointers; `NEVER` recap what a diff, a query or a linked home already
-  shows. The binary test: delete the sentence — if the reader loses nothing
-  they need, it does not ship.
+- **L7 — Repo-facing text is minimal, factual and current.** Facts,
+  decisions and pointers only — rationale lives in the ADR, history in git
+  and the PR/issue record, `NEVER` in docs or code; prose earns its space
+  (an intro or section that adds no information is deleted). The binary
+  test: delete the sentence — if the reader loses nothing they need now, it
+  does not ship.
