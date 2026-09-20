@@ -3,9 +3,8 @@ name: push-edge
 # Publishes the `edge` tag: the latest supported combination, built from
 # master. `latest` belongs to the release workflow (ADR-0018), so this one
 # never writes it.
-# The image is pushed by digest, asserted per architecture, and only then
-# tagged: no tag ever points at an unasserted image (ADR-0022).
-# Triggered by pushes to master that touch the image.
+# The image is pushed by digest, asserted per architecture, then tagged
+# (ADR-0022). Triggered by pushes to master that touch the image.
 on:
   push:
     branches:
@@ -22,8 +21,7 @@ on:
 
 permissions:
   contents: read
-  # the failure step opens an issue: a broken edge publication must not stay
-  # silent (ADR-0022)
+  # the failure step opens an issue (ADR-0022)
   issues: write
 
 # `edge` is a republish of the current state of master, so a superseded run has

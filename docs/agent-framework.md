@@ -59,11 +59,9 @@ can promise, and none of them is discoverable from the repository:
   `--published` are unaffected: the first needs no network, the second is
   network-only and goes through the proxy like any other HTTPS call. A `--full`
   verdict has to come from real hardware.
-- **`arm64` binaries do not execute in a hosted session.** The binfmt
-  registration has no effect in the session's kernel, so any cross-arch `exec`
-  fails with `exec format error` even after installing `tonistiigi/binfmt`.
-  `--assert-image` proves its `amd64` leg locally; its `arm64` leg needs CI
-  (whose `setup-qemu` runners are proven since ADR-0020) or real hardware.
+- **`arm64` binaries do not execute in a hosted session** (binfmt has no
+  effect in its kernel; cross-arch `exec` fails). `--assert-image` proves
+  `amd64` locally; the `arm64` leg needs CI or real hardware.
 - **A bot-authored pull request does not run CI on its own.** Its workflow runs
   wait for a maintainer's approval, so a green tick can be absent because
   nobody clicked, not because something failed.

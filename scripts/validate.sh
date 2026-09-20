@@ -45,9 +45,9 @@ Checks, by what they verify and what they cost:
                   minutes). Versions default to the latest in
                   supported_versions.json; the tag defaults to "dev".
   --assert-image  the shipped artefact: pull IMAGE_REF (a tag or an untagged
-                  repo@digest) for each published architecture and run the
-                  structure tests against it (Docker + QEMU). The publishers
-                  run it before moving any tag (ADR-0022).
+                  repo@digest) per published architecture and run the
+                  structure tests against it (Docker + QEMU). Run by the
+                  publishers before any tag moves (ADR-0022).
   --published     the registry, for a release (vX.Y.Z): network only, no
                   Docker and no credentials. Called by release-please.yml; run
                   it by hand to re-check a release that has just been
@@ -258,11 +258,9 @@ run_full() {
 }
 
 # ---------------------------------------------------------------------------
-# Artefact check (--assert-image): the structure tests against an image the
-# registry stores, per published architecture (ADR-0022). The publishers push
-# by digest, run this, and only then move the tags, so no tag ever points at
-# an unasserted image. Docker and QEMU required, which is why --published
-# stays a separate, network-only mode.
+# Artefact check (--assert-image): the structure tests against a registry
+# image, per published architecture (ADR-0022). Docker and QEMU required;
+# --published stays network-only.
 # ---------------------------------------------------------------------------
 run_assert_image() {
   local ref="$1" aws_version tf_version arch repo manifest arch_digest
@@ -271,10 +269,9 @@ run_assert_image() {
   [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
   [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
 
-  # each architecture is asserted by its own digest from the manifest list:
-  # pulling one ref with different platforms does not repoint the local ref,
-  # so testing by ref silently re-asserts the first architecture, and a
-  # manifest missing an architecture must fail rather than fall back
+  # assert each architecture by its own digest: pulling one ref with
+  # different platforms does not repoint the local ref, and a missing
+  # architecture must fail rather than fall back
   repo="${ref%%@*}"
   case "${repo##*/}" in *:*) repo="${repo%:*}" ;; esac
   manifest="$(docker buildx imagetools inspect "$ref" --format '{{json .Manifest}}')"

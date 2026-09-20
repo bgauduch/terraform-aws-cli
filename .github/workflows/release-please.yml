@@ -12,10 +12,10 @@ name: release-please
 # images. No separate release.yml and no Personal Access Token are needed: the
 # build is wired in-workflow on the `release_created` output, so the default
 # GITHUB_TOKEN (plus the existing DockerHub secrets) is enough. Each image is
-# pushed by digest, asserted per architecture, and only then tagged: no tag
-# ever points at an unasserted image (ADR-0022). A final verify_release job
-# calls the verification oracle (ADR-0016) to assert what the registry serves
-# for the release, and opens an issue when the publication is incomplete.
+# pushed by digest, asserted per architecture, then tagged (ADR-0022). A final
+# verify_release job calls the verification oracle (ADR-0016) to assert what
+# the registry serves for the release, and opens an issue when the publication
+# is incomplete.
 
 on:
   push:
