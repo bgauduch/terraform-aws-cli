@@ -86,3 +86,9 @@ Tag strategy is decided separately in ADR-0003.
 > v10.0.0 on 2026-08-03. Sequencing is the author's call, not the tool's:
 > hold the Release PR, or accept the second major. Implementation specific;
 > the decision is unchanged.
+>
+> **Amended 2026-09-20**: the optional opt-in `.githooks/commit-msg` hook is
+> dropped, never delivered. Squash-merge makes the pull-request title the commit
+> that lands on `master`, and a `commit-msg` hook cannot see it; the `commitlint`
+> job gates both the title and each commit, so the hook only bought a few
+> minutes of feedback ahead of CI. The rest of this decision is unchanged.
