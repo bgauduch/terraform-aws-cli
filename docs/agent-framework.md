@@ -7,15 +7,15 @@ agent entry point and session rules: [`AGENTS.md`](../AGENTS.md).
 ## Architecture: agnostic core + tool adapter (ADR-0009)
 
 ```
-AGENTS.md ─────────────► agent entry point + session rules (any agent reads this)
+AGENTS.md ───────────────► agent entry point + session rules, read natively by
+  │                       Claude Code (v2.1.277+) and any AGENTS.md-aware
+  │                       tool; its own @ imports load the binding docs into
+  │                       the session context at start (ADR-0009, amended)
   ├─ docs/conventions.md         the shared working conventions
   ├─ docs/roadmap.md             the plan
   └─ docs/adr/                   the decisions + rationale
 
-CLAUDE.md ─────────────► thin Claude Code adapter — imports AGENTS.md,
-  │                       docs/conventions.md and docs/adr/README.md into the
-  │                       session context at start (ADR-0009, amended)
-  └─ .claude/{settings.json, README.md}   hook wiring + perms
+.claude/{settings.json, README.md} ► Claude Code adapter: hook wiring + perms
 
 scripts/agent-session-start.sh ► agnostic bootstrap (reused by the adapter)
 ```
@@ -59,6 +59,9 @@ can promise, and none of them is discoverable from the repository:
   `--published` are unaffected: the first needs no network, the second is
   network-only and goes through the proxy like any other HTTPS call. A `--full`
   verdict has to come from real hardware.
+- **`arm64` binaries do not execute in a hosted session** (binfmt has no
+  effect in its kernel; cross-arch `exec` fails). `--assert-image` proves
+  `amd64` locally; the `arm64` leg needs CI or real hardware.
 - **A bot-authored pull request does not run CI on its own.** Its workflow runs
   wait for a maintainer's approval, so a green tick can be absent because
   nobody clicked, not because something failed.

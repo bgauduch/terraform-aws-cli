@@ -97,5 +97,7 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0018](0018-single-owner-publication-matrix.md) | One publisher per tag: `latest` follows releases, `edge` follows master | Accepted |
 | [0019](0019-platform-support-follows-upstream.md) | Published platforms follow upstream AWS CLI availability | Accepted |
 | [0020](0020-full-matrix-pull-request-gate.md) | The pull-request gate builds and tests every combination on every published platform | Accepted |
+| [0021](0021-deterministic-scripts-own-structured-writes.md) | Deterministic scripts own structured writes; agents orchestrate | Accepted |
+| [0022](0022-publication-asserts-before-tagging.md) | Publication asserts the artefact before any tag moves | Accepted |
 | [0023](0023-numeric-runtime-user.md) | Declare the runtime user by numeric UID and GID | Accepted |
 | [0024](0024-dependency-bot-declares-the-adr-exemption.md) | The dependency bot declares the ADR gate's exemption | Accepted |

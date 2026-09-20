@@ -25,6 +25,13 @@
 > already recorded for the conventions. This is an immediate measure, not a
 > criterion: what an agent must hold in context is #170's to settle.
 
+> **Amended 2026-09-19** — Claude Code reads `AGENTS.md` natively (v2.1.277+),
+> `@` imports included, when no `CLAUDE.md` exists. The imports move into
+> `AGENTS.md`; `CLAUDE.md` is deleted (no pre-2.1.277 or managed-platform
+> client in use, confirmed 2026-09-20 — such a client would need the one-line
+> `@AGENTS.md` shim back). The adapter is `.claude/` alone; the core/adapter
+> split is unchanged.
+
 ## Context and problem statement
 
 The framework was authored around "Claude" — naming ("Claude Code framework",

@@ -13,9 +13,14 @@ on:
       - ".github/workflows/push-edge.yml"
       - "Dockerfile"
       - "hadolint.yaml"
+      - "scripts/validate.sh"
       - "security/**"
       - "supported_versions.json"
       - "tests/**"
+
+permissions:
+  contents: read
+  issues: write
 
 # `edge` is a republish of the current state of master, so a superseded run has
 # nothing left to contribute. The release publisher queues instead (ADR-0018).
@@ -32,9 +37,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Retrieve latest supported versions
+        # the oracle owns the semver sort (ADR-0016)
         run: |
-          echo "TF_VERSION=$(jq -r '.tf_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
-          echo "AWS_VERSION=$(jq -r '.awscli_versions | sort_by(split(".") | map(tonumber)) | .[-1]' supported_versions.json)" >> $GITHUB_ENV
+          echo "TF_VERSION=$(./scripts/validate.sh --latest tf_versions)" >> $GITHUB_ENV
+          echo "AWS_VERSION=$(./scripts/validate.sh --latest awscli_versions)" >> $GITHUB_ENV
 
       - name: Login to Docker Hub registry
         run: echo '${{ secrets.DOCKERHUB_PAT }}' | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -46,7 +52,8 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push container images
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -54,7 +61,22 @@ jobs:
           build-args: |
             TERRAFORM_VERSION=${{ env.TF_VERSION }}
             AWS_CLI_VERSION=${{ env.AWS_VERSION }}
-          tags: bgauduch/terraform-aws-cli:edge
-          push: true
+          outputs: type=image,name=bgauduch/terraform-aws-cli,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Assert the pushed artefact before tagging
+        run: ./scripts/validate.sh --assert-image "bgauduch/terraform-aws-cli@${{ steps.build.outputs.digest }}" "${AWS_VERSION}" "${TF_VERSION}"
+
+      - name: Move the edge tag onto the asserted manifest
+        run: docker buildx imagetools create --tag bgauduch/terraform-aws-cli:edge "bgauduch/terraform-aws-cli@${{ steps.build.outputs.digest }}"
+
+      - name: Open an issue when the edge publication fails
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "edge publication failed before tagging" \
+            --body "push-edge failed: the edge tag was not moved, so it still serves the previous master state. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

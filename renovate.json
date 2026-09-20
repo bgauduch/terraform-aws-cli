@@ -18,8 +18,8 @@
       "groupName": "debian-base-image"
     },
     {
-      "description": "Auto-merge low-risk updates",
-      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "description": "Auto-merge when CI is green; majors stay human-merged (ADR-0012, amended)",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
