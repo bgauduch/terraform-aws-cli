@@ -14,11 +14,11 @@ concurrency:
 
 jobs:
   fast-checks:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run the fast validation oracle
         run: ./scripts/validate.sh --fast
