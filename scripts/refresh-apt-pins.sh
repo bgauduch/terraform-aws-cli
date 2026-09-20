@@ -57,7 +57,7 @@ main() {
   cp "$DOCKERFILE" "$tmp_dockerfile"
   cp "$TEMPLATE" "$tmp_template"
 
-  local pkg candidate line
+  local pkg candidate
   for pkg in "${PACKAGES[@]}"; do
     candidate="$(printf '%s\n' "$probe_out" | sed -n "s/^PIN ${pkg}=//p")"
     { [ -n "$candidate" ] && [ "$candidate" != "(none)" ]; } \
