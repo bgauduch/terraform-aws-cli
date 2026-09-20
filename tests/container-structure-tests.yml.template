@@ -6,6 +6,7 @@ metadataTest:
       value: "bgauduch@github"
   cmd: ["bash"]
   workdir: "/workspace"
+  user: "1001:1001"
 
 commandTests:
   - name: "Check Git version"

@@ -97,3 +97,4 @@ Rule of thumb: *clarification → amend; reversal → supersede.*
 | [0018](0018-single-owner-publication-matrix.md) | One publisher per tag: `latest` follows releases, `edge` follows master | Accepted |
 | [0019](0019-platform-support-follows-upstream.md) | Published platforms follow upstream AWS CLI availability | Accepted |
 | [0020](0020-full-matrix-pull-request-gate.md) | The pull-request gate builds and tests every combination on every published platform | Accepted |
+| [0023](0023-numeric-runtime-user.md) | Declare the runtime user by numeric UID and GID | Accepted |

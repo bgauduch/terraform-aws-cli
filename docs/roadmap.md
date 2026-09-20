@@ -71,6 +71,7 @@ to green; the human owns the merge).
 | PR build gate | Every supported combination built **and** structure-tested on every published platform, one job per pair; `arm64` runs under emulation (#152) | ADR-0020 |
 | APT package pinning | OS utility packages **pinned** to exact versions (refreshed when Debian supersedes a pin); bundled binaries stay pinned + GPG/checksum verified | ADR-0010 |
 | Base image | Debian 13 (`trixie`), pinned by immutable `sha256` digest | ADR-0011 |
+| Runtime user | Declared as numeric `1001:1001` so an orchestrator resolves it without the image passwd database (`runAsNonRoot`) | ADR-0023 |
 | Rollback policy | No mutation of immutable full tags; consumers re-pin an older tag | `docs/rollback.md` |
 | ADR enforcement | PR-template checkbox + `adr-check.yml` CI gate + CODEOWNERS (no soft-rule-only) | this doc |
 | Branch naming | `type/topic` (Conventional types); no tool names | ADR-0008 |
