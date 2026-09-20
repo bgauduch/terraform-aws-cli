@@ -26,16 +26,11 @@
 > criterion: what an agent must hold in context is #170's to settle.
 
 > **Amended 2026-09-19** — Claude Code reads `AGENTS.md` natively (v2.1.277+),
-> including its `@` imports, but only when no `CLAUDE.md` exists. The imports
-> therefore move from the adapter into `AGENTS.md` itself — the agnostic core
-> is now self-sufficient for any import-aware tool — and **`CLAUDE.md` is
-> deleted**: the maintainer confirmed (2026-09-20) that no client in use is
-> pre-2.1.277 or a managed platform (Bedrock/Vertex), the cases where a
-> `CLAUDE.md` fallback shim (a single `@AGENTS.md`) would still be read
-> instead. Should such a client ever appear, recreating that one-line shim
-> restores it losslessly — imports expand recursively, so both loading paths
-> carry identical context. The core/adapter split is unchanged; the adapter
-> is now `.claude/` alone.
+> `@` imports included, when no `CLAUDE.md` exists. The imports move into
+> `AGENTS.md`; `CLAUDE.md` is deleted (no pre-2.1.277 or managed-platform
+> client in use, confirmed 2026-09-20 — such a client would need the one-line
+> `@AGENTS.md` shim back). The adapter is `.claude/` alone; the core/adapter
+> split is unchanged.
 
 ## Context and problem statement
 
