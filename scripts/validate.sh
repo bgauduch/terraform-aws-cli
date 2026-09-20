@@ -89,6 +89,18 @@ host_platform() {
   esac
 }
 
+# container-structure-test ships amd64-only; request it explicitly so
+# arm64 hosts emulate silently
+cst_test() {
+  docker container run --rm \
+    --platform linux/amd64 \
+    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
+    "$CST_IMAGE" test \
+    --image "$1" \
+    --config /tests.yml
+}
+
 # ---------------------------------------------------------------------------
 # Structural check: supported_versions.json <-> security/
 # Every supported version has its signature material; no orphan material for
@@ -207,19 +219,6 @@ run_fast() {
 # single-platform build and container-structure-test. Tool images stay pinned.
 # ---------------------------------------------------------------------------
 
-# container-structure-test ships amd64-only; request it explicitly so foreign
-# hosts emulate silently. The tested image runs through the daemon, so a
-# foreign-architecture image needs QEMU/binfmt on the host.
-cst_test() {
-  docker container run --rm \
-    --platform linux/amd64 \
-    --volume "${PWD}"/tests/container-structure-tests.yml:/tests.yml:ro \
-    --volume /var/run/docker.sock:/var/run/docker.sock:ro \
-    "$CST_IMAGE" test \
-    --image "$1" \
-    --config /tests.yml
-}
-
 run_full() {
   local aws_version tf_version image_tag platform
   aws_version="${1:-$(latest_version awscli_versions)}"
@@ -259,8 +258,7 @@ run_full() {
 
 # ---------------------------------------------------------------------------
 # Artefact check (--assert-image): the structure tests against a registry
-# image, per published architecture (ADR-0022). Docker and QEMU required;
-# --published stays network-only.
+# image, per published architecture (ADR-0022).
 # ---------------------------------------------------------------------------
 run_assert_image() {
   local ref="$1" aws_version tf_version arch repo manifest arch_digest
@@ -269,9 +267,8 @@ run_assert_image() {
   [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
   [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
 
-  # assert each architecture by its own digest: pulling one ref with
-  # different platforms does not repoint the local ref, and a missing
-  # architecture must fail rather than fall back
+  # pulling one ref with different platforms does not repoint the local
+  # ref, so each architecture is resolved to its own digest
   repo="${ref%%@*}"
   case "${repo##*/}" in *:*) repo="${repo%:*}" ;; esac
   manifest="$(docker buildx imagetools inspect "$ref" --format '{{json .Manifest}}')"
