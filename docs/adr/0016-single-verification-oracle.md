@@ -65,7 +65,7 @@ territory is the cross-file repository invariants nothing else looks at.
   wheel-reinvention — the principle above generalises that review.
 - hadolint is **not** duplicated into `validate.yml`: `lint-dockerfile.yml`
   already owns that CI gate; locally the script runs it when the binary is
-  present.
+  present. *(Reversed 2026-09-20, see the amendment below.)*
 - **Orchestration is a thin per-environment adapter** (the ADR-0009
   core/adapter pattern applied to verification): CI workflows keep their
   native machinery (matrix fan-out, GHA build cache, QEMU, hadolint-action's
@@ -121,3 +121,12 @@ build that is authoritative. It calls them tier 0 (`--fast`), tier 1
 (`--full`), tier 2 (`build-test` on a pull request) and tier 3 (the release
 matrix), and abbreviates them `T0` to `T3` — that shorthand belongs to #152
 and is not needed to read this decision.
+
+> **Amended 2026-09-20**: `lint-dockerfile.yml` is removed and `validate.yml`
+> calls `validate.sh --lint`, which runs the same pinned hadolint container as
+> `--full`. The consequence above held while both pinned the same version; they
+> drifted the moment the action was bumped to v3.5.0 with its own bundled
+> hadolint, giving CI and the maintainer two different linters. The cost paid:
+> the action's inline pull-request annotations are lost, and hadolint findings
+> now read from the job log. The decision, one oracle that calls the tools, is
+> unchanged and is what forces this.
