@@ -135,6 +135,62 @@ check_versions_security() {
 }
 
 # ---------------------------------------------------------------------------
+# Structural check: no vendor key in security/ has lapsed.
+# gpg --verify exits 0 for a good signature made by an expired key, so a
+# lapsed key is invisible to the build that depends on it: hashicorp.asc ran
+# five months that way and awscliv2.asc three years. A rotated historical
+# signing subkey is expected to be expired and is not a finding.
+# ---------------------------------------------------------------------------
+check_key_expiry() {
+  command -v gpg >/dev/null 2>&1 || { skip "gpg not installed, key expiry unchecked"; return 0; }
+  local ok=1 key records expiry signing earliest=""
+  local now
+  now="$(date -u +%s)"
+  for key in security/*.asc; do
+    [ -e "$key" ] || continue
+    records="$(gpg --show-keys --with-colons "$key" 2>/dev/null)" || records=""
+    if [ -z "$records" ]; then
+      fail "${key} is not a readable OpenPGP key"
+      ok=0
+      continue
+    fi
+
+    expiry="$(awk -F: '$1 == "pub" { print $7; exit }' <<<"$records")"
+    if [ -n "$expiry" ] && [ "$expiry" -le "$now" ]; then
+      fail "${key} expired on $(date -u -d "@${expiry}" +%F)"
+      ok=0
+      continue
+    fi
+
+    # usable to verify a fresh signature: the primary or a subkey carrying the
+    # sign capability, still unexpired
+    signing="$(awk -F: -v now="$now" '
+      ($1 == "pub" || $1 == "sub") && $12 ~ /s/ {
+        if ($7 == "") { print "never"; exit }
+        if ($7 + 0 > now + 0) found = 1
+      }
+      END { if (found) print "yes" }' <<<"$records")"
+    if [ -z "$signing" ]; then
+      fail "${key} has no unexpired signing key"
+      ok=0
+      continue
+    fi
+
+    if [ -n "$expiry" ] && { [ -z "$earliest" ] || [ "$expiry" -lt "$earliest" ]; }; then
+      earliest="$expiry"
+    fi
+  done
+  if [ "$ok" = 1 ]; then
+    if [ -n "$earliest" ]; then
+      pass "vendor keys in security/ are unexpired (earliest $(date -u -d "@${earliest}" +%F))"
+    else
+      pass "vendor keys in security/ are unexpired"
+    fi
+  fi
+  return 0
+}
+
+# ---------------------------------------------------------------------------
 # Structural check: ADR files <-> index (docs/adr/README.md)
 # ---------------------------------------------------------------------------
 check_adr_index() {
@@ -208,6 +264,7 @@ check_image_name() {
 
 run_fast() {
   check_versions_security
+  check_key_expiry
   check_adr_index
   check_platform_lines
   check_image_name
