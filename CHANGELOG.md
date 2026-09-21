@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.1.0](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.3...v10.1.0) (2026-09-21)
+
+
+### Features
+
+* **publish:** assert the artefact before any tag moves ([#189](https://github.com/bgauduch/terraform-aws-cli/issues/189)) ([4c8c941](https://github.com/bgauduch/terraform-aws-cli/commit/4c8c94165db56297e324e871575f840138e6d605))
+* **scripts:** version and pin automation ([#186](https://github.com/bgauduch/terraform-aws-cli/issues/186)) ([5be0bfc](https://github.com/bgauduch/terraform-aws-cli/commit/5be0bfca3987463cb5badfe53aed7e8aca0ed201))
+
+
+### Bug Fixes
+
+* declare the runtime user numerically and exempt bot bumps from the ADR gate ([#195](https://github.com/bgauduch/terraform-aws-cli/issues/195)) ([8db365e](https://github.com/bgauduch/terraform-aws-cli/commit/8db365e5c18770090f9cfd640715db9627a90607))
+
 ## [10.0.3](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.2...v10.0.3) (2026-09-20)
 
 
