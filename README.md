@@ -1,4 +1,4 @@
-[![lint-dockerfile](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/lint-dockerfile.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/lint-dockerfile.yml)
+[![validate](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/validate.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/validate.yml)
 [![build-test](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/build-test.yml)
 [![push-edge](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-edge.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/push-edge.yml)
 [![release-please](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/release-please.yml/badge.svg)](https://github.com/bgauduch/terraform-aws-cli/actions/workflows/release-please.yml)
