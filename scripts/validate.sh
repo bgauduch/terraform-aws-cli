@@ -12,7 +12,9 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+# renovate: datasource=docker depName=hadolint/hadolint
 HADOLINT_IMAGE="hadolint/hadolint:2.12.0-alpine"
+# renovate: datasource=docker depName=gcr.io/gcp-runtimes/container-structure-test
 CST_IMAGE="gcr.io/gcp-runtimes/container-structure-test:v1.16.0"
 IMAGE_NAME="bgauduch/terraform-aws-cli"
 # published architectures (ADR-0019); the publishing workflows carry the
