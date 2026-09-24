@@ -33,5 +33,15 @@
       "matchUpdateTypes": ["major"],
       "addLabels": ["needs-adr"]
     }
+  ],
+  "customManagers": [
+    {
+      "description": "Oracle tool images pinned in scripts/validate.sh (#20 Task 3)",
+      "customType": "regex",
+      "managerFilePatterns": ["/^scripts/validate\\.sh$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+[A-Z_]+=\"[^\"]+:(?<currentValue>[^\"]+)\""
+      ]
+    }
   ]
 }
