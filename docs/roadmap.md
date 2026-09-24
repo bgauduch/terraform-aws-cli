@@ -128,7 +128,6 @@ Urgent: current versions are frozen at end-2023 and accrue CVEs.
 Skills (auto-discovered via `SKILL.md` descriptions):
 - `bump-terraform-version`, `bump-awscli-version`, `bump-debian-base`
 - `propose-adr`
-- `.githooks/commit-msg` local hook (Docker-based, opt-in; documented in `CONTRIBUTING.md`)
 
 Subagents & slash commands:
 - Downstream `/preflight`: `dockerfile-reviewer`, `security-reviewer` (hadolint + Trivy + GPG chain), `ci-doctor` (workflow paths ↔ files coherence), `commit-message-validator`
@@ -197,7 +196,8 @@ was preserved or retired. Live disposition is tracked in #106.
 - PostToolUse hook for ADR nudge (unless the agent is observed forgetting in practice)
 - Retroactive backfill of ADRs
 - Image variants (alpine, slim)
-- Bundling python3 in the image (revisit #80/#88/#92 only if demand is strong; document the workaround instead)
+- Bundling any runtime extra (python3, git-lfs, providers): the consumer derives
+  an image, splits the CI job, or a dedicated image joins the monorepo (ADR-0025)
 
 ## Conventions for evolution
 
