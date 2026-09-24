@@ -96,11 +96,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Generate test config
-        run: ./scripts/validate.sh --render-tests "${{ matrix.awscli_versions }}" "${{ matrix.tf_versions }}"
-
-      - name: run structure tests
-        uses: plexsystems/container-structure-test-action@c0a028aa96e8e82ae35be556040340cbb3e280ca # v0.3.0
-        with:
-          image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          config: tests/container-structure-tests.yml
+      - name: Structure-test the image
+        # the oracle renders the config and owns the pinned
+        # container-structure-test version (ADR-0016)
+        run: |
+          ./scripts/validate.sh --structure-test \
+            "${IMAGE_NAME}:${IMAGE_TAG}" \
+            "${{ matrix.awscli_versions }}" "${{ matrix.tf_versions }}"
