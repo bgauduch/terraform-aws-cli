@@ -143,6 +143,10 @@ Subagents & slash commands:
 - `wagoodman/dive` image analysis in CI *(#25)*
 - Additional tag aliases if demand emerges (`terraform-A.B.C`, `terraform-A.B`)
 - Re-evaluate the multi-agent panel after 3 months of usage
+- GitHub stacked pull requests: re-study at general availability (deferred
+  2026-09-24 during public preview; auto-merge unsupported, conflicts with B3
+  and D1). Standing preference: only GitHub's automatic rebase rewrites a
+  stacked branch.
 
 ### Phase 8 — Default branch rename `master` → `main` *(P2, not top priority)*
 Low-priority hygiene; cross-cutting, so delivered as its own phase.
