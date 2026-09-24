@@ -34,6 +34,7 @@ usage() {
   cat >&2 <<'USAGE'
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
+       validate.sh --lint
        validate.sh --assert-image IMAGE_REF [AWS_CLI_VERSION] [TERRAFORM_VERSION]
        validate.sh --published RELEASE_VERSION
        validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
@@ -42,6 +43,8 @@ usage: validate.sh --fast
 
 Checks, by what they verify and what they cost:
   --fast          the working tree, structurally: no Docker, seconds.
+  --lint          the Dockerfile, with the pinned hadolint container (Docker,
+                  seconds). Called by validate.yml and by --full.
   --full          the image: the fast checks, then containerized hadolint, a
                   single-platform build and container-structure-test (Docker,
                   minutes). Versions default to the latest in
@@ -154,8 +157,8 @@ check_adr_index() {
 }
 
 # ---------------------------------------------------------------------------
-# Structural check: hadolint via local binary when present (CI gate:
-# lint-dockerfile.yml; --full runs the pinned container instead)
+# Structural check: hadolint via local binary when present. --lint runs the
+# pinned container instead, which is what CI calls.
 # ---------------------------------------------------------------------------
 check_hadolint_local() {
   if command -v hadolint >/dev/null 2>&1; then
@@ -165,7 +168,7 @@ check_hadolint_local() {
       fail "hadolint reported issues"
     fi
   else
-    skip "hadolint not installed (CI gate: lint-dockerfile.yml; --full runs it in Docker)"
+    skip "hadolint not installed (--lint runs the pinned container; CI calls it)"
   fi
 }
 
@@ -221,6 +224,21 @@ run_fast() {
 # single-platform build and container-structure-test. Tool images stay pinned.
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Lint (--lint): the pinned hadolint container. One hadolint version for the
+# maintainer, --full and CI, which is why the workflow calls this rather than
+# an action bundling its own (ADR-0016).
+# ---------------------------------------------------------------------------
+lint_dockerfile() {
+  printf 'Linting Dockerfile (%s)...\n' "$HADOLINT_IMAGE"
+  docker container run --rm \
+    --volume "${PWD}":/data:ro \
+    --workdir /data \
+    "$HADOLINT_IMAGE" /bin/hadolint \
+    --config hadolint.yaml Dockerfile
+  pass "hadolint (containerized)"
+}
+
 run_full() {
   local aws_version tf_version image_tag platform
   aws_version="${1:-$(latest_version awscli_versions)}"
@@ -233,13 +251,7 @@ run_full() {
   run_fast
   [ "$FAIL" = 0 ] || { printf 'validate: structural checks failed, not building\n' >&2; exit 1; }
 
-  printf 'Linting Dockerfile (%s)...\n' "$HADOLINT_IMAGE"
-  docker container run --rm \
-    --volume "${PWD}":/data:ro \
-    --workdir /data \
-    "$HADOLINT_IMAGE" /bin/hadolint \
-    --config hadolint.yaml Dockerfile
-  pass "hadolint (containerized)"
+  lint_dockerfile
 
   printf 'Building %s:%s (AWS CLI %s, Terraform %s, %s)...\n' \
     "$IMAGE_NAME" "$image_tag" "$aws_version" "$tf_version" "$platform"
@@ -441,6 +453,10 @@ case "$MODE" in
     shift
     [ "$#" -le 3 ] || usage
     run_full "$@"
+    ;;
+  --lint)
+    [ "$#" -le 1 ] || usage
+    lint_dockerfile
     ;;
   --assert-image)
     shift
