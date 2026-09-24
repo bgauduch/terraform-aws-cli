@@ -35,6 +35,7 @@ if command -v docker >/dev/null 2>&1; then
     log "docker daemon already running"
   elif command -v dockerd >/dev/null 2>&1; then
     log "starting dockerd (proxy: ${HTTPS_PROXY:-none})"
+    # shellcheck disable=SC2024  # the log is written by the session user, not root
     sudo env \
       HTTP_PROXY="${HTTP_PROXY:-}"  HTTPS_PROXY="${HTTPS_PROXY:-}"  NO_PROXY="${NO_PROXY:-}" \
       http_proxy="${HTTP_PROXY:-}"  https_proxy="${HTTPS_PROXY:-}"  no_proxy="${NO_PROXY:-}" \
@@ -42,8 +43,8 @@ if command -v docker >/dev/null 2>&1; then
     for _ in $(seq 1 20); do docker info >/dev/null 2>&1 && break; sleep 1; done
   fi
   docker info >/dev/null 2>&1 \
-    && log "docker ready — local lint/pull/pin-verify available" \
-    || log "docker unavailable — see /tmp/agent-dockerd.log (local image checks limited)"
+    && log "docker ready: local lint/pull/pin-verify available" \
+    || log "docker unavailable: see /tmp/agent-dockerd.log (local image checks limited)"
 else
   log "docker CLI not found — skipping daemon bootstrap"
 fi

@@ -171,6 +171,24 @@ check_hadolint_local() {
 }
 
 # ---------------------------------------------------------------------------
+# Structural check: shellcheck via local binary when present (the hadolint
+# pattern). Warning and up: every note these scripts raise is a deliberate
+# literal-${ match. The gcc format echoes no source line, so a non-ASCII byte
+# cannot crash it under an unset locale.
+# ---------------------------------------------------------------------------
+check_shellcheck_local() {
+  if command -v shellcheck >/dev/null 2>&1; then
+    if shellcheck --severity=warning --format=gcc scripts/*.sh; then
+      pass "shellcheck"
+    else
+      fail "shellcheck reported issues"
+    fi
+  else
+    skip "shellcheck not installed"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Structural check: the platform declarations agree (ADR-0019).
 # Lines carrying an expression (build-test composes linux/<arch> per job)
 # are skipped. An assertion, not a shared constant (#174).
@@ -215,6 +233,7 @@ run_fast() {
   check_platform_lines
   check_image_name
   check_hadolint_local
+  check_shellcheck_local
 }
 
 # ---------------------------------------------------------------------------
