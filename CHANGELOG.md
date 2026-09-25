@@ -1,5 +1,12 @@
 # Changelog
 
+## [11.0.1](https://github.com/bgauduch/terraform-aws-cli/compare/v11.0.0...v11.0.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* **security:** refresh the expired vendor signing keys ([#210](https://github.com/bgauduch/terraform-aws-cli/issues/210)) ([c166cea](https://github.com/bgauduch/terraform-aws-cli/commit/c166cea70d7c652fa88be263f48f16e6657b186a))
+
 ## [11.0.0](https://github.com/bgauduch/terraform-aws-cli/compare/v10.1.0...v11.0.0) (2026-09-23)
 
 
