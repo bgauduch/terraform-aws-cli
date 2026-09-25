@@ -92,3 +92,25 @@ Tag strategy is decided separately in ADR-0003.
 > that lands on `master`, and a `commit-msg` hook cannot see it; the `commitlint`
 > job gates both the title and each commit, so the hook only bought a few
 > minutes of feedback ahead of CI. The rest of this decision is unchanged.
+>
+> **Amended 2026-09-21** — "Renovate only" is completed on the last dependencies
+> the bot did not watch: the Terraform and AWS CLI versions in
+> `supported_versions.json`. Two `customManagers` regex entries detect them
+> (`github-releases` on `hashicorp/terraform`, `github-tags` on `aws/aws-cli`
+> bounded to v2 per ADR-0017), each capturing only the newest version listed on
+> its axis.
+>
+> **Detect and materialise stay split** (ADR-0021): a bumped
+> `supported_versions.json` without the matching `security/` signature material
+> is unbuildable, so this pair is **detect-only**. `dependencyDashboardApproval`
+> keeps the finding on the Dependency Dashboard and opens no pull request, and
+> `scripts/bump-version.sh` writes the change. A pull request here would be red
+> by construction and would spend a full-matrix build (ADR-0020) proving it; the
+> dashboard entry is the notification instead, and nothing in this pair
+> automerges.
+>
+> Consequence of capturing the newest slot only: a new patch on the newest line
+> is reported as itself, while a new minor line is reported as a replacement of
+> that slot — not what ADR-0015 prescribes (gain the new line, drop the oldest).
+> The script applies the window; the bot only reports that a version exists.
+> Implementation of an existing decision; the decision is unchanged.

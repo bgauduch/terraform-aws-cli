@@ -7,6 +7,27 @@
     ":semanticCommitTypeAll(chore)"
   ],
   "labels": ["dependencies"],
+  "customManagers": [
+    {
+      "description": "Detect Terraform releases in supported_versions.json (newest listed line only)",
+      "customType": "regex",
+      "managerFilePatterns": ["/^supported_versions\\.json$/"],
+      "matchStrings": ["\"tf_versions\":\\s*\\[[^\\]]*\"(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)\"\\s*\\]"],
+      "depNameTemplate": "hashicorp/terraform",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Detect AWS CLI releases in supported_versions.json",
+      "customType": "regex",
+      "managerFilePatterns": ["/^supported_versions\\.json$/"],
+      "matchStrings": ["\"awscli_versions\":\\s*\\[[^\\]]*\"(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)\"\\s*\\]"],
+      "depNameTemplate": "aws/aws-cli",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
+  ],
   "packageRules": [
     {
       "description": "Group all GitHub Actions updates into one PR",
@@ -32,6 +53,18 @@
       "description": "A major bump is a decision: the ADR gate must see it even off a structural path",
       "matchUpdateTypes": ["major"],
       "addLabels": ["needs-adr"]
+    },
+    {
+      "description": "The tool versions are detect-only: the bot reports on the dashboard and scripts/bump-version.sh writes the change (ADR-0002, amended)",
+      "matchManagers": ["custom.regex"],
+      "dependencyDashboardApproval": true,
+      "automerge": false,
+      "ignoreUnstable": true
+    },
+    {
+      "description": "The image bundles AWS CLI v2 (ADR-0017); v1 tags and a future v3 are not candidates",
+      "matchDepNames": ["aws/aws-cli"],
+      "allowedVersions": ">=2.0.0 <3.0.0"
     }
   ]
 }
