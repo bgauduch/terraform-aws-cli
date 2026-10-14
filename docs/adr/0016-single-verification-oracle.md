@@ -93,6 +93,26 @@ territory is the cross-file repository invariants nothing else looks at.
 - Follow-ups: the check inventory, the tier plan and the acceptance criteria
   live in #152; a new check is specified there before it lands here.
 
+> **Amended 2026-09-21** — `--fast` gains an assertion that no key under
+> `security/` has lapsed, and it fails closed. The check exists because the
+> tool it guards cannot report the condition: `gpg --verify` returns exit 0 for
+> a good signature made by an expired key, so both vendor keys lapsed under a
+> green build — `hashicorp.asc` for five months, `awscliv2.asc` for three
+> years. An expired key is detectable only from outside the verification it
+> weakens, which is this oracle's remit: an invariant no purpose-built tool
+> covers.
+>
+> A rotated historical signing subkey is expected to be expired and is not a
+> finding. The assertion is that the primary key is unexpired and that one
+> signing-capable key remains.
+>
+> Accepted cost: the repository does not control vendor key material, so a
+> vendor letting a key lapse turns `--fast` red on `master` until the copy in
+> `security/` is refreshed. That is the intended reading — the trust root of
+> every bundled binary has lapsed — and it is the posture the rest of this
+> oracle already takes. A new check in an existing mode; the decision is
+> unchanged.
+
 ## More information
 
 Study and sequencing: #152, which orders every verification this repository
