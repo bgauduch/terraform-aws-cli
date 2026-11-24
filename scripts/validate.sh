@@ -35,6 +35,7 @@ usage() {
 usage: validate.sh --fast
        validate.sh --full [AWS_CLI_VERSION] [TERRAFORM_VERSION] [IMAGE_TAG]
        validate.sh --lint
+       validate.sh --structure-test IMAGE_REF [AWS_CLI_VERSION] [TERRAFORM_VERSION]
        validate.sh --assert-image IMAGE_REF [AWS_CLI_VERSION] [TERRAFORM_VERSION]
        validate.sh --published RELEASE_VERSION
        validate.sh --render-tests [AWS_CLI_VERSION] [TERRAFORM_VERSION]
@@ -49,6 +50,9 @@ Checks, by what they verify and what they cost:
                   single-platform build and container-structure-test (Docker,
                   minutes). Versions default to the latest in
                   supported_versions.json; the tag defaults to "dev".
+  --structure-test  a local image: render the test config and run
+                  container-structure-test against IMAGE_REF, whichever
+                  architecture it was built for. Called by build-test.yml.
   --assert-image  the shipped artefact: pull IMAGE_REF (a tag or an untagged
                   repo@digest) per published architecture and run the
                   structure tests against it (Docker + QEMU). Run by the
@@ -173,6 +177,24 @@ check_hadolint_local() {
 }
 
 # ---------------------------------------------------------------------------
+# Structural check: shellcheck via local binary when present (the hadolint
+# pattern). Warning and up: every note these scripts raise is a deliberate
+# literal-${ match. The gcc format echoes no source line, so a non-ASCII byte
+# cannot crash it under an unset locale.
+# ---------------------------------------------------------------------------
+check_shellcheck_local() {
+  if command -v shellcheck >/dev/null 2>&1; then
+    if shellcheck --severity=warning --format=gcc scripts/*.sh; then
+      pass "shellcheck"
+    else
+      fail "shellcheck reported issues"
+    fi
+  else
+    skip "shellcheck not installed"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Structural check: the platform declarations agree (ADR-0019).
 # Lines carrying an expression (build-test composes linux/<arch> per job)
 # are skipped. An assertion, not a shared constant (#174).
@@ -217,6 +239,7 @@ run_fast() {
   check_platform_lines
   check_image_name
   check_hadolint_local
+  check_shellcheck_local
 }
 
 # ---------------------------------------------------------------------------
@@ -264,10 +287,26 @@ run_full() {
     --load .
   pass "image build"
 
-  printf 'Running container-structure-test (%s)...\n' "$CST_IMAGE"
+  run_structure_test "${IMAGE_NAME}:${image_tag}" "$aws_version" "$tf_version"
+}
+
+# ---------------------------------------------------------------------------
+# Image check (--structure-test): the structure tests against an image already
+# present locally, whatever its architecture. The pull-request gate builds one
+# platform per job and calls this, so the tool version has a single home
+# (ADR-0016); --assert-image is its registry counterpart.
+# ---------------------------------------------------------------------------
+run_structure_test() {
+  local ref="$1" aws_version tf_version
+  aws_version="${2:-$(latest_version awscli_versions)}"
+  tf_version="${3:-$(latest_version tf_versions)}"
+  [[ "$aws_version" =~ $SEMVER_RE ]] || die "AWS_CLI_VERSION '${aws_version}' is not a semver (X.Y.Z)"
+  [[ "$tf_version" =~ $SEMVER_RE ]] || die "TERRAFORM_VERSION '${tf_version}' is not a semver (X.Y.Z)"
+
   render_tests "$aws_version" "$tf_version"
-  cst_test "${IMAGE_NAME}:${image_tag}"
-  pass "container-structure-test"
+  printf 'Running container-structure-test (%s) against %s...\n' "$CST_IMAGE" "$ref"
+  cst_test "$ref"
+  pass "structure tests against ${ref}"
 }
 
 # ---------------------------------------------------------------------------
@@ -457,6 +496,11 @@ case "$MODE" in
   --lint)
     [ "$#" -le 1 ] || usage
     lint_dockerfile
+    ;;
+  --structure-test)
+    shift
+    { [ "$#" -ge 1 ] && [ "$#" -le 3 ]; } || usage
+    run_structure_test "$@"
     ;;
   --assert-image)
     shift

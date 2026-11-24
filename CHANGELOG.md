@@ -1,5 +1,16 @@
 # Changelog
 
+## [11.0.0](https://github.com/bgauduch/terraform-aws-cli/compare/v10.1.0...v11.0.0) (2026-09-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **versions:** Terraform 1.13 is no longer built. Published `vX.Y.Z_tf-1.13.5_aws-*` tags stay pullable (ADR-0003); pin one, or move to 1.14 or later.
+
+### Features
+
+* **versions:** add Terraform 1.16, retire 1.13, bump AWS CLI to 2.36.49 ([#205](https://github.com/bgauduch/terraform-aws-cli/issues/205)) ([db9db0c](https://github.com/bgauduch/terraform-aws-cli/commit/db9db0c077aac9a2b1a5dca9f8001052b12649ae))
+
 ## [10.1.0](https://github.com/bgauduch/terraform-aws-cli/compare/v10.0.3...v10.1.0) (2026-09-21)
 
 
