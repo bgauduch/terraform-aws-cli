@@ -57,6 +57,7 @@
     {
       "description": "The tool versions are detect-only: the bot reports on the dashboard and scripts/bump-version.sh writes the change (ADR-0002, amended)",
       "matchManagers": ["custom.regex"],
+      "matchFileNames": ["supported_versions.json"],
       "dependencyDashboardApproval": true,
       "automerge": false,
       "ignoreUnstable": true
